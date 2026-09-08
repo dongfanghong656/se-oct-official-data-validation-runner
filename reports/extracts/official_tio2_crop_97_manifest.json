@@ -1,0 +1,19 @@
+{
+  "source_record": "10.5281/zenodo.7870795",
+  "source_file": "input_TiO2gelatin_004_phasecorrected.mat",
+  "source_md5": "d905784f950a6fadfce71e9efc6d2654",
+  "source_boundary": "phase-corrected complex OCT C-scan, not raw camera interferograms",
+  "crop_file": "official_tio2_crop_97.mat",
+  "crop_sha256": "b2813d858253530ebaa269880a9fde0622fe4ca05d9d8ffa79814c77319d4b2f",
+  "crop_bytes": 14067025,
+  "crop_shape": [
+    200,
+    97,
+    97
+  ],
+  "center_yx0": [
+    232,
+    210
+  ],
+  "half_width": 48
+}
