@@ -1,5 +1,7 @@
-# Exact strip rerun status
+# Exact strip run status
 
-The first strip run reached the exact recursive FIAA call with an omitted `eta_in` argument and failed. Commit `98e3914737b3022ac5dc435b07877a4a2f0e32c4` corrected the call by carrying both prior-line power and prior noise state exactly as `rfiaa_oct_c1.m` does. A fresh public-data rerun was triggered at 2026-09-08T15:19:37Z. Results are pending; the stale failure log must not be treated as the fixed run result.
-
-This status file does not trigger another compute run. Replace this note only after the fixed run commits verifiable metrics and logs.
+- Compute outcome: failure
+- Workflow run: 34245187871
+- Source commit: fa75d697026b0a1085949f8109903199ea623610
+- Public dataset: Zenodo 7870795, MD5 d905784f950a6fadfce71e9efc6d2654
+- Boundary: deposited Cscan is already phase corrected; this is not a raw-camera dispersion audit.

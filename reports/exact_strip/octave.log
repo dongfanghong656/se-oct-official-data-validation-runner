@@ -1,4 +1,1 @@
-error: 'eta_in' undefined near line 15, column 6
-error: called from
-    rec_fiaa_oct_c1 at line 15 column 4
-    scripts/run_exact_strip.m at line 23 column 13
+EXACT_STRIP_OK lines=129 ii=24:151 K=800 output=/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/reports/exact_strip/strip.mat
