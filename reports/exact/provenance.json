@@ -1,0 +1,10 @@
+{
+  "record": "10.5281/zenodo.7870795",
+  "data_file": "input_TiO2gelatin_004_phasecorrected.mat",
+  "data_md5": "d905784f950a6fadfce71e9efc6d2654",
+  "fiaa_md5": "4839b0a7a57a7abe73f6644e38249cc6",
+  "run_id": "34241868066",
+  "source_commit": "e974a019c4261b418ed368a863fa36906bb120bc",
+  "recorded_at_utc": "2026-09-08T15:06:54.933034+00:00",
+  "boundary": "Already phase-corrected Cscan; no raw-camera dispersion audit."
+}
