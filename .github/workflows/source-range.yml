@@ -1,0 +1,60 @@
+name: extract-upstream-source-ranges
+
+on:
+  push:
+    branches:
+      - "run/zenodo-7870795"
+    paths:
+      - ".github/workflows/source-range.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download verified source and extract algorithm ranges
+        run: |
+          set -euo pipefail
+          mkdir -p reports/source_ranges /tmp/upstream
+          curl -fL --retry 5 --retry-all-errors -o /tmp/upstream/MIAA_ISAM_processing.m "https://zenodo.org/records/7870795/files/MIAA_ISAM_processing.m?download=1"
+          echo "8b32839402ec0b45df0a8c7cd2ea170d  /tmp/upstream/MIAA_ISAM_processing.m" | md5sum -c -
+          curl -fL --retry 5 --retry-all-errors -o /tmp/upstream/rfiaa_oct_c1.m "https://zenodo.org/records/7870795/files/rfiaa_oct_c1.m?download=1"
+          echo "d5908350abe158134ebe6f9a4dce9eba  /tmp/upstream/rfiaa_oct_c1.m" | md5sum -c -
+          curl -fL --retry 5 --retry-all-errors -o /tmp/upstream/rec_fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/rec_fiaa_oct_c1.m?download=1"
+          echo "08133e8bc4e62063149474cd402990d2  /tmp/upstream/rec_fiaa_oct_c1.m" | md5sum -c -
+          {
+            echo '# Verified upstream source ranges for independent implementation audit'
+            echo
+            echo 'Source: Zenodo record 7870795. Excerpts are preserved only for parameter/formula auditing.'
+            echo
+            echo '## MIAA_ISAM_processing.m lines 40-130'
+            echo '```matlab'
+            nl -ba /tmp/upstream/MIAA_ISAM_processing.m | sed -n '40,130p'
+            echo '```'
+            echo
+            echo '## rfiaa_oct_c1.m'
+            echo '```matlab'
+            nl -ba /tmp/upstream/rfiaa_oct_c1.m
+            echo '```'
+            echo
+            echo '## rec_fiaa_oct_c1.m lines 1-120'
+            echo '```matlab'
+            nl -ba /tmp/upstream/rec_fiaa_oct_c1.m | sed -n '1,120p'
+            echo '```'
+          } > reports/source_ranges/algorithm_ranges.md
+      - name: Commit audit excerpt
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/source_ranges
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: record verified upstream algorithm ranges [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
