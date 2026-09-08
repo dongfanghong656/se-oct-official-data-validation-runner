@@ -1,0 +1,49 @@
+name: exact-author-leaf-aline-distribution
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/run_exact_leaf_alines.m"
+      - "scripts/analyze_exact_leaf.py"
+      - ".github/workflows/exact-leaf-alines.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - run: |
+          sudo apt-get update -qq; sudo apt-get install -y --no-install-recommends octave octave-signal
+          python -m pip install numpy scipy pandas matplotlib
+      - name: Download verified leaf data and exact author function
+        run: |
+          mkdir -p .cache/upstream reports/exact_leaf
+          curl -fL --retry 7 --retry-all-errors -o .cache/leaf.mat "https://zenodo.org/records/7870795/files/input_leafdisc_phasecorrected.mat?download=1"
+          echo "d59b7479304f37f315be63cf45902e48  .cache/leaf.mat" | md5sum -c -
+          curl -fL --retry 7 --retry-all-errors -o .cache/upstream/fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/fiaa_oct_c1.m?download=1"
+          echo "4839b0a7a57a7abe73f6644e38249cc6  .cache/upstream/fiaa_oct_c1.m" | md5sum -c -
+      - name: Run exact author leaf A-lines
+        env:
+          DATA_FILE: ${{ github.workspace }}/.cache/leaf.mat
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
+          OUTPUT_MAT: ${{ github.workspace }}/reports/exact_leaf/leaf_alines.mat
+        run: |
+          set -o pipefail; octave-cli --quiet scripts/run_exact_leaf_alines.m 2>&1 | tee reports/exact_leaf/octave.log
+          python scripts/analyze_exact_leaf.py reports/exact_leaf/leaf_alines.mat reports/exact_leaf 2>&1 | tee reports/exact_leaf/analysis.log
+      - name: Publish compact evidence
+        if: always()
+        run: |
+          rm -rf .cache; rm -f reports/exact_leaf/leaf_alines.mat
+          git config user.name "github-actions[bot]";git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/exact_leaf
+          if ! git diff --cached --quiet; then git commit -m "test: record exact leaf A-line distribution evidence [skip ci]";git pull --rebase origin "${GITHUB_REF_NAME}";git push origin "HEAD:${GITHUB_REF_NAME}";fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: exact-leaf-alines, path: reports/exact_leaf, retention-days: 30}
