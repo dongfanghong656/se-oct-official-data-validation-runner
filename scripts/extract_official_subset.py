@@ -62,12 +62,22 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     cache.parent.mkdir(parents=True, exist_ok=True)
     download(cache)
-    volume = np.asarray(loadmat(cache, variable_names=["Cscan"])["Cscan"], dtype=np.complex64)
+    mat = loadmat(cache, variable_names=["Cscan", "sk"])
+    volume = np.asarray(mat["Cscan"], dtype=np.complex64)
+    author_sk = np.asarray(mat["sk"]).reshape(-1).astype(np.float32)
     if volume.shape != (200, 512, 512):
         raise RuntimeError(f"Unexpected Cscan shape {volume.shape}")
 
     z_lines = volume[:, COORDS[:, 0], COORDS[:, 1]]
     spectra = np.fft.fft(np.fft.ifftshift(z_lines, axes=0), axis=0).astype(np.complex64)
+    author_spectra = np.flip(np.fft.fft(z_lines, axis=0), axis=0).astype(np.complex64)
+    author_sk = np.flip(author_sk).copy()
+    if author_sk.size != volume.shape[0]:
+        raise RuntimeError(f"Unexpected sk length {author_sk.size}")
+    threshold = np.sort(author_sk)[-128]
+    author_mask = author_sk >= threshold
+    author_window_start = int(np.flatnonzero(author_mask)[0])
+    author_window_stop = int(np.flatnonzero(author_mask)[-1]) + 1
 
     rng = np.random.default_rng(7)
     random_flat = rng.choice(512 * 512, size=2048, replace=False)
@@ -90,6 +100,10 @@ def main() -> None:
         z_lines=z_lines,
         full_spectra=spectra,
         source_profile=source_profile,
+        author_full_spectra=author_spectra,
+        author_sk=author_sk,
+        author_window_start=np.int32(author_window_start),
+        author_window_stop=np.int32(author_window_stop),
         x_strip=x_strip,
         x_strip_y=np.int32(y0),
         x_strip_x_start=np.int32(x_start),
@@ -103,6 +117,7 @@ def main() -> None:
         source_window_start=np.int32(49),
         source_window_stop=np.int32(177),
     )
+    subset_path = out / "official_tio2_selected_subset.npz"
     manifest = {
         "source_record": "10.5281/zenodo.7870795",
         "source_file": cache.name,
@@ -112,12 +127,14 @@ def main() -> None:
         "shape": list(volume.shape),
         "dtype": str(volume.dtype),
         "coordinates_yx": COORDS.tolist(),
-        "subset_file": subset.name,
-        "subset_sha256": digest(subset, "sha256"),
-        "subset_bytes": subset.stat().st_size,
+        "subset_file": subset_path.name,
+        "subset_sha256": digest(subset_path, "sha256"),
+        "subset_bytes": subset_path.stat().st_size,
         "extraction": {
-            "transform": "fft(ifftshift(z_line))",
+            "transform": "fft(ifftshift(z_line)) plus exact author convention flip(fft(z_line))",
             "source_profile": "mean abs spectrum over deterministic seed-7 sample of 2048 A-lines",
+            "author_sk": "exact deposited sk, flipped exactly as MIAA_ISAM_processing.m",
+            "author_window": [author_window_start, author_window_stop],
             "x_strip": [y0, x_start, x_stop],
             "y_strip": [y_start, y_stop, x0],
         },
