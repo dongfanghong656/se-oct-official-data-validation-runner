@@ -33,16 +33,13 @@ jobs:
             echo '# Verified upstream source ranges for independent implementation audit'
             echo
             echo 'Source: Zenodo record 7870795. Excerpts are preserved only for parameter/formula auditing.'
-            echo
-            echo '## MIAA_ISAM_processing.m lines 1-39'
-            echo '```matlab'
-            nl -ba /tmp/upstream/MIAA_ISAM_processing.m | sed -n '1,39p'
-            echo '```'
-            echo
-            echo '## MIAA_ISAM_processing.m lines 40-130'
-            echo '```matlab'
-            nl -ba /tmp/upstream/MIAA_ISAM_processing.m | sed -n '40,130p'
-            echo '```'
+            for range in '1,39' '40,130' '127,260' '261,420'; do
+              echo
+              echo "## MIAA_ISAM_processing.m lines ${range/,/-}"
+              echo '```matlab'
+              nl -ba /tmp/upstream/MIAA_ISAM_processing.m | sed -n "${range}p"
+              echo '```'
+            done
             echo
             echo '## rfiaa_oct_c1.m'
             echo '```matlab'
