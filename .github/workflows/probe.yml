@@ -1,0 +1,21 @@
+name: public-runner-probe
+
+on:
+  push:
+    branches:
+      - "run/zenodo-7870795"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe
+        run: |
+          python --version
+          echo public-runner-ok
