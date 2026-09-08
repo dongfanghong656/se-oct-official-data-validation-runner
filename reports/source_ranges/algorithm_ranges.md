@@ -140,6 +140,200 @@ Source: Zenodo record 7870795. Excerpts are preserved only for parameter/formula
    130	% define the spectral limits to obtain absolute k-values for the spectrum
 ```
 
+## MIAA_ISAM_processing.m lines 127-260
+```matlab
+   127	%% ISAM inverse scattering
+   128	Nz_calc = Nz_rawdata;
+   129	
+   130	% define the spectral limits to obtain absolute k-values for the spectrum
+   131	lambda_min= 5.011840350737296e-07; %#m
+   132	lambda_max= 5.25482346025955e-07; %#m
+   133	lambda_center = (lambda_min + lambda_max)/2;
+   134	
+   135	% calculation of boundary k values
+   136	refr_index = 1.33;
+   137	k_min=2*pi/lambda_max*refr_index;
+   138	k_max=2*pi/lambda_min*refr_index;
+   139	k_minmax = [k_min,k_max];
+   140	k_center = mean(k_minmax);
+   141	k_range = (k_minmax(2)-k_minmax(1));
+   142	k_minmax_iaa = k_center+[+super/2*k_range,-super/2*k_range]; % define k-range extrapolated MIAA spectrum
+   143	
+   144	% define lateral grid
+   145	sizeX = 0.225;
+   146	sizeY = 0.225;
+   147	FOV_xy = [sizeX*1e-3,sizeY*1e-3]; 
+   148	% define z range of the image based on k-values
+   149	sizeZ = pi*(Nz_calc-1)/(k_minmax(2)-k_minmax(1))*1e3;
+   150	%% prepare edge apodization in axial and lateral direction to reduce side-lobes
+   151	%axial apodization
+   152	NzIAA = length(spectra_MIAA(:,1,1));
+   153	N_hannedge_length = 200; % width of hannin window that is split and put at the edges
+   154	hanning_edge = hanning(N_hannedge_length);
+   155	% build edge apodization
+   156	edge_apod = ones(NzIAA,1);
+   157	edge_apod(1:round(N_hannedge_length/2)) = hanning_edge(1:round(N_hannedge_length/2)); 
+   158	edge_apod((NzIAA-round(N_hannedge_length/2)+1):end) = hanning_edge(round(N_hannedge_length/2)+1:end);
+   159	
+   160	%lateral apodization to reduce side-lobes and noise
+   161	% radii_smoothedge = [110,256];
+   162	radii_smoothedge = [110,210]; %inner and outer radius of cos^2 shaped smoothing in pixels
+   163	xi = -Nx/2:Nx/2-1;
+   164	[xxi,yyi] = meshgrid(xi,xi);
+   165	radius = sqrt(xxi.^2+yyi.^2);
+   166	mask = (radius<radii_smoothedge(1))+(radius>=radii_smoothedge(1)).*(0.5+0.5*cos(1*pi*(radius-radii_smoothedge(1))./(radii_smoothedge(2)-radii_smoothedge(1)))).*(radius<=radii_smoothedge(2));
+   167	mask = reshape(mask,[1,Nx,Nx]);
+   168	%% define grids for ISAM
+   169	% define lateral spatial frequencies
+   170	kx=linspace(-Nx/(2*FOV_xy(1)),(Nx-2)/(2*FOV_xy(1)),Nx)*2*pi;
+   171	ky=linspace(-Ny/(2*FOV_xy(2)),(Ny-2)/(2*FOV_xy(2)),Ny)*2*pi;
+   172	ksamp=linspace(k_minmax_iaa(1),k_minmax_iaa(2),NzIAA);
+   173	m = 0:NzIAA-1;
+   174	[kxx,kksamp] = meshgrid(kx,ksamp);
+   175	kzz = 2*sqrt(kksamp.^2-(kxx/2).^2);
+   176	%define the linear grid on which all data is interpolated
+   177	kzlin = kzz(:,round(Nx/2)+1); 
+   178	kzmin = 2*sqrt(min(kksamp(:)).^2-2*(max(kxx(:))/2).^2);
+   179	% extend the linear grid to include all data that is mapped to lower kz
+   180	kzlin=(0:2*NzIAA-1)*(kzlin(2)-kzlin(1))+kzlin(1);
+   181	kzlin = kzlin(kzlin>=kzmin);
+   182	
+   183	%% apply ISAM on MIAA data
+   184	% apply edge apodization to reduce sidelobes when zero-padding (due to interpolation)
+   185	spectra = spectra_MIAA.*edge_apod; 
+   186	%lateral fft
+   187	S_k_Qx_Qy=fftshift(fftshift(fft(fft(fftshift(fftshift(spectra.*exp(1j*2*pi*m'*zf_index_IAA/(NzIAA-1)),2),3),[],2),[],3),2),3);
+   188	% clear spectra to free space in memory
+   189	clear spectra 
+   190	% apply lateral apodization mask on the data
+   191	S_k_Qx_Qy = S_k_Qx_Qy.*mask;
+   192	%preallocate matrices for interpolated data and single frame of
+   193	%interpolated data:
+   194	S_Qz_Qx_Qy = zeros([length(kzlin),Nx,Ny]);
+   195	Sx_Qz_Qx_Qy = zeros([length(kzlin),Nx]);
+   196	tStart = tic;
+   197	for j =1:Ny
+   198	    %get ky value for this frame
+   199	    kyv=ky(j); 
+   200	    % calculate the kz values for the frame
+   201	    kzz = 2*sqrt(kksamp.^2-(kxx/2).^2-(kyv/2).^2);
+   202	    %apply prefactor belonging to change of variables
+   203	    Sx_k_Qx_Qy = S_k_Qx_Qy(:,:,j).*kzz./sqrt(kzz.^2+kxx.^2+kyv.^2);
+   204	    %iterate over kx values
+   205	    parfor i = 1:Nx
+   206	        % interpolate on new linear grid
+   207	        Sx_Qz_Qx_Qy(:,i) = interp1(kzz(:,i),Sx_k_Qx_Qy(:,i),kzlin,'spline',0);        
+   208	    end
+   209	    % add frame to matrix
+   210	    S_Qz_Qx_Qy(:,:,j) = Sx_Qz_Qx_Qy;
+   211	    
+   212	    % loop to keep track of progress
+   213	    if mod(j+1,20)==0
+   214	        tFrames = toc(tStart);
+   215	        fprintf('ISAM interpolating MIAA data frame %d to %d took %.2f s\n',j-19,j,tFrames)
+   216	        tStart = tic;
+   217	    end
+   218	end
+   219	
+   220	% define new series of integers with interpolated k length for applying the
+   221	% shift
+   222	m2=0:length(kzlin)-1;
+   223	clear S_k_Qx_Qy; % take the large matrix out of memory
+   224	
+   225	% shift focus back to the original position and apply ifft to obtain the ISAM image
+   226	ISAM_image=fftshift(fftshift(ifftn(fftshift(fftshift(S_Qz_Qx_Qy.*exp(-1j*2*pi*m2'*zf_index_IAA/(NzIAA-1)),2),3)),2),3);
+   227	clear S_Qz_Qx_Qy % take frequency domain data out of memory
+   228	%% save complex data for computational adaptive optics if needed
+   229	if save_complexdata == 1
+   230	    ISAM_image = flip(ISAM_image,1);
+   231	    ISAM_image = ISAM_image(200:1000,:,:);
+   232	    save([datasavefolder,'MIAA_ISAM_complex.mat'],'ISAM_image','-v7.3')
+   233	end
+   234	
+   235	%% obtain the dB-compressed image for plotting (and to reduce the memory load)
+   236	ISAM_imagedB = abs(ISAM_image);
+   237	clear ISAM_image
+   238	ISAM_imagedB = 20*log10(ISAM_imagedB/max(ISAM_imagedB(:)));
+   239	
+   240	%% apply ISAM to FBW data - this takes the same steps as the MIAA spectra.
+   241	spectra = circshift(fft(FBW_im,[],1),300,1); 
+   242	S_k_Qx_Qy=fftshift(fftshift(fft(fft(fftshift(fftshift(spectra.*exp(1j*2*pi*m'*zf_index_IAA/(NzIAA-1)),2),3),[],2),[],3),2),3);
+   243	clear spectra
+   244	S_k_Qx_Qy = S_k_Qx_Qy.*mask; %apply lateral apodization
+   245	
+   246	S_Qz_Qx_Qy = zeros([length(kzlin),Nx,Ny]);
+   247	Sx_Qz_Qx_Qy = zeros([length(kzlin),Nx]);
+   248	tStart = tic;
+   249	for j =1:Ny
+   250	    kyv=ky(j);
+   251	    kzz = 2*sqrt(kksamp.^2-(kxx/2).^2-(kyv/2).^2);
+   252	    Sx_k_Qx_Qy = S_k_Qx_Qy(:,:,j).*kzz./sqrt(kzz.^2+kxx.^2+kyv.^2);
+   253	    %iterate over kx values
+   254	    parfor i = 1:Nx
+   255	        Sx_Qz_Qx_Qy(:,i) = interp1(kzz(:,i),Sx_k_Qx_Qy(:,i),kzlin,'spline',0);        
+   256	    end
+   257	    S_Qz_Qx_Qy(:,:,j) = Sx_Qz_Qx_Qy;
+   258	    if mod(j+1,20)==0
+   259	        tFrames = toc(tStart);
+   260	        fprintf('ISAM interpolating DFT data frame %d to %d took %.2f s\n',j-19,j,tFrames)
+```
+
+## MIAA_ISAM_processing.m lines 261-420
+```matlab
+   261	        tStart = tic;
+   262	    end
+   263	end
+   264	
+   265	clear S_k_Qx_Qy; % take the large matrix out of memory
+   266	ISAM_image_FBW=fftshift(fftshift(ifftn(fftshift(fftshift(S_Qz_Qx_Qy.*exp(-1j*2*pi*m2'*zf_index_IAA/(NzIAA-1)),2),3)),2),3);
+   267	clear S_Qz_Qx_Qy;
+   268	%% save complex data for applying computational adaptive optics if desired
+   269	if save_complexdata == 1
+   270	    ISAM_image_FBW = flip(ISAM_image_FBW,1);
+   271	    ISAM_image_FBW = ISAM_image_FBW(200:1000,:,:);
+   272	    save([datasavefolder,'DFT_ISAM_complex.mat'],'ISAM_image_FBW','-v7.3')
+   273	end
+   274	
+   275	%% transform to dB-compressed image for displaying and to clear part of the memory
+   276	ISAM_imagedB_FBW = abs(ISAM_image_FBW);
+   277	clear ISAM_image_FBW
+   278	ISAM_imagedB_FBW = 20*log10(ISAM_imagedB_FBW/max(ISAM_imagedB_FBW(:)));
+   279	
+   280	%% Obtain interpolated dB images for FBW-DFT and RFIAA such that axial sampling is consistent with ISAM datasets
+   281	FBW_dB_interpolated = abs(ifft(fft(FBW_im,[],1).*edge_apod,length(ISAM_imagedB(:,1,1)),1));
+   282	FBW_dB_interpolated = 20*log10(FBW_dB_interpolated/max(FBW_dB_interpolated(:)));
+   283	%
+   284	RFIAA_dB_interpolated = abs(ifft(fft(RFIAA_im,[],1).*edge_apod,length(ISAM_imagedB(:,1,1)),1));
+   285	RFIAA_dB_interpolated = 20*log10(RFIAA_dB_interpolated/max(RFIAA_dB_interpolated(:)));
+   286	%% Flip the images for the right orientation
+   287	images = {FBW_dB_interpolated,RFIAA_dB_interpolated,ISAM_imagedB_FBW,ISAM_imagedB};
+   288	for i=1:4
+   289	    images{i} = flip(images{i},1);
+   290	end
+   291	%% Save image amplitude for a region of interest for fitting of the point scatterers
+   292	fnames = {'DFT','RFIAA','DFT_ISAM','MIAA_ISAM'};
+   293	if save_magnitudedata == 1
+   294	    for i =1:4
+   295	        image = 10.^(images{i}(200:1000,:,:)/20);
+   296	        save([datasavefolder,'image_',fnames{i},'.mat'],'image','-v7.3')
+   297	    end
+   298	end
+   299	%% calculate the z-grid for the ISAM images and the roi for imagesc plotting
+   300	Nisam = length(ISAM_imagedB(:,1,1));
+   301	zmax = pi*(Nz_calc-1)/(k_minmax(2)-k_minmax(1))*1e3; %mm
+   302	z_isam = linspace(0,zmax,Nisam);
+   303	Xroi = [0,sizeX];
+   304	Zroi = [z_isam(1),z_isam(end)];
+   305	%% plot the figures in the manuscript
+   306	if datasetno ==1
+   307	    run('plot_figure3.m')
+   308	elseif datasetno == 2 
+   309	    run('plot_figure5.m')
+   310	elseif datasetno == 3
+   311	    run('plot_simulationdatafigure.m')
+   312	end
+```
+
 ## rfiaa_oct_c1.m
 ```matlab
      1	    function [pS,pSmap]=rfiaa_oct_c1(pX,K,q_i,eta,q_rec)
