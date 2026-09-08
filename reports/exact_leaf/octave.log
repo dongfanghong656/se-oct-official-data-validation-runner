@@ -1,0 +1,25 @@
+leaf line 1/24 group=1 score=3205.83
+leaf line 2/24 group=1 score=3838.59
+leaf line 3/24 group=1 score=4211.25
+leaf line 4/24 group=1 score=4381.08
+leaf line 5/24 group=1 score=4465.75
+leaf line 6/24 group=1 score=4598.63
+leaf line 7/24 group=1 score=5029.19
+leaf line 8/24 group=1 score=5037.29
+leaf line 9/24 group=2 score=12371.6
+leaf line 10/24 group=2 score=13901.3
+leaf line 11/24 group=2 score=14722.1
+leaf line 12/24 group=2 score=15439
+leaf line 13/24 group=2 score=15906.9
+leaf line 14/24 group=2 score=16576.8
+leaf line 15/24 group=2 score=17439.5
+leaf line 16/24 group=2 score=19092.5
+leaf line 17/24 group=3 score=46542.9
+leaf line 18/24 group=3 score=50355.8
+leaf line 19/24 group=3 score=52797.2
+leaf line 20/24 group=3 score=55258.6
+leaf line 21/24 group=3 score=61544.9
+leaf line 22/24 group=3 score=62045.1
+leaf line 23/24 group=3 score=69439.3
+leaf line 24/24 group=3 score=76934.9
+EXACT_LEAF_OK n=24 output=/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/reports/exact_leaf/leaf_alines.mat

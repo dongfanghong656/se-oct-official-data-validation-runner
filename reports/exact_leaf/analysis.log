@@ -1,0 +1,44 @@
+[
+  {
+    "group": 1,
+    "line": 3.5,
+    "score": 4423.415283203125,
+    "mapping_start": 449.0,
+    "holdout_corr": 0.16777557590875952,
+    "holdout_nmse": 0.9718486209056054,
+    "holdout_phase_rmse": 1.6425892345877,
+    "fwhm_dft_profile_um": 8.115771834598881,
+    "fwhm_normalized_dft_profile_um": 3.6125108789906815,
+    "fwhm_rfiaa_profile_um": 2.078666501687465,
+    "fwhm_rfiaa_map_profile_um": 1.323242274860224,
+    "fwhm_miaa_profile_um": 1.7024305480012774
+  },
+  {
+    "group": 2,
+    "line": 11.5,
+    "score": 15672.97216796875,
+    "mapping_start": 449.0,
+    "holdout_corr": 0.6239880570505288,
+    "holdout_nmse": 0.6106388865910483,
+    "holdout_phase_rmse": 1.0886418486801501,
+    "fwhm_dft_profile_um": 7.881650824935494,
+    "fwhm_normalized_dft_profile_um": 3.884167179872371,
+    "fwhm_rfiaa_profile_um": 1.9519276343084981,
+    "fwhm_rfiaa_map_profile_um": 1.2563857176136102,
+    "fwhm_miaa_profile_um": 1.6949839687907562
+  },
+  {
+    "group": 3,
+    "line": 19.5,
+    "score": 58401.748046875,
+    "mapping_start": 449.0,
+    "holdout_corr": 0.9115123520630837,
+    "holdout_nmse": 0.16897841245543838,
+    "holdout_phase_rmse": 0.36940716602643653,
+    "fwhm_dft_profile_um": 7.478948650699509,
+    "fwhm_normalized_dft_profile_um": 3.9099704385564786,
+    "fwhm_rfiaa_profile_um": 1.201956303147626,
+    "fwhm_rfiaa_map_profile_um": 1.0838520835715535,
+    "fwhm_miaa_profile_um": 1.4216244569724878
+  }
+]
