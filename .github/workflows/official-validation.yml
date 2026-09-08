@@ -29,9 +29,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: pip
 
       - name: Reconstruct audited runner bundle
+        id: reconstruct
         run: |
           set -euo pipefail
           rm -rf work
@@ -42,6 +42,7 @@ jobs:
           python -m compileall -q work/src work/scripts
 
       - name: Install dependencies and run unit tests
+        id: unit_tests
         working-directory: work
         run: |
           set -euo pipefail
@@ -75,6 +76,8 @@ jobs:
               'source_commit': os.environ.get('GITHUB_SHA'),
               'run_id': os.environ.get('GITHUB_RUN_ID'),
               'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
+              'reconstruct_step_outcome': '${{ steps.reconstruct.outcome }}',
+              'unit_test_step_outcome': '${{ steps.unit_tests.outcome }}',
               'official_step_outcome': '${{ steps.official.outcome }}',
               'recorded_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
               'data_boundary': 'The deposited MAT volume is already phase corrected and is not a raw camera interferogram.'
@@ -86,7 +89,7 @@ jobs:
 
           Run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
-          The public runner started and the source bundle passed its checksum and unit tests, but the official-data step failed. See `upstream/runner.log` and the Actions log. No success claim is permitted.
+          Step outcomes: reconstruct `${{ steps.reconstruct.outcome }}`, unit tests `${{ steps.unit_tests.outcome }}`, official data `${{ steps.official.outcome }}`. See `upstream/runner.log` when present and the Actions log. No success claim is permitted.
           EOF
           fi
 
