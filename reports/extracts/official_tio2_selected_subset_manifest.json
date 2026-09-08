@@ -1,0 +1,49 @@
+{
+  "source_record": "10.5281/zenodo.7870795",
+  "source_file": "input_TiO2gelatin_004_phasecorrected.mat",
+  "source_expected_md5": "d905784f950a6fadfce71e9efc6d2654",
+  "source_actual_md5": "d905784f950a6fadfce71e9efc6d2654",
+  "source_boundary": "Phase-corrected complex OCT C-scan, not raw camera interferograms.",
+  "shape": [
+    200,
+    512,
+    512
+  ],
+  "dtype": "complex64",
+  "coordinates_yx": [
+    [
+      12,
+      7
+    ],
+    [
+      232,
+      210
+    ],
+    [
+      482,
+      38
+    ],
+    [
+      1,
+      453
+    ]
+  ],
+  "subset_file": "official_tio2_selected_subset.npz",
+  "subset_sha256": "40c0c91fa3104ec3fd2d1e33fe16db54c3261bb0e46e83821bcd9a3ad3d34c83",
+  "subset_bytes": 401376,
+  "extraction": {
+    "transform": "fft(ifftshift(z_line))",
+    "source_profile": "mean abs spectrum over deterministic seed-7 sample of 2048 A-lines",
+    "x_strip": [
+      232,
+      146,
+      275
+    ],
+    "y_strip": [
+      168,
+      297,
+      210
+    ]
+  },
+  "use_constraint": "Public-data validation only; cite de Wit et al. and Zenodo record 7870795."
+}
