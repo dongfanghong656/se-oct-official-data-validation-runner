@@ -1,0 +1,101 @@
+{
+  "experiment": "authors_processed_full_volume_Figure4_outfocus_point",
+  "source_record": "10.5281/zenodo.7870795",
+  "expected_global_saved_zxy0": [
+    261,
+    451,
+    221
+  ],
+  "spacings_um": {
+    "z": 0.7887831017786151,
+    "x": 0.439453125,
+    "y": 0.439453125
+  },
+  "boundary": "Final amplitude outputs supplied by the authors; validates published output morphology, not raw-camera preprocessing or unmeasured spectral truth.",
+  "methods": {
+    "DFT_ISAM": {
+      "file": "exp_pointscat_image_DFT_ISAM.mat",
+      "md5": "206e900fe93fb8306cc510a839d23e05",
+      "hdf5": {
+        "dataset": "/image",
+        "stored_shape": [
+          512,
+          512,
+          801
+        ],
+        "storage_convention": "matlab_v73_yxz",
+        "dtype": "float64"
+      },
+      "peak_local_zxy": [
+        22,
+        25,
+        17
+      ],
+      "peak_global_saved_zxy0": [
+        263,
+        452,
+        214
+      ],
+      "fwhm_z_um": 6.267590655662122,
+      "fwhm_x_um": 0.7497437998735081,
+      "fwhm_y_um": NaN,
+      "peak_intensity": 1.795959843761267e-06,
+      "gaussian_fit_21cube": {
+        "success": true,
+        "cost": 1.7591994527776933e-10,
+        "center_local_zxy": [
+          13.81563945177129,
+          19.64422794052373,
+          8.84726619188383
+        ],
+        "fwhm_z_um": 8.658911470954193,
+        "fwhm_x_um": 0.5583587489760614,
+        "fwhm_y_um": 1.1852991287382046,
+        "amplitude": 2.2019755602782864e-06,
+        "background": 1.8285571616499943e-07
+      }
+    },
+    "MIAA_ISAM": {
+      "file": "exp_pointscat_image_MIAA_ISAM.mat",
+      "md5": "1fb312bcd855ea437d996629231b1e56",
+      "hdf5": {
+        "dataset": "/image",
+        "stored_shape": [
+          512,
+          512,
+          801
+        ],
+        "storage_convention": "matlab_v73_yxz",
+        "dtype": "float64"
+      },
+      "peak_local_zxy": [
+        27,
+        23,
+        32
+      ],
+      "peak_global_saved_zxy0": [
+        268,
+        450,
+        229
+      ],
+      "fwhm_z_um": 3.785233875205385,
+      "fwhm_x_um": 0.8851384840118057,
+      "fwhm_y_um": 0.8746837199594324,
+      "peak_intensity": 3.777084857205863e-07,
+      "gaussian_fit_21cube": {
+        "success": true,
+        "cost": 6.5638605661888505e-12,
+        "center_local_zxy": [
+          19.99304697262651,
+          13.611227078192593,
+          10.348474569076034
+        ],
+        "fwhm_z_um": 5.845255577779329,
+        "fwhm_x_um": 0.7981136484593803,
+        "fwhm_y_um": 1.0685315278436351,
+        "amplitude": 6.071378397505843e-07,
+        "background": 3.663851400219024e-08
+      }
+    }
+  }
+}
