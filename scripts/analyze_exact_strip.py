@@ -12,7 +12,7 @@ def edge_taper(n:int)->np.ndarray:
     h=np.hanning(200); w=np.ones(n); w[:100]=h[:100]; w[-100:]=h[100:]; return w
 
 def lateral_mask(n:int)->np.ndarray:
-    q=np.arange(-n//2,n-n//2,dtype=float); r=np.abs(q)
+    q=np.arange(-(n//2),n-(n//2),dtype=float); r=np.abs(q)
     inner=110/256*(n/2); outer=210/256*(n/2)
     w=np.ones(n); mid=(r>=inner)&(r<=outer); w[r>outer]=0
     w[mid]=0.5+0.5*np.cos(np.pi*(r[mid]-inner)/(outer-inner)); return w
