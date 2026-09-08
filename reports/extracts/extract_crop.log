@@ -3,17 +3,43 @@
   "source_file": "input_TiO2gelatin_004_phasecorrected.mat",
   "source_md5": "d905784f950a6fadfce71e9efc6d2654",
   "source_boundary": "phase-corrected complex OCT C-scan, not raw camera interferograms",
-  "crop_file": "official_tio2_crop_97.mat",
-  "crop_sha256": "b2813d858253530ebaa269880a9fde0622fe4ca05d9d8ffa79814c77319d4b2f",
-  "crop_bytes": 14067025,
-  "crop_shape": [
-    200,
-    97,
-    97
-  ],
-  "center_yx0": [
-    232,
-    210
-  ],
-  "half_width": 48
+  "cscan_axis_order": "z,x,y",
+  "crops": [
+    {
+      "crop_file": "official_tio2_crop_97.mat",
+      "crop_sha256": "ac0e3ec9c5cf9453344b976b531ca269d9390e354be418cf695356151a2fc2bd",
+      "crop_bytes": 14067025,
+      "crop_shape": [
+        200,
+        97,
+        97
+      ],
+      "x0": 232,
+      "y0": 210,
+      "half": 48,
+      "axis_order": "z,x,y",
+      "status": "legacy_exploratory_not_figure4_target"
+    },
+    {
+      "crop_file": "official_tio2_fig4_outfocus_crop.mat",
+      "crop_sha256": "b676f2c444763ed6a2b4ebad15ea8dee52263cd0df42c992bb6df3b033576657",
+      "crop_bytes": 48985540,
+      "crop_shape": [
+        200,
+        181,
+        181
+      ],
+      "x0": 451,
+      "y0": 221,
+      "x_start": 331,
+      "x_stop": 512,
+      "y_start": 131,
+      "y_stop": 312,
+      "target_local_x": 120,
+      "target_local_y": 90,
+      "expected_final_z_index_matlab1": 461,
+      "axis_order": "z,x,y",
+      "source_coordinate_mm": "x=0.1985,y=0.0975 from plot_figure3.m"
+    }
+  ]
 }
