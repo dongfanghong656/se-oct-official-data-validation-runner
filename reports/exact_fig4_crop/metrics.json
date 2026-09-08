@@ -1,0 +1,182 @@
+{
+  "experiment": "figure4_white_arrow_coordinate_exact_FIAA_MIAA_then_crop_ISAM",
+  "boundary": "phase-corrected public data; exact author FIAA/MIAA, finite crop and independently reimplemented ISAM",
+  "crop_shape": [
+    800,
+    181,
+    181
+  ],
+  "target_expected_zero_based": [
+    460,
+    120,
+    90
+  ],
+  "dft_isam": {
+    "peak_zxy": [
+      478,
+      122,
+      97
+    ],
+    "peak_z_um": 376.3062094023136,
+    "peak_amplitude": 459.3964646413596,
+    "fwhm_x_um": 0.7315580911255684,
+    "fwhm_y_um": 0.8319497437478202,
+    "fwhm_z_um": 7.964457082376171
+  },
+  "miaa_isam": {
+    "peak_zxy": [
+      459,
+      131,
+      81
+    ],
+    "peak_z_um": 361.34843120431367,
+    "peak_amplitude": 0.1536048757585044,
+    "fwhm_x_um": 4.183223974706269,
+    "fwhm_y_um": 1.4035478158595676,
+    "fwhm_z_um": 1.9308916256639082
+  },
+  "phase_scramble_runs": [
+    {
+      "seed": 0,
+      "fixed_target_amplitude_ratio": 0.26210127160849667,
+      "local_max_amplitude_ratio": 0.6865738021399875,
+      "fixed_local_energy_ratio": 0.27770512617777,
+      "local_max_zxy": [
+        470,
+        119,
+        78
+      ]
+    },
+    {
+      "seed": 1,
+      "fixed_target_amplitude_ratio": 0.07720612627503529,
+      "local_max_amplitude_ratio": 0.507774230948608,
+      "fixed_local_energy_ratio": 0.1373345645913124,
+      "local_max_zxy": [
+        469,
+        120,
+        88
+      ]
+    },
+    {
+      "seed": 2,
+      "fixed_target_amplitude_ratio": 0.20825139995355108,
+      "local_max_amplitude_ratio": 0.5330869761581477,
+      "fixed_local_energy_ratio": 0.1510994468171616,
+      "local_max_zxy": [
+        459,
+        143,
+        78
+      ]
+    },
+    {
+      "seed": 3,
+      "fixed_target_amplitude_ratio": 0.12171628791626408,
+      "local_max_amplitude_ratio": 0.4563895559179737,
+      "fixed_local_energy_ratio": 0.12734855808995738,
+      "local_max_zxy": [
+        459,
+        119,
+        76
+      ]
+    },
+    {
+      "seed": 4,
+      "fixed_target_amplitude_ratio": 0.15895787712438533,
+      "local_max_amplitude_ratio": 0.6101654026729267,
+      "fixed_local_energy_ratio": 0.1837917474069404,
+      "local_max_zxy": [
+        470,
+        126,
+        78
+      ]
+    },
+    {
+      "seed": 5,
+      "fixed_target_amplitude_ratio": 0.3499667582369625,
+      "local_max_amplitude_ratio": 0.721267965364239,
+      "fixed_local_energy_ratio": 0.3402063980239933,
+      "local_max_zxy": [
+        459,
+        126,
+        88
+      ]
+    },
+    {
+      "seed": 6,
+      "fixed_target_amplitude_ratio": 0.22546638174980835,
+      "local_max_amplitude_ratio": 0.6314471734814096,
+      "fixed_local_energy_ratio": 0.23241095838187928,
+      "local_max_zxy": [
+        459,
+        137,
+        72
+      ]
+    },
+    {
+      "seed": 7,
+      "fixed_target_amplitude_ratio": 0.20207124298100887,
+      "local_max_amplitude_ratio": 0.6497356027130246,
+      "fixed_local_energy_ratio": 0.2880499077700566,
+      "local_max_zxy": [
+        470,
+        124,
+        71
+      ]
+    },
+    {
+      "seed": 8,
+      "fixed_target_amplitude_ratio": 0.16287203784342352,
+      "local_max_amplitude_ratio": 0.5694274484509126,
+      "fixed_local_energy_ratio": 0.11091004912098536,
+      "local_max_zxy": [
+        470,
+        121,
+        79
+      ]
+    },
+    {
+      "seed": 9,
+      "fixed_target_amplitude_ratio": 0.26836613840964707,
+      "local_max_amplitude_ratio": 0.6037721014534196,
+      "fixed_local_energy_ratio": 0.15806355270998929,
+      "local_max_zxy": [
+        470,
+        122,
+        69
+      ]
+    },
+    {
+      "seed": 10,
+      "fixed_target_amplitude_ratio": 0.2649527841389763,
+      "local_max_amplitude_ratio": 0.4975645173137028,
+      "fixed_local_energy_ratio": 0.19901469121858725,
+      "local_max_zxy": [
+        459,
+        139,
+        90
+      ]
+    },
+    {
+      "seed": 11,
+      "fixed_target_amplitude_ratio": 0.07815071858203876,
+      "local_max_amplitude_ratio": 0.6199069128970863,
+      "fixed_local_energy_ratio": 0.11055606763563547,
+      "local_max_zxy": [
+        470,
+        122,
+        72
+      ]
+    }
+  ],
+  "phase_scramble_medians": {
+    "fixed_target_amplitude_ratio": 0.20516132146727997,
+    "local_max_amplitude_ratio": 0.6069687520631732,
+    "fixed_local_energy_ratio": 0.17092765005846483
+  },
+  "acceptance": "Phase preservation is supported only if fixed-target amplitude and local energy decrease materially under phase scrambling; FWHM alone is not used.",
+  "limitations": [
+    "finite asymmetric crop truncates part of the defocused field",
+    "ISAM Python implementation is equation-matched but not byte-identical MATLAB spline execution"
+  ]
+}
