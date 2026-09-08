@@ -1,0 +1,53 @@
+name: exact-official-strip-miaa-isam
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/run_exact_strip.m"
+      - "scripts/analyze_exact_strip.py"
+      - ".github/workflows/exact-strip-isam.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  strip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Install runtimes
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends octave octave-signal
+          python -m pip install numpy scipy matplotlib
+      - name: Download verified public input and exact functions
+        run: |
+          set -euo pipefail; mkdir -p .cache/upstream reports/exact_strip
+          curl -fL --retry 6 --retry-all-errors -o .cache/input.mat "https://zenodo.org/records/7870795/files/input_TiO2gelatin_004_phasecorrected.mat?download=1"
+          echo "d905784f950a6fadfce71e9efc6d2654  .cache/input.mat" | md5sum -c -
+          for spec in "fiaa_oct_c1.m 4839b0a7a57a7abe73f6644e38249cc6" "rec_fiaa_oct_c1.m 08133e8bc4e62063149474cd402990d2"; do set -- $spec; curl -fL --retry 6 --retry-all-errors -o ".cache/upstream/$1" "https://zenodo.org/records/7870795/files/$1?download=1"; echo "$2  .cache/upstream/$1" | md5sum -c -; done
+      - name: Exact recursive MIAA and 2-D ISAM
+        env:
+          DATA_FILE: ${{ github.workspace }}/.cache/input.mat
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
+          OUTPUT_MAT: ${{ github.workspace }}/reports/exact_strip/strip.mat
+        run: |
+          set -o pipefail
+          octave-cli --quiet scripts/run_exact_strip.m 2>&1 | tee reports/exact_strip/octave.log
+          python scripts/analyze_exact_strip.py reports/exact_strip/strip.mat reports/exact_strip 2>&1 | tee reports/exact_strip/analysis.log
+      - name: Commit compact evidence
+        if: always()
+        run: |
+          rm -rf .cache
+          find reports/exact_strip -type f -size +20M -delete
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/exact_strip
+          if ! git diff --cached --quiet; then git commit -m "test: record exact official strip MIAA-ISAM evidence [skip ci]"; git push origin "HEAD:${GITHUB_REF_NAME}"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: exact-official-strip-miaa-isam, path: reports/exact_strip, retention-days: 30}
