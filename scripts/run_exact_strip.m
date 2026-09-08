@@ -18,10 +18,11 @@ end
 detrC=detrend(C); FBW=ifft(detrC,K,1);
 anC=C./sk; demod=anC(ii,:)-mean(anC(ii,:),1);
 Nline=size(demod,2); maps=complex(zeros(2*K,Nline));
-[a,~,amap]=fiaa_oct_c1(demod(:,1),2*K,q_i,eta); maps(:,1)=amap; prev=a;
+[a,PE,amap]=fiaa_oct_c1(demod(:,1),2*K,q_i,eta);
+maps(:,1)=amap; previous_power=abs(a).^2; previous_eta=PE(q_i+1);
 for i=2:Nline
-  [a,~,amap]=rec_fiaa_oct_c1(demod(:,i),2*K,q_rci,eta,prev);
-  maps(:,i)=amap; prev=a;
+  [a,previous_eta,amap]=rec_fiaa_oct_c1(demod(:,i),2*K,q_rci,eta,previous_power,previous_eta);
+  maps(:,i)=amap; previous_power=abs(a).^2;
 end
 spectra_MIAA=complex(zeros(K,Nline)); shift_amount=round(Nz*((super-1)/2))+ii(1)-1;
 for i=1:Nline
