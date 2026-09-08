@@ -1,0 +1,38 @@
+name: extract-figure-coordinate-parameters
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths: [".github/workflows/figure-params.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Download verified plotting scripts and record relevant lines
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/upstream reports/source_ranges
+          curl -fL --retry 6 --retry-all-errors -o /tmp/upstream/plot_figure3.m "https://zenodo.org/records/7870795/files/plot_figure3.m?download=1"
+          echo "f0f656e160336cf796fa46996ff1c6cf  /tmp/upstream/plot_figure3.m" | md5sum -c -
+          curl -fL --retry 6 --retry-all-errors -o /tmp/upstream/plot_figure5.m "https://zenodo.org/records/7870795/files/plot_figure5.m?download=1"
+          echo "bb5ad4827fb659e3e2d6552990829d1f  /tmp/upstream/plot_figure5.m" | md5sum -c -
+          {
+            echo '# Verified plotting parameter audit'
+            for f in plot_figure3.m plot_figure5.m; do
+              echo; echo "## $f"; echo '```matlab'
+              nl -ba "/tmp/upstream/$f" | grep -Ei 'index|ind|roi|lim|arrow|ascan|scatter|zoom|methods|dBlim|focus|line' || true
+              echo '```'
+            done
+          } > reports/source_ranges/figure_parameters.md
+      - name: Commit audit
+        run: |
+          git config user.name "github-actions[bot]";git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/source_ranges/figure_parameters.md
+          if ! git diff --cached --quiet; then git commit -m "docs: record figure coordinate parameters [skip ci]";git pull --rebase origin "${GITHUB_REF_NAME}";git push origin "HEAD:${GITHUB_REF_NAME}";fi
