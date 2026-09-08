@@ -1,0 +1,121 @@
+name: official-zenodo-validation
+
+on:
+  push:
+    branches:
+      - "run/zenodo-7870795"
+    paths:
+      - "bootstrap/parts/**"
+      - ".github/workflows/official-validation.yml"
+      - "VALIDATION_REVISION"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      MPLBACKEND: Agg
+      MAX_UPSTREAM_LINES: "4"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Reconstruct audited runner bundle
+        run: |
+          set -euo pipefail
+          rm -rf work
+          mkdir -p work
+          cat bootstrap/parts/part-* | base64 --decode > /tmp/seoct_official_runner_bundle.tar.gz
+          echo "8bb9faaaaff2947bdc64e60de62047afb3f0e2f6889d26f8b5f2997df445557a  /tmp/seoct_official_runner_bundle.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/seoct_official_runner_bundle.tar.gz -C work
+          python -m compileall -q work/src work/scripts
+
+      - name: Install dependencies and run unit tests
+        working-directory: work
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+          pytest -q
+
+      - name: Download official data and run causal controls
+        id: official
+        continue-on-error: true
+        working-directory: work
+        run: |
+          set -o pipefail
+          mkdir -p reports/upstream
+          python scripts/run_zenodo_validation.py 2>&1 | tee reports/upstream/runner.log
+
+      - name: Record immutable run provenance
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p work/reports
+          python - <<'PY'
+          import json, os, pathlib, datetime
+          p = pathlib.Path('work/reports/RUN_PROVENANCE.json')
+          p.write_text(json.dumps({
+              'record_id': '7870795',
+              'dataset': 'input_TiO2gelatin_004_phasecorrected.mat',
+              'expected_md5': 'd905784f950a6fadfce71e9efc6d2654',
+              'runner_bundle_sha256': '8bb9faaaaff2947bdc64e60de62047afb3f0e2f6889d26f8b5f2997df445557a',
+              'repository': os.environ.get('GITHUB_REPOSITORY'),
+              'source_commit': os.environ.get('GITHUB_SHA'),
+              'run_id': os.environ.get('GITHUB_RUN_ID'),
+              'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
+              'official_step_outcome': '${{ steps.official.outcome }}',
+              'recorded_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'data_boundary': 'The deposited MAT volume is already phase corrected and is not a raw camera interferogram.'
+          }, indent=2), encoding='utf-8')
+          PY
+          if [ "${{ steps.official.outcome }}" != "success" ]; then
+            cat > work/reports/OFFICIAL_RUN_FAILURE.md <<EOF
+          # Official-data validation did not complete
+
+          Run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+          The public runner started and the source bundle passed its checksum and unit tests, but the official-data step failed. See `upstream/runner.log` and the Actions log. No success claim is permitted.
+          EOF
+          fi
+
+      - name: Publish small evidence only
+        if: always()
+        run: |
+          set -euo pipefail
+          rm -rf reports
+          mkdir -p reports
+          if [ -d work/reports ]; then cp -a work/reports/. reports/; fi
+          rm -rf reports/.cache work/.cache
+          find reports -type f -size +90M -delete
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record official Zenodo validation evidence [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Upload evidence artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seoct-official-validation-evidence
+          path: reports
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Enforce official-data gate
+        if: steps.official.outcome != 'success'
+        run: exit 1
