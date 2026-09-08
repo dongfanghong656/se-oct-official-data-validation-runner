@@ -25,7 +25,7 @@ jobs:
           python-version: "3.11"
       - name: Install extraction dependencies
         run: python -m pip install numpy scipy requests
-      - name: Download, verify, and extract small cited subset
+      - name: Download, verify, and extract exact-author-spectrum subset
         run: python scripts/extract_official_subset.py
       - name: Commit subset and manifest
         run: |
@@ -35,7 +35,7 @@ jobs:
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git add reports/extracts
           if ! git diff --cached --quiet; then
-            git commit -m "data: add verified public TiO2 validation subset [skip ci]"
+            git commit -m "data: refresh exact-author-spectrum TiO2 subset [skip ci]"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
       - uses: actions/upload-artifact@v4
