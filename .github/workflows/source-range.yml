@@ -34,6 +34,11 @@ jobs:
             echo
             echo 'Source: Zenodo record 7870795. Excerpts are preserved only for parameter/formula auditing.'
             echo
+            echo '## MIAA_ISAM_processing.m lines 1-39'
+            echo '```matlab'
+            nl -ba /tmp/upstream/MIAA_ISAM_processing.m | sed -n '1,39p'
+            echo '```'
+            echo
             echo '## MIAA_ISAM_processing.m lines 40-130'
             echo '```matlab'
             nl -ba /tmp/upstream/MIAA_ISAM_processing.m | sed -n '40,130p'
