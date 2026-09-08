@@ -1,8 +1,8 @@
 {
   "record": "10.5281/zenodo.7870795",
   "data_md5": "d905784f950a6fadfce71e9efc6d2654",
-  "source_commit": "821a0cd9830abae27e477999a771fa3b0c83398f",
-  "run_id": "34255953558",
-  "recorded_at_utc": "2026-09-08T17:21:09.464076+00:00",
+  "source_commit": "2f6b884cb495ece88432231d8eb3b3b074d83592",
+  "run_id": "34256719144",
+  "recorded_at_utc": "2026-09-08T17:29:09.766453+00:00",
   "boundary": "phase-corrected public volume; finite 97x97 crop"
 }
