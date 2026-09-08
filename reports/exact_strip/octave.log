@@ -1,0 +1,4 @@
+error: 'eta_in' undefined near line 15, column 6
+error: called from
+    rec_fiaa_oct_c1 at line 15 column 4
+    scripts/run_exact_strip.m at line 23 column 13
