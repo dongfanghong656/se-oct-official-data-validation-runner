@@ -23,12 +23,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p reports/source_ranges /tmp/upstream
-          curl -fL --retry 5 --retry-all-errors -o /tmp/upstream/MIAA_ISAM_processing.m "https://zenodo.org/records/7870795/files/MIAA_ISAM_processing.m?download=1"
-          echo "8b32839402ec0b45df0a8c7cd2ea170d  /tmp/upstream/MIAA_ISAM_processing.m" | md5sum -c -
-          curl -fL --retry 5 --retry-all-errors -o /tmp/upstream/rfiaa_oct_c1.m "https://zenodo.org/records/7870795/files/rfiaa_oct_c1.m?download=1"
-          echo "d5908350abe158134ebe6f9a4dce9eba  /tmp/upstream/rfiaa_oct_c1.m" | md5sum -c -
-          curl -fL --retry 5 --retry-all-errors -o /tmp/upstream/rec_fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/rec_fiaa_oct_c1.m?download=1"
-          echo "08133e8bc4e62063149474cd402990d2  /tmp/upstream/rec_fiaa_oct_c1.m" | md5sum -c -
+          fetch() {
+            local name="$1" md5="$2"
+            curl -fL --retry 5 --retry-all-errors -o "/tmp/upstream/${name}" "https://zenodo.org/records/7870795/files/${name}?download=1"
+            echo "${md5}  /tmp/upstream/${name}" | md5sum -c -
+          }
+          fetch MIAA_ISAM_processing.m 8b32839402ec0b45df0a8c7cd2ea170d
+          fetch fiaa_oct_c1.m 4839b0a7a57a7abe73f6644e38249cc6
+          fetch oct_iaa_c1.m d189d45be2e5f5ac3b797fb80e7b84e3
+          fetch rfiaa_oct_c1.m d5908350abe158134ebe6f9a4dce9eba
+          fetch rec_fiaa_oct_c1.m 08133e8bc4e62063149474cd402990d2
           {
             echo '# Verified upstream source ranges for independent implementation audit'
             echo
@@ -40,23 +44,26 @@ jobs:
               nl -ba /tmp/upstream/MIAA_ISAM_processing.m | sed -n "${range}p"
               echo '```'
             done
+            for name in fiaa_oct_c1.m oct_iaa_c1.m rfiaa_oct_c1.m; do
+              echo
+              echo "## ${name}"
+              echo '```matlab'
+              nl -ba "/tmp/upstream/${name}"
+              echo '```'
+            done
             echo
-            echo '## rfiaa_oct_c1.m'
+            echo '## rec_fiaa_oct_c1.m'
             echo '```matlab'
-            nl -ba /tmp/upstream/rfiaa_oct_c1.m
-            echo '```'
-            echo
-            echo '## rec_fiaa_oct_c1.m lines 1-120'
-            echo '```matlab'
-            nl -ba /tmp/upstream/rec_fiaa_oct_c1.m | sed -n '1,120p'
+            nl -ba /tmp/upstream/rec_fiaa_oct_c1.m
             echo '```'
           } > reports/source_ranges/algorithm_ranges.md
       - name: Commit audit excerpt
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git add reports/source_ranges
           if ! git diff --cached --quiet; then
-            git commit -m "docs: record verified upstream algorithm ranges [skip ci]"
+            git commit -m "docs: record exact FIAA source ranges [skip ci]"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
