@@ -1,9 +1,9 @@
 # Exact 3-D crop run status
 
-- install: 
-- download: 
-- octave exact FIAA/MIAA: 
-- Python 3-D ISAM analysis: 
-- run: 
+- install_outcome: `success`
+- input_outcome: `success`
+- octave_outcome: `success`
+- analysis_outcome: `success`
+- run_id: `34258082283`
 
-Evidence is accepted only when both Octave and analysis are  and  exists.
+Evidence is accepted only when Octave and analysis are `success` and `metrics.json` exists.

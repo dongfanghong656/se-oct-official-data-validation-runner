@@ -1,0 +1,141 @@
+{
+  "experiment": "exact_author_functions_then_3D_ISAM_on_97x97_offfocus_crop",
+  "input_boundary": "phase-corrected public Cscan; no raw-camera dispersion audit",
+  "crop_shape": [
+    800,
+    97,
+    97
+  ],
+  "dx_um": 0.439453125,
+  "focus_index": 360,
+  "dft_isam": {
+    "peak_zxy": [
+      709,
+      44,
+      39
+    ],
+    "peak_z_um": 560.3373696857185,
+    "fwhm_x_um": 1.0803842873330953,
+    "fwhm_y_um": 0.9969825970560884,
+    "fwhm_z_um": 7.836227842685808,
+    "local_energy_fraction": 0.07506104042072613
+  },
+  "miaa_isam": {
+    "peak_zxy": [
+      561,
+      58,
+      44
+    ],
+    "peak_z_um": 443.3699074664148,
+    "fwhm_x_um": 0.851776735436752,
+    "fwhm_y_um": 1.2737416448476937,
+    "fwhm_z_um": 1.7169080973333704,
+    "local_energy_fraction": 0.03597655685314767
+  },
+  "phase_scrambled_miaa_isam_runs": [
+    {
+      "peak_zxy": [
+        561,
+        58,
+        44
+      ],
+      "peak_z_um": 443.3699074664148,
+      "fwhm_x_um": 0.7212620079668373,
+      "fwhm_y_um": 0.8174390389949129,
+      "fwhm_z_um": 1.545047439146961,
+      "local_energy_fraction": 0.03387403885787433
+    },
+    {
+      "peak_zxy": [
+        561,
+        58,
+        44
+      ],
+      "peak_z_um": 443.3699074664148,
+      "fwhm_x_um": 0.9868984482696276,
+      "fwhm_y_um": 0.9447561235828756,
+      "fwhm_z_um": 1.5211610614215476,
+      "local_energy_fraction": 0.032098963837849
+    },
+    {
+      "peak_zxy": [
+        561,
+        58,
+        44
+      ],
+      "peak_z_um": 443.3699074664148,
+      "fwhm_x_um": 1.1787719704971376,
+      "fwhm_y_um": 0.8717679744676564,
+      "fwhm_z_um": 1.8258469449998875,
+      "local_energy_fraction": 0.03495002522785581
+    },
+    {
+      "peak_zxy": [
+        561,
+        58,
+        44
+      ],
+      "peak_z_um": 443.3699074664148,
+      "fwhm_x_um": 0.7399776082168616,
+      "fwhm_y_um": 0.6015539691166006,
+      "fwhm_z_um": 1.6855926482539763,
+      "local_energy_fraction": 0.031475213378837824
+    },
+    {
+      "peak_zxy": [
+        561,
+        58,
+        44
+      ],
+      "peak_z_um": 443.3699074664148,
+      "fwhm_x_um": 1.4936397871970597,
+      "fwhm_y_um": 2.0151466894497827,
+      "fwhm_z_um": 1.580535328399755,
+      "local_energy_fraction": 0.03195784121267424
+    },
+    {
+      "peak_zxy": [
+        561,
+        58,
+        44
+      ],
+      "peak_z_um": 443.3699074664148,
+      "fwhm_x_um": 0.6782013535597147,
+      "fwhm_y_um": 0.7421227621323964,
+      "fwhm_z_um": 1.0755450806576698,
+      "local_energy_fraction": 0.03251350161631845
+    },
+    {
+      "peak_zxy": [
+        561,
+        58,
+        44
+      ],
+      "peak_z_um": 443.3699074664148,
+      "fwhm_x_um": 1.053687326094662,
+      "fwhm_y_um": 1.0366176400103975,
+      "fwhm_z_um": 1.6630172026928722,
+      "local_energy_fraction": 0.031300715334979475
+    },
+    {
+      "peak_zxy": [
+        561,
+        58,
+        44
+      ],
+      "peak_z_um": 443.3699074664148,
+      "fwhm_x_um": 0.8963243536378541,
+      "fwhm_y_um": 1.1671726003408367,
+      "fwhm_z_um": 1.5083511447411846,
+      "local_energy_fraction": 0.03236419452238454
+    }
+  ],
+  "phase_scrambled_medians": {
+    "fwhm_x_um": 0.9416114009537409,
+    "fwhm_y_um": 0.908262049025266,
+    "fwhm_z_um": 1.562791383773358,
+    "local_energy_fraction": 0.032231579180116765
+  },
+  "acceptance_note": "MIAA phase preservation is supported only if unperturbed MIAA+ISAM yields a localized point and random per-A-line phase reduces concentration without changing individual A-line magnitudes.",
+  "crop_limitation": "Finite crop and spatial truncation prevent publication-level equivalence to the full 512x512 ISAM volume."
+}
