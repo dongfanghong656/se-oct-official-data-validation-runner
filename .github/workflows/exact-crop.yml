@@ -1,0 +1,58 @@
+name: exact-author-3d-crop-isam
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/run_exact_crop.m"
+      - "scripts/analyze_exact_crop.py"
+      - ".github/workflows/exact-crop.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Install Octave and Python dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends octave octave-signal
+          python -m pip install numpy scipy matplotlib
+      - name: Download checksum-verified public data and author functions
+        run: |
+          set -euo pipefail; mkdir -p .cache/upstream reports/exact_crop
+          curl -fL --retry 6 --retry-all-errors -o .cache/input.mat "https://zenodo.org/records/7870795/files/input_TiO2gelatin_004_phasecorrected.mat?download=1"
+          echo "d905784f950a6fadfce71e9efc6d2654  .cache/input.mat" | md5sum -c -
+          for spec in "fiaa_oct_c1.m 4839b0a7a57a7abe73f6644e38249cc6" "rec_fiaa_oct_c1.m 08133e8bc4e62063149474cd402990d2"; do
+            set -- $spec; curl -fL --retry 6 --retry-all-errors -o ".cache/upstream/$1" "https://zenodo.org/records/7870795/files/$1?download=1"; echo "$2  .cache/upstream/$1" | md5sum -c -
+          done
+      - name: Run exact FIAA/RFIAA/MIAA crop
+        env:
+          DATA_FILE: ${{ github.workspace }}/.cache/input.mat
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
+          OUTPUT_MAT: ${{ github.workspace }}/reports/exact_crop/crop.mat
+        run: octave-cli --quiet scripts/run_exact_crop.m 2>&1 | tee reports/exact_crop/octave.log
+      - name: Run 3-D ISAM and phase causal controls
+        run: python scripts/analyze_exact_crop.py reports/exact_crop/crop.mat reports/exact_crop 2>&1 | tee reports/exact_crop/analysis.log
+      - name: Record provenance and publish compact evidence
+        if: always()
+        run: |
+          rm -rf .cache
+          python - <<'PY'
+          import json,os,pathlib,datetime
+          pathlib.Path('reports/exact_crop/provenance.json').write_text(json.dumps({'record':'10.5281/zenodo.7870795','data_md5':'d905784f950a6fadfce71e9efc6d2654','source_commit':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'boundary':'phase-corrected public volume; finite 97x97 crop'},indent=2))
+          PY
+          rm -f reports/exact_crop/crop.mat
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/exact_crop
+          if ! git diff --cached --quiet; then git commit -m "test: record exact 3-D crop MIAA-ISAM evidence [skip ci]"; git push origin "HEAD:${GITHUB_REF_NAME}"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: exact-3d-crop-isam, path: reports/exact_crop, retention-days: 30}
