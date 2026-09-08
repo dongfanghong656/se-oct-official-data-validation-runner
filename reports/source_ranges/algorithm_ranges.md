@@ -2,6 +2,49 @@
 
 Source: Zenodo record 7870795. Excerpts are preserved only for parameter/formula auditing.
 
+## MIAA_ISAM_processing.m lines 1-39
+```matlab
+     1	%% Cscan_reconstruction.m
+     2	% This script does RFIAA, MIAA and ISAM processing 
+     3	% if saving data, datasavefolder needs to be created
+     4	% 
+     5	clear all
+     6	close all
+     7	%% choosing the datasets, the upsampling factor (super) and whether to save data after processing
+     8	super=4; % super-resolution factor >=2, choose a power of 2. (M/N)
+     9	save_complexdata = 0; % whether to save complex data to apply CAO afterwards (only for ISAM data) 0=no, 1=yes
+    10	save_magnitudedata = 0; %whether to save magnitude data (in this way the input data for the point scatteres fitting is saved)
+    11	
+    12	datasetno = 3; %TiO2 particles in gelatin sample, for figure 3 
+    13	% datasetno = 2; %plant leaf sample for figure 5
+    14	% datasetno = 3; % simulation data, used for analysis in figure 4 (but not to plot fig 4)
+    15	if datasetno == 1
+    16	    load('input_TiO2gelatin_004_phasecorrected.mat','Cscan','sk') %sk is the source spectrum
+    17	    % sk = mean(mean(abs(iRawDatas),3),2); %alternative way to obtain sk
+    18	    iRawDatas = fft(Cscan,[],1);
+    19	    iRawDatas = flip(iRawDatas,1);
+    20	    sk = flip(sk);
+    21	    lateral_apodization_nonISAM = 0;
+    22	    datasavefolder = 'data/exp_pointscat/';
+    23	    zf_index_IAA = 90*super; % focus depth index 
+    24	
+    25	    
+    26	elseif datasetno == 2
+    27	    load('input_leafdisc_phasecorrected.mat','Cscan','sk') %sk is the source spectrum
+    28	    % sk = mean(mean(abs(iRawDatas),3),2); %alternative way to obtain sk
+    29	    iRawDatas = fft(Cscan,[],1);
+    30	    iRawDatas = flip(iRawDatas,1);
+    31	%     sk = flip(sk);
+    32	    lateral_apodization_nonISAM = 0;
+    33	    datasavefolder = 'data/exp_leaf/';
+    34	    zf_index_IAA = 62*super; % focus depth index 
+    35	
+    36	elseif datasetno == 3
+    37	    load('input_simulations_pointscatters_SLDshape_98zf_noise75.mat','Cscan','sk')
+    38	    iRawDatas = fft(Cscan,[],1);
+    39	    lateral_apodization_nonISAM = 1;
+```
+
 ## MIAA_ISAM_processing.m lines 40-130
 ```matlab
     40	    datasavefolder = 'data/simu_pointscat/';
