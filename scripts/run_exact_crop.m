@@ -1,5 +1,5 @@
-% Exact deposited FIAA/RFIAA/MIAA functions on a 97x97 crop around an off-focus TiO2 point.
-% Input is the authors' phase-corrected complex C-scan, not raw camera spectra.
+% Exact deposited FIAA/RFIAA/MIAA functions on a reusable 97x97 TiO2 crop.
+% Input is the authors' phase-corrected complex C-scan crop, not raw camera spectra.
 pkg load signal;
 
 data_file = getenv('DATA_FILE');
@@ -8,15 +8,22 @@ out_file = getenv('OUTPUT_MAT');
 if isempty(data_file) || isempty(code_dir), error('DATA_FILE and UPSTREAM_CODE_DIR required'); end
 if isempty(out_file), out_file = 'reports/exact_crop/crop.mat'; end
 addpath(code_dir);
-load(data_file, 'Cscan', 'sk');
+loaded = load(data_file);
+if isfield(loaded,'Ccrop')
+  Ccrop = loaded.Ccrop;
+elseif isfield(loaded,'Cscan')
+  Cscan = loaded.Cscan;
+  y_center0 = 232; x_center0 = 210; half = 48;
+  Ccrop = Cscan(:,y_center0-half+1:y_center0+half+1,x_center0-half+1:x_center0+half+1);
+else
+  error('Input has neither Ccrop nor Cscan');
+end
+if ~isfield(loaded,'sk'), error('Input has no sk'); end
+sk = loaded.sk;
 
-Nz = size(Cscan,1); super = 4; K = Nz*super; q_i = 10; q_rci = 2; eta_weight = 1.0;
-y_center0 = 232; x_center0 = 210; half = 48;
-y_center = y_center0 + 1; x_center = x_center0 + 1;
-ys = (y_center-half):(y_center+half);
-xs = (x_center-half):(x_center+half);
-Ccrop = Cscan(:,ys,xs);
+Nz = size(Ccrop,1); super = 4; K = Nz*super; q_i = 10; q_rci = 2; eta_weight = 1.0;
 [~,Nx,Ny] = size(Ccrop);
+if Nx ~= 97 || Ny ~= 97, error('Expected 97x97 crop, got %dx%d',Nx,Ny); end
 
 iRaw = flip(fft(Ccrop,[],1),1);
 sk = flip(sk(:));
@@ -59,5 +66,5 @@ for jy = 1:Ny
   if mod(jy,10)==0, fprintf('processed y=%d/%d\n',jy,Ny); end
 end
 
-save('-mat7-binary',out_file,'FBW','spectra_MIAA','sk','ii','xs','ys','x_center0','y_center0','half','Nz','K','super','shift_amount');
+save('-mat7-binary',out_file,'FBW','spectra_MIAA','sk','ii','Nz','Nx','Ny','K','super','shift_amount');
 fprintf('EXACT_CROP_OK shape=%dx%dx%d ii=%d:%d output=%s\n',K,Nx,Ny,ii(1),ii(end),out_file);
