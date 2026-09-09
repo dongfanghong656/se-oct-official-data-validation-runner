@@ -1,0 +1,54 @@
+name: exact-author-two-target-audit
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/run_exact_two_point.m"
+      - "scripts/analyze_exact_two_point.py"
+      - ".github/workflows/exact-two-point.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Install runtime
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends octave octave-signal
+          python -m pip install numpy scipy pandas matplotlib
+      - name: Download and verify deposited FIAA
+        run: |
+          mkdir -p .cache reports/exact_two_point
+          curl -fL --retry 9 --retry-all-errors -o .cache/fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/fiaa_oct_c1.m?download=1"
+          echo "4839b0a7a57a7abe73f6644e38249cc6  .cache/fiaa_oct_c1.m" | md5sum -c -
+      - name: Execute exact-author causal audit
+        env:
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache
+          OUTPUT_MAT: ${{ github.workspace }}/reports/exact_two_point/source.mat
+        run: |
+          set -o pipefail
+          octave-cli --quiet scripts/run_exact_two_point.m 2>&1 | tee reports/exact_two_point/octave.log
+          python scripts/analyze_exact_two_point.py reports/exact_two_point/source.mat reports/exact_two_point 2>&1 | tee reports/exact_two_point/analysis.log
+      - name: Validate evidence fail-closed
+        run: |
+          python scripts/validate_evidence_bundle.py --metrics reports/exact_two_point/metrics.json --output reports/exact_two_point/EVIDENCE_STATUS.json --required-key status --required-key summary --required-key additivity --required-key decisions
+      - name: Commit verified compact evidence
+        run: |
+          rm -rf .cache
+          rm -f reports/exact_two_point/source.mat
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/exact_two_point
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record verified exact-author two-target evidence [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
