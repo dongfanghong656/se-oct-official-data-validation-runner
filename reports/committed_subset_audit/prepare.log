@@ -1,0 +1,13 @@
+{
+  "output": "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/reports/committed_subset_audit/subset.mat",
+  "x_strip_shape": [
+    200,
+    129
+  ],
+  "z_lines_shape": [
+    200,
+    4
+  ],
+  "author_sk_text_sha256": "e7effa4525cc3c30f2d2496bd7d249c8911c474b4c8133512ef3cd9b3db0bcdb",
+  "boundary": "phase-corrected public subset; not raw camera data"
+}
