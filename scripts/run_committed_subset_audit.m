@@ -12,7 +12,7 @@ if isempty(out_dir)
   out_dir = 'reports/committed_subset_audit';
 end
 addpath(code_dir);
-addpath(fileparts(mfilename('fullpath')));
+addpath(fullfile(pwd, 'scripts')); % script execution keeps pwd at repository root
 load(subset_file, 'x_strip', 'z_lines', 'sk', 'x_strip_y_zero_based', ...
   'x_strip_x_start_zero_based', 'coordinates_yx_zero_based');
 
