@@ -77,7 +77,13 @@ def main():
   sig=float(phase_rms_from_one_way_opl(nm/1000,lam));row={'one_way_opl_rms_nm':nm,'phase_rms_rad':sig,'analytic_intensity':float(gaussian_phase_coherence(sig)[1])};row.update({k+'_median':float(np.median([t[k] for t in trials])) for k in trials[0]});opl.append(row)
  limits=[{'target_intensity':t,'one_way_opl_rms_nm':1000*opl_rms_for_intensity_coherence(t,lam)} for t in [.99,.95,.9,.8,.5,.1]]
  report={'schema':'phase-isam-mechanism-v2','status':'VERIFIED_CONTROLLED_EXECUTION','baseline':baseline,'phase_rms_sweep':ph,'opl_sweep':opl,'coherence_limits':limits,'full_iaa_miaa_equivariance':equivariance(),'exact_author_dispersion':exact_dispersion(args.exact_alines),'geometry':{'k0_um_inv':k0,'measured_on_axis_kz_width_um_inv':2*bk,'expanded_on_axis_kz_width_um_inv':2*bp,'qmax_um_inv':4.,'ewald_downshift_um_inv':float(2*k0-ewald_kz(k0,4.))},'decisions':{'miaa_corrects_inter_aline_phase':False,'miaa_expands_lateral_q_support':False,'large_3d_gain_is_single_isam_gain':False},'boundary':'Author input is already phase corrected. Uncorrected behavior is causal re-injection and exact-model analysis, not raw-camera replay.'}
- (args.output/'metrics.json').write_text(json.dumps(report,indent=2))
+ def sanitize(value):
+  if isinstance(value,dict):return {k:sanitize(v) for k,v in value.items()}
+  if isinstance(value,list):return [sanitize(v) for v in value]
+  if isinstance(value,float) and not np.isfinite(value):return None
+  return value
+ report=sanitize(report)
+ (args.output/'metrics.json').write_text(json.dumps(report,indent=2,allow_nan=False))
  plt.figure(figsize=(8,5));plt.plot([r['phase_rms_rad'] for r in ph],[r['target_amplitude_ratio_median']**2 for r in ph],marker='o',label='simulation');plt.plot([r['phase_rms_rad'] for r in ph],[r['analytic_finite_N_intensity'] for r in ph],marker='o',label='analytic');plt.xlabel('inter-A-line phase RMS (rad)');plt.ylabel('coherent peak intensity ratio');plt.legend();plt.tight_layout();plt.savefig(args.output/'phase_collapse.png',dpi=180);plt.close()
  plt.figure(figsize=(8,5));
  for name,im in [('narrow conventional',conventional),('narrow ISAM',nisam),('MIAA+ISAM',misam),('expanded oracle',oracle)]:
