@@ -10,6 +10,7 @@ on:
       - "tests/test_uncertainty_scalable.py"
       - "tests/test_uncertainty_propagation.py"
       - "tests/test_identifiability.py"
+      - "tests/test_phase_snr.py"
       - "scripts/run_uncertainty_audit.py"
       - "docs/UNCERTAINTY_AWARE_MIAA_SPEC.md"
       - ".github/workflows/uncertainty-aware-miaa.yml"
@@ -31,7 +32,7 @@ jobs:
         run: python -m pip install numpy scipy matplotlib pytest
       - name: Unit tests
         env: {PYTHONPATH: src}
-        run: pytest tests/test_conditional_miaa.py tests/test_uncertainty_ensemble.py tests/test_uncertainty_scalable.py tests/test_uncertainty_propagation.py tests/test_identifiability.py -q | tee reports_uncertainty_pytest.log
+        run: pytest tests/test_conditional_miaa.py tests/test_uncertainty_ensemble.py tests/test_uncertainty_scalable.py tests/test_uncertainty_propagation.py tests/test_identifiability.py tests/test_phase_snr.py -q | tee reports_uncertainty_pytest.log
       - name: Run uncertainty audit
         env: {PYTHONPATH: src}
         run: python scripts/run_uncertainty_audit.py | tee reports_uncertainty_run.log
