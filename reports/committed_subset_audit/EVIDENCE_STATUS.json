@@ -1,0 +1,40 @@
+{
+  "schema": "scientific-evidence-gate-v2",
+  "status": "VERIFIED",
+  "metrics_path": "reports/committed_subset_audit/metrics.json",
+  "metrics_sha256": "49659d080bff1b476fcb2695b5d570936dac93aff2fcff540a4a4b9a894827fb",
+  "metrics_size": 334220,
+  "required_keys": [
+    "schema_version",
+    "order_audit.configuration.mapping",
+    "order_audit.pair_summary",
+    "superfactor_audit.support_selection_diagnostic.candidates",
+    "superfactor_audit.summary"
+  ],
+  "required_files": [
+    {
+      "path": "reports/committed_subset_audit/order_holdout_per_line.csv",
+      "exists": true,
+      "size": 738249,
+      "sha256": "9cd9c0931d5a2862061e9965aa46668abfe765e702b6a174a04f7ef5d801585d",
+      "data_rows": 1920
+    },
+    {
+      "path": "reports/committed_subset_audit/order_pair_per_line.csv",
+      "exists": true,
+      "size": 199258,
+      "sha256": "1ee0353c6d87c5ce6c55d659f22dc13e50a3b54b709fce6a5b6ad6d934e38326",
+      "data_rows": 1440
+    },
+    {
+      "path": "reports/committed_subset_audit/superfactor_per_line.csv",
+      "exists": true,
+      "size": 171542,
+      "sha256": "f30065bf51f7362095082a0966248386ed1fd29783742ee4e933c9989d497bd7",
+      "data_rows": 296
+    }
+  ],
+  "failures": [],
+  "checked_at_utc": "2026-09-09T07:20:33.069514+00:00",
+  "rule": "A commit name, workflow trigger, provenance-only file, or successful producer command without parseable metrics is not execution evidence."
+}

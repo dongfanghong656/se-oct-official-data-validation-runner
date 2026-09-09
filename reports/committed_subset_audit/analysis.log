@@ -1,10 +1,65 @@
-Traceback (most recent call last):
-  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/analyze_committed_subset_audit.py", line 494, in <module>
-    main()
-  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/analyze_committed_subset_audit.py", line 474, in main
-    super_result, super_frame = analyze_superfactor(Path(sys.argv[2]))
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/analyze_committed_subset_audit.py", line 392, in analyze_superfactor
-    scale = complex_scale(target[ii, line], block[ii, line])
-                                            ~~~~~^^^^^^^^^^
-IndexError: index 147 is out of bounds for axis 0 with size 147
+{
+  "order_mapping": {
+    "orientation": "reverse",
+    "offset_zero_based": 453,
+    "train_nmse_median": 5.45972662699687e-05,
+    "train_nmse_p90": 9.119006816964159e-05,
+    "valid_reference_bins": 200,
+    "input_bins_all_valid": true,
+    "runner_up_median": 0.40735214086401084,
+    "selection_basis": "input bins only, jointly across lines",
+    "author_formula_expectation": {
+      "orientation": "reverse",
+      "start_zero_based": 453,
+      "shift_amount_matlab": 323
+    },
+    "matches_author_formula": true
+  },
+  "support_selection": {
+    "evaluation_region": "common_heldout_source_ge_5pct",
+    "candidates": [
+      {
+        "super": 2,
+        "n_common_bins": 7,
+        "source_restored_nmse_median": 0.006137153930421502,
+        "signal_source_weighted_nmse_median": 0.005910164348729582,
+        "fixed_taper_fwhm_median_um": 3.5060257030329796
+      },
+      {
+        "super": 3,
+        "n_common_bins": 7,
+        "source_restored_nmse_median": 0.004835720709324157,
+        "signal_source_weighted_nmse_median": 0.004735357820558129,
+        "fixed_taper_fwhm_median_um": 2.1893896614926147
+      },
+      {
+        "super": 4,
+        "n_common_bins": 7,
+        "source_restored_nmse_median": 0.004847590121478927,
+        "signal_source_weighted_nmse_median": 0.004746716011611534,
+        "fixed_taper_fwhm_median_um": 1.3229136984435121
+      },
+      {
+        "super": 6,
+        "n_common_bins": 7,
+        "source_restored_nmse_median": 0.00485556219676903,
+        "signal_source_weighted_nmse_median": 0.004754193462600241,
+        "fixed_taper_fwhm_median_um": 1.152130590033393
+      },
+      {
+        "super": 8,
+        "n_common_bins": 7,
+        "source_restored_nmse_median": 0.004860220733893397,
+        "signal_source_weighted_nmse_median": 0.004758553543730604,
+        "fixed_taper_fwhm_median_um": 1.0103270255544519
+      }
+    ],
+    "best_super_source_restored": 3,
+    "best_super_signal_source_weighted": 3,
+    "relative_margin_source_restored": 0.0024545280565695755,
+    "relative_margin_signal_weighted": 0.0023985919298631837,
+    "super4_selected_by_both": false,
+    "super4_uniquely_selected_by_5pct_rule": false,
+    "scientific_status": "INTERNAL_SUPPORT_DIAGNOSTIC_ONLY"
+  }
+}

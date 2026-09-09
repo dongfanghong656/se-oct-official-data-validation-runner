@@ -6,14 +6,15 @@
   "rec_fiaa_md5": "08133e8bc4e62063149474cd402990d2",
   "rfiaa_md5": "d5908350abe158134ebe6f9a4dce9eba",
   "oct_iaa_md5": "d189d45be2e5f5ac3b797fb80e7b84e3",
-  "source_commit": "9e730a52ad7117821c449aa0cf928ce23c495e47",
-  "run_id": "34315666386",
+  "source_commit": "ff7f2cf17c9119f550370518fcbff6b8d54bac72",
+  "run_id": "34323084877",
   "outcomes": {
     "install": "success",
     "prepare": "success",
     "download": "success",
-    "execute": "failure"
+    "execute": "success",
+    "evidence_gate": "success"
   },
-  "recorded_at_utc": "2026-09-09T05:39:21.485676+00:00",
+  "recorded_at_utc": "2026-09-09T07:20:33.117505+00:00",
   "boundary": "Committed phase-corrected TiO2 subset; no raw-camera preprocessing audit and no independent wider-band truth."
 }
