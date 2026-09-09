@@ -4,7 +4,10 @@ on:
   push:
     branches: ["run/zenodo-7870795"]
     paths:
-      - "bootstrap/committed_subset_fix_bundle.b64"
+      - "scripts/run_committed_subset_audit.m"
+      - "scripts/recursive_maps_committed.m"
+      - "scripts/maps_to_spectra_committed.m"
+      - "scripts/analyze_committed_subset_audit.py"
       - ".github/workflows/committed-subset-audit.yml"
   workflow_dispatch:
 
@@ -19,13 +22,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Decode and verify fixed audit source bundle
-        run: |
-          set -euo pipefail
-          base64 --decode bootstrap/committed_subset_fix_bundle.b64 > /tmp/committed_subset_fix_bundle.tar.gz
-          echo "cc4d17b96cc034d92e81e70f647dae45cf61d84306fa2cca9dafeaa5dd134d12  /tmp/committed_subset_fix_bundle.tar.gz" | sha256sum -c -
-          tar -xzf /tmp/committed_subset_fix_bundle.tar.gz
 
       - name: Install runtime and static-check analysis
         id: install
@@ -107,7 +103,6 @@ jobs:
               "record": "10.5281/zenodo.7870795",
               "subset_sha256": hashlib.sha256(subset.read_bytes()).hexdigest() if subset.exists() else None,
               "author_sk_text_sha256": hashlib.sha256(sk.read_bytes()).hexdigest() if sk.exists() else None,
-              "source_bundle_sha256": "cc4d17b96cc034d92e81e70f647dae45cf61d84306fa2cca9dafeaa5dd134d12",
               "fiaa_md5": "4839b0a7a57a7abe73f6644e38249cc6",
               "rec_fiaa_md5": "08133e8bc4e62063149474cd402990d2",
               "rfiaa_md5": "d5908350abe158134ebe6f9a4dce9eba",
@@ -135,11 +130,7 @@ jobs:
                 reports/committed_subset_audit/superfactor.mat
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/run_committed_subset_audit.m \
-                  scripts/recursive_maps_committed.m \
-                  scripts/maps_to_spectra_committed.m \
-                  scripts/analyze_committed_subset_audit.py \
-                  reports/committed_subset_audit
+          git add reports/committed_subset_audit
           if ! git diff --cached --quiet; then
             git commit -m "test: record exact committed-subset traversal and support audit [skip ci]"
           fi
