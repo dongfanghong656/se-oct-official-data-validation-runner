@@ -1,0 +1,17 @@
+{
+  "schema": "scientific-evidence-gate-v2",
+  "status": "VERIFIED",
+  "metrics_path": "reports/uncertainty_audit/uncertainty_audit_metrics.json",
+  "metrics_sha256": "28ae23095718b940e5b428165550eeb6f53574eb18c1714229251d9f3b9a8182",
+  "metrics_size": 1196,
+  "required_keys": [
+    "status",
+    "missing_band_metrics",
+    "posterior_variance_calibration",
+    "profile_metrics"
+  ],
+  "required_files": [],
+  "failures": [],
+  "checked_at_utc": "2026-09-09T08:02:40.328801+00:00",
+  "rule": "A commit name, workflow trigger, provenance-only file, or successful producer command without parseable metrics is not execution evidence."
+}

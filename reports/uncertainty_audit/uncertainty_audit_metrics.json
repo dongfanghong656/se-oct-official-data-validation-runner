@@ -1,0 +1,29 @@
+{
+  "schema": "uncertainty-aware-miaa-audit-v1",
+  "status": "VERIFIED_SYNTHETIC",
+  "missing_band_metrics": {
+    "point_estimate_complex_correlation": 0.9999920413265099,
+    "uncertainty_weighted_complex_correlation": 0.9999920413265099,
+    "median_predictability": 0.999974536527572,
+    "minimum_predictability": 0.9999740283704425,
+    "maximum_predictability": 0.9999748908864703,
+    "fraction_predictability_ge_0_5": 1.0,
+    "condition_number": 128214.27653789146,
+    "jitter_used": 1.3929634068694398e-12
+  },
+  "posterior_variance_calibration": {
+    "trials": 300,
+    "median_empirical_mse_over_reported_variance": 1.059873414821173,
+    "q10_empirical_mse_over_reported_variance": 0.9385761240095724,
+    "q90_empirical_mse_over_reported_variance": 1.1283624487495376
+  },
+  "profile_metrics": {
+    "note": "Profile-width and false-peak acceptance remain separate registered audits."
+  },
+  "decisions": {
+    "posterior_uncertainty_should_be_reported": true,
+    "confidence_weighting_replaces_physical_validation": false,
+    "heteroscedastic_noise_should_be_modelled": true
+  },
+  "boundary": "Known-power synthetic Gaussian audit; model/power uncertainty is not included."
+}

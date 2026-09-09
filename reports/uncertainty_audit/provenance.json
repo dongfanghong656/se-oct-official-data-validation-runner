@@ -1,0 +1,7 @@
+{
+  "source_commit": "16f24d04cdb6a66322318f78afd08d93b623bae1",
+  "run_id": "34326947896",
+  "recorded_at_utc": "2026-09-09T08:02:40.371156+00:00",
+  "status": "VERIFIED_SYNTHETIC",
+  "boundary": "Known-power synthetic Gaussian audit; not physical wideband validation."
+}
