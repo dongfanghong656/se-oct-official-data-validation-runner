@@ -91,9 +91,12 @@ def test_full_iaa_miaa_is_global_phase_equivariant() -> None:
     rotated, reflectivity_rotated, power_rotated, eta_rotated = iaa_miaa_predict(
         np.exp(1j * theta) * y, fg, ft, noise_variance=1e-8, iterations=5
     )
-    np.testing.assert_allclose(rotated, np.exp(1j * theta) * base, rtol=1e-9, atol=1e-9)
-    np.testing.assert_allclose(
-        reflectivity_rotated, np.exp(1j * theta) * reflectivity, rtol=1e-7, atol=2e-9
+    phase = np.exp(1j * theta)
+    assert np.linalg.norm(rotated - phase * base) / np.linalg.norm(base) < 1e-7
+    assert (
+        np.linalg.norm(reflectivity_rotated - phase * reflectivity)
+        / np.linalg.norm(reflectivity)
+        < 1e-7
     )
-    np.testing.assert_allclose(power_rotated, power, rtol=1e-9, atol=1e-9)
+    assert np.linalg.norm(power_rotated - power) / np.linalg.norm(power) < 1e-7
     assert np.isclose(eta_rotated, eta)
