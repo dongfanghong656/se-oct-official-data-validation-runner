@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/analyze_committed_subset_audit.py", line 494, in <module>
+    main()
+  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/analyze_committed_subset_audit.py", line 474, in main
+    super_result, super_frame = analyze_superfactor(Path(sys.argv[2]))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/analyze_committed_subset_audit.py", line 392, in analyze_superfactor
+    scale = complex_scale(target[ii, line], block[ii, line])
+                                            ~~~~~^^^^^^^^^^
+IndexError: index 147 is out of bounds for axis 0 with size 147

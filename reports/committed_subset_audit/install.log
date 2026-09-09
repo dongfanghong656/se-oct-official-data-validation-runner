@@ -70,7 +70,7 @@ The following NEW packages will be installed:
   libxcb-xinerama0 libxcb-xinput0 libxcb-xkb1 libxkbcommon-x11-0 libxnvctrl0
   mpi-default-bin ocl-icd-libopencl1 octave octave-common octave-control
   octave-signal openmpi-bin openmpi-common
-0 upgraded, 123 newly installed, 0 to remove and 45 not upgraded.
+0 upgraded, 123 newly installed, 0 to remove and 3 not upgraded.
 Need to get 96.1 MB of archives.
 After this operation, 332 MB of additional disk space will be used.
 Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
@@ -197,9 +197,9 @@ Get:121 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 octave-commo
 Get:122 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 octave amd64 8.4.0-1build5 [9967 kB]
 Get:123 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 octave-control amd64 4.0.1-1ubuntu1 [320 kB]
 Get:124 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 octave-signal amd64 1.4.5-2 [761 kB]
-Fetched 96.1 MB in 3s (33.7 MB/s)
+Fetched 96.1 MB in 2s (56.7 MB/s)
 Selecting previously unselected package libaec0:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 201676 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 201818 files and directories currently installed.)
 Preparing to unpack .../000-libaec0_1.1.2-1build1_amd64.deb ...
 Unpacking libaec0:amd64 (1.1.2-1build1) ...
 Selecting previously unselected package libamd-comgr2:amd64.
@@ -718,16 +718,16 @@ Collecting numpy
   Downloading numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
 Collecting scipy
   Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.4/62.4 kB 7.0 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.4/62.4 kB 5.6 MB/s eta 0:00:00
 Collecting pandas
   Downloading pandas-3.0.5-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.5/79.5 kB 681.3 kB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.5/79.5 kB 28.0 MB/s eta 0:00:00
 Requirement already satisfied: python-dateutil>=2.8.2 in /usr/lib/python3/dist-packages (from pandas) (2.8.2)
 Downloading numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 129.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 183.8 MB/s eta 0:00:00
 Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 107.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 134.6 MB/s eta 0:00:00
 Downloading pandas-3.0.5-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (11.0 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.0/11.0 MB 149.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.0/11.0 MB 200.8 MB/s eta 0:00:00
 Installing collected packages: numpy, scipy, pandas
 Successfully installed numpy-2.5.3 pandas-3.0.5 scipy-1.18.1
