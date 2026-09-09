@@ -1,0 +1,103 @@
+name: preprocessing-and-demodulated-noise-audit
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "src/seoct_uncertainty/preprocessing.py"
+      - "src/seoct_uncertainty/__init__.py"
+      - "tests/test_preprocessing.py"
+      - "scripts/preprocessing_noise_audit.py"
+      - "scripts/validate_evidence_bundle.py"
+      - ".github/workflows/preprocessing-noise-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: ${{ github.workspace }}/src
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install audit dependencies
+        run: python -m pip install numpy scipy matplotlib pytest
+      - name: Run preprocessing unit tests
+        run: |
+          mkdir -p reports/preprocessing_noise_audit
+          python -m pytest -q 2>&1 | tee reports/preprocessing_noise_audit/pytest.log
+      - name: Run official compact-input audit
+        run: |
+          set -o pipefail
+          python scripts/preprocessing_noise_audit.py \
+            --subset reports/extracts/official_tio2_selected_subset.npz \
+            --exact reports/exact/author_exact_alines.mat \
+            --output reports/preprocessing_noise_audit \
+            --execution-status VERIFIED_GITHUB_HOSTED_CONTROLLED_EXECUTION \
+            2>&1 | tee reports/preprocessing_noise_audit/runner.log
+      - name: Record provenance
+        run: |
+          python - <<'PY'
+          import datetime, hashlib, json, os
+          from pathlib import Path
+          def sha256(path):
+              h=hashlib.sha256()
+              with Path(path).open('rb') as f:
+                  for block in iter(lambda:f.read(1<<20),b''):h.update(block)
+              return h.hexdigest()
+          out=Path('reports/preprocessing_noise_audit/provenance.json')
+          out.write_text(json.dumps({
+            'schema':'seoct-preprocessing-noise-provenance-v1',
+            'execution_environment':'GitHub-hosted ubuntu-latest',
+            'repository':os.environ.get('GITHUB_REPOSITORY'),
+            'source_commit':os.environ.get('GITHUB_SHA'),
+            'run_id':os.environ.get('GITHUB_RUN_ID'),
+            'run_attempt':os.environ.get('GITHUB_RUN_ATTEMPT'),
+            'subset_sha256':sha256('reports/extracts/official_tio2_selected_subset.npz'),
+            'exact_alines_sha256':sha256('reports/exact/author_exact_alines.mat'),
+            'upstream_record':'10.5281/zenodo.7870795',
+            'boundary':'Compact inputs derive from the already phase-corrected public C-scan; no raw-camera k-linearization, dispersion or coverslip phase audit.',
+            'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()
+          },indent=2),encoding='utf-8')
+          PY
+      - name: Enforce fail-closed evidence gate
+        run: |
+          python scripts/validate_evidence_bundle.py \
+            --metrics reports/preprocessing_noise_audit/metrics.json \
+            --output reports/preprocessing_noise_audit/EVIDENCE_STATUS.json \
+            --required-key status \
+            --required-key background_subtraction.decision \
+            --required-key noise_covariance.scalar_relative_frobenius_mismatch \
+            --required-key conditional_sensitivity.medians \
+            --required-key oracle_snr_sweep.aggregate \
+            --required-file reports/preprocessing_noise_audit/runner.log \
+            --required-file reports/preprocessing_noise_audit/pytest.log \
+            --required-file reports/preprocessing_noise_audit/provenance.json \
+            --required-file reports/preprocessing_noise_audit/variance_profile.png \
+            --required-file reports/preprocessing_noise_audit/noise_model_snr_sweep.png
+      - name: Commit compact evidence
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/preprocessing_noise_audit
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record preprocessing and demodulated-noise audit [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: preprocessing-and-demodulated-noise-audit
+          path: reports/preprocessing_noise_audit
+          retention-days: 30
