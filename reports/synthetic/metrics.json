@@ -1,0 +1,171 @@
+{
+  "experiment": "synthetic_known_ground_truth",
+  "seed": 7,
+  "configuration": {
+    "depth_grid_length": 512,
+    "full_spectral_length": 256,
+    "measured_length": 72,
+    "snr_db": 32.0,
+    "truth_positions_bins": [
+      205.0,
+      211.0,
+      318.0
+    ],
+    "injected_quadratic_phase_rad_at_normalized_edge": 30.0
+  },
+  "dispersion_optimizer": {
+    "injected_coefficient": 30.0,
+    "estimated_coefficient": 29.73338985865393,
+    "objective": 3.0190534309238166
+  },
+  "method_metrics": {
+    "wideband_truth": {
+      "fwhm_bins": 1.75232149146035,
+      "pslr_db": 2.879056407281813,
+      "islr_db": 3.73388016574864,
+      "localization_rmse_bins": 0.0,
+      "true_positives": 3,
+      "false_positives": 0,
+      "missed": 0
+    },
+    "narrow_dft": {
+      "fwhm_bins": 8.146711385302808,
+      "pslr_db": 6.286867259960641,
+      "islr_db": 6.787052547147308,
+      "localization_rmse_bins": 2.0,
+      "true_positives": 1,
+      "false_positives": 0,
+      "missed": 2
+    },
+    "iaa_reflectivity": {
+      "fwhm_bins": 1.0002667135772185,
+      "pslr_db": 2.7665186930243717,
+      "islr_db": 1.853144688495253,
+      "localization_rmse_bins": 0.0,
+      "true_positives": 2,
+      "false_positives": 0,
+      "missed": 1
+    },
+    "miaa": {
+      "fwhm_bins": 1.7530749408716986,
+      "pslr_db": 2.7916268882092905,
+      "islr_db": 3.6940921359608296,
+      "localization_rmse_bins": 0.0,
+      "true_positives": 3,
+      "false_positives": 0,
+      "missed": 0
+    },
+    "richardson_lucy_intensity": {
+      "fwhm_bins": 1.0000029778443036,
+      "pslr_db": 10.236363670991455,
+      "islr_db": 7.527218647251944,
+      "localization_rmse_bins": NaN,
+      "true_positives": 0,
+      "false_positives": 2,
+      "missed": 3
+    },
+    "unsharp_intensity": {
+      "fwhm_bins": 5.024389791376876,
+      "pslr_db": 20.801540238909414,
+      "islr_db": 21.037482664060782,
+      "localization_rmse_bins": 2.0,
+      "true_positives": 1,
+      "false_positives": 0,
+      "missed": 2
+    },
+    "dispersed_dft": {
+      "fwhm_bins": 10.683079570488644,
+      "pslr_db": 0.37882220500001235,
+      "islr_db": -11.301381502786047,
+      "localization_rmse_bins": 0.0,
+      "true_positives": 1,
+      "false_positives": 17,
+      "missed": 2
+    },
+    "dispersed_miaa_without_correction": {
+      "fwhm_bins": 3.4030335196782886,
+      "pslr_db": 0.4365633043987898,
+      "islr_db": -7.600597147183398,
+      "localization_rmse_bins": 1.0,
+      "true_positives": 1,
+      "false_positives": 19,
+      "missed": 2
+    },
+    "known_dispersion_correction_plus_miaa": {
+      "fwhm_bins": 1.7530749408716702,
+      "pslr_db": 2.791626888209297,
+      "islr_db": 3.694092135960859,
+      "localization_rmse_bins": 0.0,
+      "true_positives": 3,
+      "false_positives": 0,
+      "missed": 0
+    },
+    "phase_scrambled_miaa": {
+      "fwhm_bins": 2.449235195446704,
+      "pslr_db": 0.6801284513624327,
+      "islr_db": -12.036703088986336,
+      "localization_rmse_bins": NaN,
+      "true_positives": 0,
+      "false_positives": 28,
+      "missed": 3
+    }
+  },
+  "spectrum_metrics": {
+    "miaa_heldout": {
+      "aligned_nmse": 7.304708444067947e-05,
+      "complex_correlation": 0.9999634757907707,
+      "phase_rmse_rad": 0.009529177053591598
+    },
+    "zero_fill_heldout": {
+      "aligned_nmse": 1.0,
+      "complex_correlation": NaN,
+      "phase_rmse_rad": NaN
+    }
+  },
+  "miaa_isam_coherence": {
+    "experiment": "known_ground_truth_miaa_to_isam",
+    "configuration": {
+      "nx": 32,
+      "full_spectral_count": 64,
+      "measured_spectral_count": 24,
+      "dx_um": 1.0,
+      "defocus_um": 60.0,
+      "snr_db": 38.0
+    },
+    "methods": {
+      "conventional_narrow_no_isam": {
+        "lateral_fwhm_um": 7.273358546595247,
+        "peak_amplitude_relative_to_full": 0.28788072148212024,
+        "energy_fraction_around_peak": 0.5838056104381515
+      },
+      "full_measured_isam": {
+        "lateral_fwhm_um": 1.492370370254207,
+        "peak_amplitude_relative_to_full": 1.0,
+        "energy_fraction_around_peak": 0.99979766636433
+      },
+      "narrow_zero_fill_isam": {
+        "lateral_fwhm_um": 1.489823690108997,
+        "peak_amplitude_relative_to_full": 0.3863188561848417,
+        "energy_fraction_around_peak": 0.9998050670967796
+      },
+      "miaa_then_isam": {
+        "lateral_fwhm_um": 1.4963900883142927,
+        "peak_amplitude_relative_to_full": 0.9534700992548715,
+        "energy_fraction_around_peak": 0.9997277225728533
+      },
+      "phase_scrambled_miaa_then_isam": {
+        "lateral_fwhm_um": 2.2535654563122165,
+        "peak_amplitude_relative_to_full": 0.3763221271041444,
+        "energy_fraction_around_peak": 0.2323682023290472
+      }
+    },
+    "median_heldout_complex_correlation_per_aline": 0.9964620817563076,
+    "interpretation": "MIAA can feed ISAM only because its extrapolated spectra retain the cross-A-line phase curvature. Randomizing one constant phase per A-line leaves every A-line magnitude unchanged but destroys ISAM refocusing; MIAA does not repair that loss."
+  },
+  "interpretation_rules": [
+    "A narrower peak alone is not accepted as recovered resolution.",
+    "Held-out complex spectral prediction and phase error are required for spectral recovery.",
+    "Failure under injected quadratic phase without explicit correction distinguishes MIAA from dispersion optimization.",
+    "Failure under phase scrambling distinguishes coherent model-based recovery from magnitude-only image enhancement."
+  ]
+}

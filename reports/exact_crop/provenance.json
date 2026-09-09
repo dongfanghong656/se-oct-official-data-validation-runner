@@ -1,0 +1,15 @@
+{
+  "record": "10.5281/zenodo.7870795",
+  "source_data_md5": "d905784f950a6fadfce71e9efc6d2654",
+  "crop_sha256": "b2813d858253530ebaa269880a9fde0622fe4ca05d9d8ffa79814c77319d4b2f",
+  "source_commit": "172a6a068285947ff3d0223347c7201f98cb360a",
+  "run_id": "34258082283",
+  "recorded_at_utc": "2026-09-08T17:40:26.674612+00:00",
+  "boundary": "phase-corrected public volume; finite 97x97 crop",
+  "step_outcomes": {
+    "INSTALL_OUTCOME": "success",
+    "INPUT_OUTCOME": "success",
+    "OCTAVE_OUTCOME": "success",
+    "ANALYSIS_OUTCOME": "success"
+  }
+}

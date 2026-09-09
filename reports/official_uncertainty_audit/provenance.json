@@ -1,0 +1,7 @@
+{
+  "source_commit": "1c19407cc74b8e8faf9d3216bdb8ae53b6e5d222",
+  "run_id": "34327673392",
+  "recorded_at_utc": "2026-09-09T08:10:52.684383+00:00",
+  "input": "reports/exact/author_exact_alines.mat",
+  "boundary": "Four selected phase-corrected A-lines; conditional model audit only."
+}

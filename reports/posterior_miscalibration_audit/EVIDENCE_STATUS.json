@@ -1,0 +1,17 @@
+{
+  "schema": "scientific-evidence-gate-v2",
+  "status": "VERIFIED",
+  "metrics_path": "reports/posterior_miscalibration_audit/metrics.json",
+  "metrics_sha256": "a4cefe8dd25fa2c83b716fa08fe1983cb93031a22c0d059866056d3a83c54b51",
+  "metrics_size": 18138,
+  "required_keys": [
+    "status",
+    "rows",
+    "curves",
+    "decisions"
+  ],
+  "required_files": [],
+  "failures": [],
+  "checked_at_utc": "2026-09-09T08:34:01.319478+00:00",
+  "rule": "A commit name, workflow trigger, provenance-only file, or successful producer command without parseable metrics is not execution evidence."
+}

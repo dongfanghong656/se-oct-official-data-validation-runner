@@ -1,0 +1,64 @@
+name: exact-author-superfactor-holdout
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/run_exact_superfactor_holdout.m"
+      - "scripts/analyze_superfactor_holdout.py"
+      - ".github/workflows/superfactor-holdout.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Install runtime
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends octave octave-signal
+          python -m pip install numpy scipy pandas
+      - name: Download and verify public TiO2 input and exact author FIAA
+        run: |
+          set -euo pipefail
+          mkdir -p .cache/upstream reports/superfactor_holdout
+          curl -fL --retry 9 --retry-all-errors -o .cache/data.mat "https://zenodo.org/records/7870795/files/input_TiO2gelatin_004_phasecorrected.mat?download=1"
+          echo "d905784f950a6fadfce71e9efc6d2654  .cache/data.mat" | md5sum -c -
+          curl -fL --retry 9 --retry-all-errors -o .cache/upstream/fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/fiaa_oct_c1.m?download=1"
+          echo "4839b0a7a57a7abe73f6644e38249cc6  .cache/upstream/fiaa_oct_c1.m" | md5sum -c -
+      - name: Execute and analyze
+        env:
+          DATA_FILE: ${{ github.workspace }}/.cache/data.mat
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
+          OUTPUT_MAT: ${{ github.workspace }}/reports/superfactor_holdout/source.mat
+        run: |
+          set -o pipefail
+          octave-cli --quiet scripts/run_exact_superfactor_holdout.m 2>&1 | tee reports/superfactor_holdout/octave.log
+          python scripts/analyze_superfactor_holdout.py reports/superfactor_holdout/source.mat reports/superfactor_holdout 2>&1 | tee reports/superfactor_holdout/analysis.log
+      - name: Record provenance
+        if: always()
+        run: |
+          python - <<'PY'
+          import json,os,datetime,pathlib
+          p=pathlib.Path('reports/superfactor_holdout/provenance.json');p.parent.mkdir(parents=True,exist_ok=True)
+          p.write_text(json.dumps({'record':'10.5281/zenodo.7870795','data_md5':'d905784f950a6fadfce71e9efc6d2654','fiaa_md5':'4839b0a7a57a7abe73f6644e38249cc6','source_commit':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'boundary':'Phase-corrected 200-bin ROI representation; target-support audit, not raw-camera wideband validation.'},indent=2),encoding='utf-8')
+          PY
+      - name: Publish compact evidence
+        if: always()
+        run: |
+          rm -rf .cache
+          rm -f reports/superfactor_holdout/source.mat
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/superfactor_holdout
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record MIAA target-support holdout audit [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

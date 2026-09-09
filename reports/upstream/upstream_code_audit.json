@@ -1,0 +1,507 @@
+{
+  "record": "7870795",
+  "files": {
+    "MIAA_ISAM_processing.m": {
+      "expected_md5": "8b32839402ec0b45df0a8c7cd2ea170d",
+      "actual_md5": "8b32839402ec0b45df0a8c7cd2ea170d",
+      "verified": true,
+      "selected_lines": [
+        {
+          "line": 2,
+          "text": "% This script does RFIAA, MIAA and ISAM processing"
+        },
+        {
+          "line": 9,
+          "text": "save_complexdata = 0; % whether to save complex data to apply CAO afterwards (only for ISAM data) 0=no, 1=yes"
+        },
+        {
+          "line": 18,
+          "text": "iRawDatas = fft(Cscan,[],1);"
+        },
+        {
+          "line": 21,
+          "text": "lateral_apodization_nonISAM = 0;"
+        },
+        {
+          "line": 29,
+          "text": "iRawDatas = fft(Cscan,[],1);"
+        },
+        {
+          "line": 32,
+          "text": "lateral_apodization_nonISAM = 0;"
+        },
+        {
+          "line": 38,
+          "text": "iRawDatas = fft(Cscan,[],1);"
+        },
+        {
+          "line": 39,
+          "text": "lateral_apodization_nonISAM = 1;"
+        },
+        {
+          "line": 46,
+          "text": "%% applying DFT with zeropadding, RFIAA and MIAA"
+        },
+        {
+          "line": 49,
+          "text": "sk_length = 128;"
+        },
+        {
+          "line": 63,
+          "text": "RFIAA_im=zeros(Nz*super,Nx,Ny);"
+        },
+        {
+          "line": 64,
+          "text": "RFIAA_im_map=zeros(Nz*super,Nx,Ny);"
+        },
+        {
+          "line": 65,
+          "text": "spectra_MIAA=zeros(Nz*super,Nx,Ny);"
+        },
+        {
+          "line": 82,
+          "text": "FBW_im(:,:,jj)=(ifft(detrC,K,1));   % DFT iamge"
+        },
+        {
+          "line": 89,
+          "text": "%% RFIAA and MIAA processing"
+        },
+        {
+          "line": 94,
+          "text": "IAA.recursive_yn=2; % 1:non-recursive (FIAA); 2: recursive (RFIAA)"
+        },
+        {
+          "line": 96,
+          "text": "IAA.methods={'FIAA','RFIAA'};"
+        },
+        {
+          "line": 102,
+          "text": "% RFIAA"
+        },
+        {
+          "line": 106,
+          "text": "RFIAA_im(:,:,jj)=a_m(IAA.ROI,:); % conventional RFIAA image, used in the publication"
+        },
+        {
+          "line": 107,
+          "text": "RFIAA_im_map(:,:,jj)=a_m_map(IAA.ROI,:); % RFIAA + maximum a postiori (MAP) for extra sparsity, this is often combined, but not used in this manuscript"
+        },
+        {
+          "line": 109,
+          "text": "% MIAA based on RFIAA+MAP with K twice the goal spectrum length"
+        },
+        {
+          "line": 110,
+          "text": "% here the MAP processing is used as the MIAA spectrum can be obtained"
+        },
+        {
+          "line": 111,
+          "text": "% from the FFT of the RFIAA+MAP reconstruction"
+        },
+        {
+          "line": 115,
+          "text": "xr2=ifft(fa_m_map,[],1)*2*IAA.K; % IFFT of the MAP reconstruction gives the MIAA spectrum"
+        },
+        {
+          "line": 119,
+          "text": "spectra_MIAA(:,:,jj)=xr2a;  % The k-extrapolated data in the range of -199:600 with reference to the original 1:400"
+        },
+        {
+          "line": 127,
+          "text": "%% ISAM inverse scattering"
+        },
+        {
+          "line": 142,
+          "text": "k_minmax_iaa = k_center+[+super/2*k_range,-super/2*k_range]; % define k-range extrapolated MIAA spectrum"
+        },
+        {
+          "line": 150,
+          "text": "%% prepare edge apodization in axial and lateral direction to reduce side-lobes"
+        },
+        {
+          "line": 151,
+          "text": "%axial apodization"
+        },
+        {
+          "line": 152,
+          "text": "NzIAA = length(spectra_MIAA(:,1,1));"
+        },
+        {
+          "line": 153,
+          "text": "N_hannedge_length = 200; % width of hannin window that is split and put at the edges"
+        },
+        {
+          "line": 155,
+          "text": "% build edge apodization"
+        },
+        {
+          "line": 156,
+          "text": "edge_apod = ones(NzIAA,1);"
+        },
+        {
+          "line": 157,
+          "text": "edge_apod(1:round(N_hannedge_length/2)) = hanning_edge(1:round(N_hannedge_length/2));"
+        },
+        {
+          "line": 158,
+          "text": "edge_apod((NzIAA-round(N_hannedge_length/2)+1):end) = hanning_edge(round(N_hannedge_length/2)+1:end);"
+        },
+        {
+          "line": 160,
+          "text": "%lateral apodization to reduce side-lobes and noise"
+        },
+        {
+          "line": 168,
+          "text": "%% define grids for ISAM"
+        },
+        {
+          "line": 183,
+          "text": "%% apply ISAM on MIAA data"
+        },
+        {
+          "line": 184,
+          "text": "% apply edge apodization to reduce sidelobes when zero-padding (due to interpolation)"
+        },
+        {
+          "line": 185,
+          "text": "spectra = spectra_MIAA.*edge_apod;"
+        },
+        {
+          "line": 186,
+          "text": "%lateral fft"
+        },
+        {
+          "line": 187,
+          "text": "S_k_Qx_Qy=fftshift(fftshift(fft(fft(fftshift(fftshift(spectra.*exp(1j*2*pi*m'*zf_index_IAA/(NzIAA-1)),2),3),[],2),[],3),2),3);"
+        },
+        {
+          "line": 190,
+          "text": "% apply lateral apodization mask on the data"
+        },
+        {
+          "line": 215,
+          "text": "fprintf('ISAM interpolating MIAA data frame %d to %d took %.2f s\\n',j-19,j,tFrames)"
+        },
+        {
+          "line": 225,
+          "text": "% shift focus back to the original position and apply ifft to obtain the ISAM image"
+        },
+        {
+          "line": 226,
+          "text": "ISAM_image=fftshift(fftshift(ifftn(fftshift(fftshift(S_Qz_Qx_Qy.*exp(-1j*2*pi*m2'*zf_index_IAA/(NzIAA-1)),2),3)),2),3);"
+        },
+        {
+          "line": 230,
+          "text": "ISAM_image = flip(ISAM_image,1);"
+        },
+        {
+          "line": 231,
+          "text": "ISAM_image = ISAM_image(200:1000,:,:);"
+        },
+        {
+          "line": 232,
+          "text": "save([datasavefolder,'MIAA_ISAM_complex.mat'],'ISAM_image','-v7.3')"
+        },
+        {
+          "line": 236,
+          "text": "ISAM_imagedB = abs(ISAM_image);"
+        },
+        {
+          "line": 237,
+          "text": "clear ISAM_image"
+        },
+        {
+          "line": 238,
+          "text": "ISAM_imagedB = 20*log10(ISAM_imagedB/max(ISAM_imagedB(:)));"
+        },
+        {
+          "line": 240,
+          "text": "%% apply ISAM to FBW data - this takes the same steps as the MIAA spectra."
+        },
+        {
+          "line": 241,
+          "text": "spectra = circshift(fft(FBW_im,[],1),300,1);"
+        },
+        {
+          "line": 242,
+          "text": "S_k_Qx_Qy=fftshift(fftshift(fft(fft(fftshift(fftshift(spectra.*exp(1j*2*pi*m'*zf_index_IAA/(NzIAA-1)),2),3),[],2),[],3),2),3);"
+        },
+        {
+          "line": 244,
+          "text": "S_k_Qx_Qy = S_k_Qx_Qy.*mask; %apply lateral apodization"
+        },
+        {
+          "line": 260,
+          "text": "fprintf('ISAM interpolating DFT data frame %d to %d took %.2f s\\n',j-19,j,tFrames)"
+        },
+        {
+          "line": 266,
+          "text": "ISAM_image_FBW=fftshift(fftshift(ifftn(fftshift(fftshift(S_Qz_Qx_Qy.*exp(-1j*2*pi*m2'*zf_index_IAA/(NzIAA-1)),2),3)),2),3);"
+        },
+        {
+          "line": 270,
+          "text": "ISAM_image_FBW = flip(ISAM_image_FBW,1);"
+        },
+        {
+          "line": 271,
+          "text": "ISAM_image_FBW = ISAM_image_FBW(200:1000,:,:);"
+        },
+        {
+          "line": 272,
+          "text": "save([datasavefolder,'DFT_ISAM_complex.mat'],'ISAM_image_FBW','-v7.3')"
+        },
+        {
+          "line": 276,
+          "text": "ISAM_imagedB_FBW = abs(ISAM_image_FBW);"
+        },
+        {
+          "line": 277,
+          "text": "clear ISAM_image_FBW"
+        },
+        {
+          "line": 278,
+          "text": "ISAM_imagedB_FBW = 20*log10(ISAM_imagedB_FBW/max(ISAM_imagedB_FBW(:)));"
+        },
+        {
+          "line": 280,
+          "text": "%% Obtain interpolated dB images for FBW-DFT and RFIAA such that axial sampling is consistent with ISAM datasets"
+        },
+        {
+          "line": 281,
+          "text": "FBW_dB_interpolated = abs(ifft(fft(FBW_im,[],1).*edge_apod,length(ISAM_imagedB(:,1,1)),1));"
+        },
+        {
+          "line": 284,
+          "text": "RFIAA_dB_interpolated = abs(ifft(fft(RFIAA_im,[],1).*edge_apod,length(ISAM_imagedB(:,1,1)),1));"
+        },
+        {
+          "line": 285,
+          "text": "RFIAA_dB_interpolated = 20*log10(RFIAA_dB_interpolated/max(RFIAA_dB_interpolated(:)));"
+        },
+        {
+          "line": 287,
+          "text": "images = {FBW_dB_interpolated,RFIAA_dB_interpolated,ISAM_imagedB_FBW,ISAM_imagedB};"
+        },
+        {
+          "line": 292,
+          "text": "fnames = {'DFT','RFIAA','DFT_ISAM','MIAA_ISAM'};"
+        },
+        {
+          "line": 295,
+          "text": "image = 10.^(images{i}(200:1000,:,:)/20);"
+        },
+        {
+          "line": 299,
+          "text": "%% calculate the z-grid for the ISAM images and the roi for imagesc plotting"
+        },
+        {
+          "line": 300,
+          "text": "Nisam = length(ISAM_imagedB(:,1,1));"
+        },
+        {
+          "line": 302,
+          "text": "z_isam = linspace(0,zmax,Nisam);"
+        },
+        {
+          "line": 304,
+          "text": "Zroi = [z_isam(1),z_isam(end)];"
+        }
+      ]
+    },
+    "fiaa_oct_c1.m": {
+      "expected_md5": "4839b0a7a57a7abe73f6644e38249cc6",
+      "actual_md5": "4839b0a7a57a7abe73f6644e38249cc6",
+      "verified": true,
+      "selected_lines": [
+        {
+          "line": 18,
+          "text": "diaaf=(abs(fft(x,K)/N)).^2;"
+        },
+        {
+          "line": 22,
+          "text": "q=(ifft(diaaf))*K;"
+        },
+        {
+          "line": 27,
+          "text": "diaa_num=fft([y;zeros(K-N,1)]);"
+        },
+        {
+          "line": 29,
+          "text": "Fa=fft( fa1,K);"
+        },
+        {
+          "line": 43,
+          "text": "q=(ifft(diaaf))*K;"
+        },
+        {
+          "line": 48,
+          "text": "diaa_num=fft([y;zeros(K-N,1)]);"
+        },
+        {
+          "line": 64,
+          "text": "tmp=ifft(fft(t1t).*fft(w));"
+        },
+        {
+          "line": 67,
+          "text": "tmp=ifft(fft(t1).*fft(w));"
+        },
+        {
+          "line": 73,
+          "text": "tmp=ifft(fft(t1t).*fft(w));"
+        },
+        {
+          "line": 76,
+          "text": "tmp=ifft(fft(t1).*fft(w));"
+        },
+        {
+          "line": 93,
+          "text": "tmp=ifft(fft(t1x).*fft(w1));"
+        },
+        {
+          "line": 97,
+          "text": "tmp=ifft(fft(t2x).*fft(w2));"
+        }
+      ]
+    },
+    "oct_iaa_c1.m": {
+      "expected_md5": "d189d45be2e5f5ac3b797fb80e7b84e3",
+      "actual_md5": "d189d45be2e5f5ac3b797fb80e7b84e3",
+      "verified": true,
+      "selected_lines": [
+        {
+          "line": 16,
+          "text": "'RFIAA '];"
+        },
+        {
+          "line": 37,
+          "text": "[S(:,:,ip),Smap(:,:,ip)]=rfiaa_oct_c1(squeeze(bX(:,:,ip)),K,q_i,eta,q_rec);"
+        }
+      ]
+    },
+    "rec_fiaa_oct_c1.m": {
+      "expected_md5": "08133e8bc4e62063149474cd402990d2",
+      "actual_md5": "08133e8bc4e62063149474cd402990d2",
+      "verified": true,
+      "selected_lines": [
+        {
+          "line": 20,
+          "text": "q=(ifft(diaaf))*K;"
+        },
+        {
+          "line": 25,
+          "text": "diaa_num=fft([y;zeros(K-N,1)]);"
+        },
+        {
+          "line": 27,
+          "text": "Fa=fft( fa1,K);"
+        },
+        {
+          "line": 40,
+          "text": "q=(ifft(diaaf))*K;"
+        },
+        {
+          "line": 45,
+          "text": "diaa_num=fft([y;zeros(K-N,1)]);"
+        },
+        {
+          "line": 61,
+          "text": "tmp=ifft(fft(t1t).*fft(w));"
+        },
+        {
+          "line": 64,
+          "text": "tmp=ifft(fft(t1).*fft(w));"
+        },
+        {
+          "line": 70,
+          "text": "tmp=ifft(fft(t1t).*fft(w));"
+        },
+        {
+          "line": 73,
+          "text": "tmp=ifft(fft(t1).*fft(w));"
+        },
+        {
+          "line": 90,
+          "text": "tmp=ifft(fft(t1x).*fft(w1));"
+        },
+        {
+          "line": 94,
+          "text": "tmp=ifft(fft(t2x).*fft(w2));"
+        }
+      ]
+    },
+    "rfiaa_oct_c1.m": {
+      "expected_md5": "d5908350abe158134ebe6f9a4dce9eba",
+      "actual_md5": "d5908350abe158134ebe6f9a4dce9eba",
+      "verified": true,
+      "selected_lines": [
+        {
+          "line": 1,
+          "text": "function [pS,pSmap]=rfiaa_oct_c1(pX,K,q_i,eta,q_rec)"
+        },
+        {
+          "line": 2,
+          "text": "% this fuction applies the recursive version of FIAA, RFIAA"
+        }
+      ]
+    },
+    "plot_figure5.m": {
+      "expected_md5": "bb5ad4827fb659e3e2d6552990829d1f",
+      "actual_md5": "bb5ad4827fb659e3e2d6552990829d1f",
+      "verified": true,
+      "selected_lines": [
+        {
+          "line": 27,
+          "text": "[~,Ascan_zind] = min(abs([z_isam;z_isam]-Ascan_zlim'),[],2);"
+        },
+        {
+          "line": 36,
+          "text": "methods = {'DFT','RFIAA','DFT + ISAM','MIAA + ISAM'};"
+        },
+        {
+          "line": 37,
+          "text": "methods_leg = {'DFT','RFIAA',['DFT+',newline,' ISAM'],['MIAA+',newline,' ISAM']};"
+        },
+        {
+          "line": 41,
+          "text": "dBlims = [60,60,60,70]; %MIAA+ISAM has higher dB limits due to increased sparsity"
+        },
+        {
+          "line": 50,
+          "text": "z_Ascan = z_isam(Ascan_zind(1):Ascan_zind(2));"
+        },
+        {
+          "line": 74,
+          "text": "%subfigure a and c are only plotted for ISAM processed data (3 and 4)"
+        },
+        {
+          "line": 79,
+          "text": "caxis([-dBlims(i),0])"
+        },
+        {
+          "line": 86,
+          "text": "plot(xlims_enface1,[1,1]*z_isam(Zindex1),'--w','LineWidth',1.0)"
+        },
+        {
+          "line": 87,
+          "text": "plot(xlims_enface2,[1,1]*z_isam(Zindex2),'--g','LineWidth',1.0)"
+        },
+        {
+          "line": 97,
+          "text": "caxis([-dBlims(i),0])"
+        },
+        {
+          "line": 115,
+          "text": "caxis([-dBlims(i),0])"
+        },
+        {
+          "line": 128,
+          "text": "caxis([-dBlims(i),0])"
+        },
+        {
+          "line": 144,
+          "text": "caxis([-dBlims(i),0])"
+        }
+      ]
+    }
+  }
+}

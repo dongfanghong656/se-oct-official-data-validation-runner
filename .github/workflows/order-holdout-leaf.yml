@@ -1,0 +1,91 @@
+name: exact-author-order-holdout-leaf
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/run_exact_order_audit.m"
+      - "scripts/analyze_order_audit.py"
+      - ".github/workflows/order-holdout-leaf.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Install exact-code runtime
+        id: install
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          mkdir -p reports/order_audit/leaf
+          sudo apt-get update -qq 2>&1 | tee reports/order_audit/leaf/install.log
+          sudo apt-get install -y --no-install-recommends octave octave-signal 2>&1 | tee -a reports/order_audit/leaf/install.log
+          python -m pip install numpy scipy pandas 2>&1 | tee -a reports/order_audit/leaf/install.log
+      - name: Download and verify leaf input and author functions
+        id: download
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          mkdir -p .cache/upstream reports/order_audit/leaf
+          curl -fL --retry 9 --retry-all-errors -o .cache/data.mat "https://zenodo.org/records/7870795/files/input_leafdisc_phasecorrected.mat?download=1" 2>&1 | tee reports/order_audit/leaf/download.log
+          echo "d59b7479304f37f315be63cf45902e48  .cache/data.mat" | md5sum -c - 2>&1 | tee -a reports/order_audit/leaf/download.log
+          curl -fL --retry 9 --retry-all-errors -o .cache/upstream/fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/fiaa_oct_c1.m?download=1" 2>&1 | tee -a reports/order_audit/leaf/download.log
+          echo "4839b0a7a57a7abe73f6644e38249cc6  .cache/upstream/fiaa_oct_c1.m" | md5sum -c - 2>&1 | tee -a reports/order_audit/leaf/download.log
+          curl -fL --retry 9 --retry-all-errors -o .cache/upstream/rec_fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/rec_fiaa_oct_c1.m?download=1" 2>&1 | tee -a reports/order_audit/leaf/download.log
+          echo "08133e8bc4e62063149474cd402990d2  .cache/upstream/rec_fiaa_oct_c1.m" | md5sum -c - 2>&1 | tee -a reports/order_audit/leaf/download.log
+      - name: Run exact leaf order and holdout audit
+        id: execute
+        if: steps.download.outcome == 'success'
+        continue-on-error: true
+        env:
+          DATA_FILE: ${{ github.workspace }}/.cache/data.mat
+          DATASET_KIND: leaf
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
+          OUTPUT_MAT: ${{ github.workspace }}/reports/order_audit/leaf/source.mat
+        run: |
+          set -o pipefail
+          octave-cli --quiet scripts/run_exact_order_audit.m 2>&1 | tee reports/order_audit/leaf/octave.log
+          python scripts/analyze_order_audit.py reports/order_audit/leaf/source.mat reports/order_audit/leaf 2>&1 | tee reports/order_audit/leaf/analysis.log
+      - name: Record provenance and outcomes
+        if: always()
+        env:
+          INSTALL_OUTCOME: ${{ steps.install.outcome }}
+          DOWNLOAD_OUTCOME: ${{ steps.download.outcome }}
+          EXECUTE_OUTCOME: ${{ steps.execute.outcome }}
+        run: |
+          python - <<'PY'
+          import json,os,datetime,pathlib
+          out=pathlib.Path('reports/order_audit/leaf');out.mkdir(parents=True,exist_ok=True)
+          out.joinpath('provenance.json').write_text(json.dumps({
+            'record':'10.5281/zenodo.7870795','dataset':'leaf','data_md5':'d59b7479304f37f315be63cf45902e48',
+            'fiaa_md5':'4839b0a7a57a7abe73f6644e38249cc6','rec_fiaa_md5':'08133e8bc4e62063149474cd402990d2',
+            'source_commit':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),
+            'outcomes':{'install':os.environ.get('INSTALL_OUTCOME'),'download':os.environ.get('DOWNLOAD_OUTCOME'),'execute':os.environ.get('EXECUTE_OUTCOME')},
+            'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'boundary':'Phase-corrected Cscan; finite strips test RFIAA traversal dependence.'
+          },indent=2),encoding='utf-8')
+          PY
+      - name: Publish compact evidence
+        if: always()
+        run: |
+          rm -rf .cache
+          rm -f reports/order_audit/leaf/source.mat
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/order_audit/leaf
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record leaf RFIAA order and holdout audit [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+      - name: Enforce audit gate
+        if: steps.install.outcome != 'success' || steps.download.outcome != 'success' || steps.execute.outcome != 'success'
+        run: exit 1

@@ -1,0 +1,91 @@
+name: uncertainty-aware-miaa-audit
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/uncertainty_miaa_audit.py"
+      - "scripts/model_misspecification_v2.py"
+      - ".github/workflows/uncertainty-miaa-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: uncertainty-aware-miaa-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: python -m pip install numpy scipy
+      - name: Run conditional uncertainty audit
+        run: |
+          set -o pipefail
+          rm -rf reports/uncertainty_audit
+          mkdir -p reports/uncertainty_audit
+          python scripts/uncertainty_miaa_audit.py \
+            --mode all \
+            --author-alines reports/exact/author_exact_alines.mat \
+            --output reports/uncertainty_audit \
+            2>&1 | tee reports/uncertainty_audit/execution.log
+      - name: Run non-oracle model-misspecification calibration
+        run: |
+          python scripts/model_misspecification_v2.py \
+            --output reports/uncertainty_audit/model_misspecification_v2 \
+            --trials 1200 \
+            2>&1 | tee reports/uncertainty_audit/model_misspecification_v2/execution.log
+      - name: Fail-closed evidence validation
+        run: |
+          python scripts/validate_evidence_bundle.py \
+            --metrics reports/uncertainty_audit/combined_metrics.json \
+            --output reports/uncertainty_audit/EVIDENCE_STATUS.json \
+            --required-key status \
+            --required-key self_test.status \
+            --required-key synthetic.status \
+            --required-key official.status
+          python scripts/validate_evidence_bundle.py \
+            --metrics reports/uncertainty_audit/model_misspecification_v2/metrics.json \
+            --output reports/uncertainty_audit/model_misspecification_v2/EVIDENCE_STATUS.json \
+            --required-key status \
+            --required-key models \
+            --required-key decisions.oracle_model_calibrated \
+            --required-key decisions.misspecified_fixed_model_overconfident
+      - name: Record provenance
+        run: |
+          python - <<'PY'
+          import datetime, hashlib, json, os, pathlib
+          root = pathlib.Path('reports/uncertainty_audit')
+          metrics = root / 'combined_metrics.json'
+          stress = root / 'model_misspecification_v2' / 'metrics.json'
+          root.joinpath('provenance.json').write_text(json.dumps({
+            'schema': 'uncertainty-miaa-provenance-v2',
+            'source_commit': os.environ.get('GITHUB_SHA'),
+            'run_id': os.environ.get('GITHUB_RUN_ID'),
+            'author_alines_blob_sha': '18ff546915c20cbcc12c6b157ed39dc00d300fb5',
+            'combined_metrics_sha256': hashlib.sha256(metrics.read_bytes()).hexdigest(),
+            'model_stress_sha256': hashlib.sha256(stress.read_bytes()).hexdigest(),
+            'recorded_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'boundary': 'Author A-lines are already phase corrected; uncertainty is conditional on registered models and is not independent physical wideband validation.'
+          }, indent=2), encoding='utf-8')
+          PY
+      - name: Commit verified compact evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/uncertainty_audit
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record verified uncertainty-aware MIAA evidence v2 [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

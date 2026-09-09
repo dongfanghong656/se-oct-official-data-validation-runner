@@ -1,0 +1,454 @@
+{
+  "experiment": "official_phase_corrected_TiO2_selected_A_lines",
+  "source_boundary": "The deposited input is already phase corrected and is not the raw camera interferogram; front-end k-linearization, dispersion compensation, and coverslip correction cannot be independently re-executed from this file.",
+  "volume_metadata": {
+    "variable_name": "Cscan",
+    "original_shape": [
+      200,
+      512,
+      512
+    ],
+    "axial_axis": 0,
+    "canonical_shape": [
+      200,
+      512,
+      512
+    ],
+    "dtype": "complex64",
+    "loader": "scipy.io.loadmat"
+  },
+  "spectrum_transform": "fft_ifftshift",
+  "source_window": {
+    "full_length": 200,
+    "input_length": 128,
+    "start": 49,
+    "stop": 177,
+    "energy_fraction_in_window": 0.9473742454029664
+  },
+  "selected_lines": [
+    {
+      "line_number": 0,
+      "coordinate_yx": [
+        12,
+        7
+      ],
+      "peak_depth_input_bin": 111,
+      "selection_score": 749.090087890625,
+      "noise_variance_used": 40.16130636253641,
+      "profiles": {
+        "dft_128": {
+          "fwhm_um": 5.729252861615202,
+          "pslr_db": 13.717002013572783,
+          "islr_db": 10.27112648505848
+        },
+        "dft_all_200": {
+          "fwhm_um": 4.036408743786749,
+          "pslr_db": 17.202919418904855,
+          "islr_db": 15.198082550153194
+        },
+        "iaa_128": {
+          "fwhm_um": 1.3039526963134778,
+          "pslr_db": 26.899379377225088,
+          "islr_db": 14.669193425030134
+        },
+        "miaa_128_to_200": {
+          "fwhm_um": 3.7305151121536464,
+          "pslr_db": 17.483467337982404,
+          "islr_db": 12.708189496918198
+        },
+        "ar_128_to_200": {
+          "fwhm_um": 3.7168346878228093,
+          "pslr_db": 17.54141396406325,
+          "islr_db": 12.814011232062912
+        },
+        "rl_intensity": {
+          "fwhm_um": 1.0126030639733046,
+          "pslr_db": 27.144306897522025,
+          "islr_db": 27.19634033182374
+        },
+        "unsharp_intensity": {
+          "fwhm_um": 3.5202584980272036,
+          "pslr_db": 32.35569322973956,
+          "islr_db": 29.95405816162062
+        },
+        "injected_dispersion_miaa_without_correction": {
+          "fwhm_um": 14.265657194645152,
+          "pslr_db": 0.1439061180227063,
+          "islr_db": -7.437617547700207
+        },
+        "known_dispersion_correction_plus_miaa": {
+          "fwhm_um": 3.7305151121536464,
+          "pslr_db": 17.483467337982415,
+          "islr_db": 12.708189496918198
+        },
+        "phase_scrambled_miaa": {
+          "fwhm_um": 4.0527021305645246,
+          "pslr_db": 1.028799326848994,
+          "islr_db": -13.046640722297125
+        }
+      },
+      "heldout_complex_spectrum": {
+        "miaa": {
+          "aligned_nmse": 0.04788909695290333,
+          "correlation": 0.9757617040277288,
+          "phase_rmse_rad": 0.07576559027852682
+        },
+        "complex_ar": {
+          "aligned_nmse": 0.03976580561619695,
+          "correlation": 0.9799154016463885,
+          "phase_rmse_rad": 0.07024018821959668
+        },
+        "zero_fill": {
+          "aligned_nmse": 1.0,
+          "correlation": NaN,
+          "phase_rmse_rad": NaN
+        }
+      },
+      "dispersion_control": {
+        "injected_quadratic_coefficient": 24.0,
+        "sharpness_optimizer_estimate": 23.87094420838711,
+        "miaa_without_correction_similarity_to_baseline": 0.25291697835785987,
+        "known_corrected_miaa_similarity_to_baseline": 1.0000000000000002
+      },
+      "iaa_iterations": 10,
+      "iaa_relative_changes": [
+        0.5591869259910859,
+        0.3773482910340582,
+        0.19289074879644366,
+        0.10009015162477433,
+        0.05267277055122859,
+        0.03226004393411356,
+        0.0215842402031033,
+        0.014764887775594154,
+        0.010376436173107899,
+        0.007256596421197101
+      ]
+    },
+    {
+      "line_number": 1,
+      "coordinate_yx": [
+        232,
+        210
+      ],
+      "peak_depth_input_bin": 109,
+      "selection_score": 748.6333618164062,
+      "noise_variance_used": 43.51993836017938,
+      "profiles": {
+        "dft_128": {
+          "fwhm_um": 5.703005526895106,
+          "pslr_db": 13.26138940814931,
+          "islr_db": 9.605307063719787
+        },
+        "dft_all_200": {
+          "fwhm_um": 4.082262673924591,
+          "pslr_db": 16.939569730913586,
+          "islr_db": 14.087102763197102
+        },
+        "iaa_128": {
+          "fwhm_um": 1.227910503741158,
+          "pslr_db": 24.21008632789983,
+          "islr_db": 12.801571934685098
+        },
+        "miaa_128_to_200": {
+          "fwhm_um": 3.6953384483694043,
+          "pslr_db": 16.526325198813232,
+          "islr_db": 11.939153353785372
+        },
+        "ar_128_to_200": {
+          "fwhm_um": 3.761860780856112,
+          "pslr_db": 17.602918041689435,
+          "islr_db": 12.472455187965824
+        },
+        "rl_intensity": {
+          "fwhm_um": 1.0125959500845432,
+          "pslr_db": 30.59448299096541,
+          "islr_db": 29.648012611029856
+        },
+        "unsharp_intensity": {
+          "fwhm_um": 3.5015669967577123,
+          "pslr_db": 30.803222113651675,
+          "islr_db": 28.486637303574817
+        },
+        "injected_dispersion_miaa_without_correction": {
+          "fwhm_um": 14.280177005940024,
+          "pslr_db": 1.2980038393527125,
+          "islr_db": -6.369356473923843
+        },
+        "known_dispersion_correction_plus_miaa": {
+          "fwhm_um": 3.6953384483694043,
+          "pslr_db": 16.526325198813197,
+          "islr_db": 11.939153353785363
+        },
+        "phase_scrambled_miaa": {
+          "fwhm_um": 3.6207584356929434,
+          "pslr_db": 0.5419544515800687,
+          "islr_db": -13.879370635961584
+        }
+      },
+      "heldout_complex_spectrum": {
+        "miaa": {
+          "aligned_nmse": 0.05201117793482283,
+          "correlation": 0.9736471753490467,
+          "phase_rmse_rad": 0.08872377971030845
+        },
+        "complex_ar": {
+          "aligned_nmse": 0.04596147748163916,
+          "correlation": 0.9767489557293422,
+          "phase_rmse_rad": 0.08723585109453955
+        },
+        "zero_fill": {
+          "aligned_nmse": 1.0,
+          "correlation": NaN,
+          "phase_rmse_rad": NaN
+        }
+      },
+      "dispersion_control": {
+        "injected_quadratic_coefficient": 24.0,
+        "sharpness_optimizer_estimate": 23.84787342219593,
+        "miaa_without_correction_similarity_to_baseline": 0.2545739080449682,
+        "known_corrected_miaa_similarity_to_baseline": 1.0
+      },
+      "iaa_iterations": 10,
+      "iaa_relative_changes": [
+        0.5504452919373757,
+        0.3507552281556485,
+        0.20218008868460083,
+        0.09670697433684106,
+        0.05125315950833051,
+        0.029331119482830487,
+        0.018553550832024333,
+        0.011559694683928359,
+        0.0077159553674799545,
+        0.004952426105448869
+      ]
+    },
+    {
+      "line_number": 2,
+      "coordinate_yx": [
+        482,
+        38
+      ],
+      "peak_depth_input_bin": 110,
+      "selection_score": 717.7547607421875,
+      "noise_variance_used": 49.70070363622954,
+      "profiles": {
+        "dft_128": {
+          "fwhm_um": 5.690230863697184,
+          "pslr_db": 13.117228578728579,
+          "islr_db": 9.497670283951644
+        },
+        "dft_all_200": {
+          "fwhm_um": 4.077602411285747,
+          "pslr_db": 17.2930780930527,
+          "islr_db": 13.867600927425565
+        },
+        "iaa_128": {
+          "fwhm_um": 1.1311173672143793,
+          "pslr_db": 23.378267242278106,
+          "islr_db": 12.139160529751674
+        },
+        "miaa_128_to_200": {
+          "fwhm_um": 3.654878362032024,
+          "pslr_db": 15.650854646300713,
+          "islr_db": 11.687068706623982
+        },
+        "ar_128_to_200": {
+          "fwhm_um": 3.7506421360964097,
+          "pslr_db": 17.452856083735025,
+          "islr_db": 12.194208719182475
+        },
+        "rl_intensity": {
+          "fwhm_um": 1.012562623323282,
+          "pslr_db": 33.45017107225801,
+          "islr_db": 31.493555328071476
+        },
+        "unsharp_intensity": {
+          "fwhm_um": 3.494630833690596,
+          "pslr_db": 30.434391902328564,
+          "islr_db": 28.057995786874187
+        },
+        "injected_dispersion_miaa_without_correction": {
+          "fwhm_um": 10.220065679812704,
+          "pslr_db": 1.3141633517931708,
+          "islr_db": -6.394045680555754
+        },
+        "known_dispersion_correction_plus_miaa": {
+          "fwhm_um": 3.654878362032024,
+          "pslr_db": 15.650854646300711,
+          "islr_db": 11.687068706623982
+        },
+        "phase_scrambled_miaa": {
+          "fwhm_um": 3.778501981934083,
+          "pslr_db": 2.305471231318758,
+          "islr_db": -11.989814781466531
+        }
+      },
+      "heldout_complex_spectrum": {
+        "miaa": {
+          "aligned_nmse": 0.05037700328652484,
+          "correlation": 0.974486016684424,
+          "phase_rmse_rad": 0.10444419049800603
+        },
+        "complex_ar": {
+          "aligned_nmse": 0.04851068353329127,
+          "correlation": 0.9754431385102407,
+          "phase_rmse_rad": 0.10332005607611848
+        },
+        "zero_fill": {
+          "aligned_nmse": 1.0,
+          "correlation": NaN,
+          "phase_rmse_rad": NaN
+        }
+      },
+      "dispersion_control": {
+        "injected_quadratic_coefficient": 24.0,
+        "sharpness_optimizer_estimate": 23.87869626912828,
+        "miaa_without_correction_similarity_to_baseline": 0.2584897071694385,
+        "known_corrected_miaa_similarity_to_baseline": 1.0
+      },
+      "iaa_iterations": 10,
+      "iaa_relative_changes": [
+        0.548597529303698,
+        0.3719343879522439,
+        0.21978858144865676,
+        0.11265825545046466,
+        0.07224390753982378,
+        0.047204161730915,
+        0.030547979236798323,
+        0.01885801448435869,
+        0.01121022667205316,
+        0.006673526809425595
+      ]
+    },
+    {
+      "line_number": 3,
+      "coordinate_yx": [
+        1,
+        453
+      ],
+      "peak_depth_input_bin": 112,
+      "selection_score": 710.5423583984375,
+      "noise_variance_used": 29.170862731852978,
+      "profiles": {
+        "dft_128": {
+          "fwhm_um": 5.816474928934469,
+          "pslr_db": 14.149788556399553,
+          "islr_db": 10.945878674271356
+        },
+        "dft_all_200": {
+          "fwhm_um": 4.1404596958371,
+          "pslr_db": 17.7154904332968,
+          "islr_db": 15.81020320773926
+        },
+        "iaa_128": {
+          "fwhm_um": 2.547992362375535,
+          "pslr_db": 27.32506170539598,
+          "islr_db": 16.3298465063835
+        },
+        "miaa_128_to_200": {
+          "fwhm_um": 3.916646527797098,
+          "pslr_db": 19.192390017798665,
+          "islr_db": 13.988676645431195
+        },
+        "ar_128_to_200": {
+          "fwhm_um": 3.798228912567735,
+          "pslr_db": 18.813646112204534,
+          "islr_db": 13.428547309805207
+        },
+        "rl_intensity": {
+          "fwhm_um": 1.4894477302223108,
+          "pslr_db": 19.82758793373617,
+          "islr_db": 21.7142299609919
+        },
+        "unsharp_intensity": {
+          "fwhm_um": 3.566273950143215,
+          "pslr_db": 32.88967601826466,
+          "islr_db": 32.238787139814974
+        },
+        "injected_dispersion_miaa_without_correction": {
+          "fwhm_um": 14.827775121398592,
+          "pslr_db": 0.24853125811328927,
+          "islr_db": -7.475405541780615
+        },
+        "known_dispersion_correction_plus_miaa": {
+          "fwhm_um": 3.916646527797098,
+          "pslr_db": 19.19239001779865,
+          "islr_db": 13.98867664543117
+        },
+        "phase_scrambled_miaa": {
+          "fwhm_um": 4.0791353452701795,
+          "pslr_db": 0.5308555724450665,
+          "islr_db": -13.69956231552143
+        }
+      },
+      "heldout_complex_spectrum": {
+        "miaa": {
+          "aligned_nmse": 0.05090422730335276,
+          "correlation": 0.9742154652317152,
+          "phase_rmse_rad": 0.09309845761534087
+        },
+        "complex_ar": {
+          "aligned_nmse": 0.049600104101319334,
+          "correlation": 0.974884555164703,
+          "phase_rmse_rad": 0.11097356040440334
+        },
+        "zero_fill": {
+          "aligned_nmse": 1.0,
+          "correlation": NaN,
+          "phase_rmse_rad": NaN
+        }
+      },
+      "dispersion_control": {
+        "injected_quadratic_coefficient": 24.0,
+        "sharpness_optimizer_estimate": 23.892190894404663,
+        "miaa_without_correction_similarity_to_baseline": 0.26507520050614825,
+        "known_corrected_miaa_similarity_to_baseline": 1.0000000000000002
+      },
+      "iaa_iterations": 10,
+      "iaa_relative_changes": [
+        0.5748575823244881,
+        0.36946010844575805,
+        0.10142665188925377,
+        0.03581918148483268,
+        0.022398882336468015,
+        0.0182856305422562,
+        0.012466912221348742,
+        0.008209873907407917,
+        0.0052812463069183534,
+        0.0032900937840762185
+      ]
+    }
+  ],
+  "aggregate": {
+    "median_fwhm_um": {
+      "dft_128": 5.716129194255155,
+      "dft_all_200": 4.079932542605169,
+      "iaa_128": 1.2659316000273177,
+      "miaa_128_to_200": 3.712926780261525,
+      "ar_128_to_200": 3.756251458476261,
+      "rl_intensity": 1.012599507028924,
+      "unsharp_intensity": 3.510912747392458,
+      "injected_dispersion_miaa_without_correction": 14.272917100292588,
+      "known_dispersion_correction_plus_miaa": 3.712926780261525,
+      "phase_scrambled_miaa": 3.9156020562493037
+    },
+    "median_heldout_complex_correlation": {
+      "miaa": 0.9743507409580696,
+      "complex_ar": 0.9760960471197915,
+      "zero_fill": NaN
+    },
+    "median_heldout_phase_rmse_rad": {
+      "miaa": 0.09091111866282467,
+      "complex_ar": 0.095277953585329,
+      "zero_fill": NaN
+    },
+    "median_dispersion_optimizer_estimate": 23.874820238757696,
+    "median_miaa_similarity_after_injected_dispersion_without_correction": 0.25653180760720334,
+    "median_miaa_similarity_after_known_dispersion_correction": 1.0
+  },
+  "mechanism_decision_rule": {
+    "not_dispersion_optimizer": "supported only if injected quadratic phase is not removed by MIAA alone and explicit phase correction restores the baseline result",
+    "not_merely_image_sharpening": "supported only if MIAA predicts physically held-out complex spectral samples and is sensitive to phase destruction, while intensity-only baselines cannot satisfy the complex-spectrum criterion",
+    "remaining_limitation": "narrower FWHM beyond the physically measured 200-point band remains model-dependent unless validated against a genuinely wider measured spectrum"
+  }
+}

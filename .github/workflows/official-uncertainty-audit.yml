@@ -1,0 +1,49 @@
+name: official-phase-corrected-uncertainty-audit
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/run_official_uncertainty_audit.py"
+      - "src/seoct_uncertainty/**"
+      - ".github/workflows/official-uncertainty-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Install dependencies
+        run: python -m pip install numpy scipy matplotlib
+      - name: Run conditional uncertainty on official A-lines
+        env: {PYTHONPATH: src}
+        run: python scripts/run_official_uncertainty_audit.py | tee official_uncertainty.log
+      - name: Validate evidence fail-closed
+        run: |
+          python scripts/validate_evidence_bundle.py --metrics reports/official_uncertainty_audit/metrics.json --output reports/official_uncertainty_audit/EVIDENCE_STATUS.json --required-key status --required-key source --required-key aggregate --required-key lines --required-key decisions
+      - name: Record provenance
+        run: |
+          python - <<'PY'
+          import datetime,json,os,pathlib
+          p=pathlib.Path('reports/official_uncertainty_audit/provenance.json')
+          p.write_text(json.dumps({'source_commit':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'input':'reports/exact/author_exact_alines.mat','boundary':'Four selected phase-corrected A-lines; conditional model audit only.'},indent=2),encoding='utf-8')
+          PY
+          mv official_uncertainty.log reports/official_uncertainty_audit/run.log
+      - name: Commit verified compact evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/official_uncertainty_audit
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record verified official conditional-uncertainty evidence [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

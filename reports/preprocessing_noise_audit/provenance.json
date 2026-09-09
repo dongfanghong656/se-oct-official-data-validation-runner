@@ -1,0 +1,13 @@
+{
+  "schema": "seoct-preprocessing-noise-provenance-v1",
+  "execution_environment": "GitHub-hosted ubuntu-latest",
+  "repository": "dongfanghong656/se-oct-official-data-validation-runner",
+  "source_commit": "91df19dba07879fbf86a6f021fa92e5ee478e18f",
+  "run_id": "34360172475",
+  "run_attempt": "1",
+  "subset_sha256": "40c0c91fa3104ec3fd2d1e33fe16db54c3261bb0e46e83821bcd9a3ad3d34c83",
+  "exact_alines_sha256": "eab5befea0dcc8165e66e5e5667db8910c70809015bc33da00b41f16db40887d",
+  "upstream_record": "10.5281/zenodo.7870795",
+  "boundary": "Compact inputs derive from the already phase-corrected public C-scan; no raw-camera k-linearization, dispersion or coverslip phase audit.",
+  "recorded_at_utc": "2026-09-09T13:55:30.749837+00:00"
+}

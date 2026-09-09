@@ -1,0 +1,45 @@
+name: extract-official-validation-subset
+
+on:
+  push:
+    branches:
+      - "run/zenodo-7870795"
+    paths:
+      - "scripts/extract_official_subset.py"
+      - ".github/workflows/extract-subset.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install extraction dependencies
+        run: python -m pip install numpy scipy requests
+      - name: Download, verify, and extract exact-author-spectrum subset
+        run: python scripts/extract_official_subset.py
+      - name: Commit subset and manifest
+        run: |
+          rm -rf .cache
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/extracts
+          if ! git diff --cached --quiet; then
+            git commit -m "data: refresh exact-author-spectrum TiO2 subset [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: official-tio2-selected-subset
+          path: reports/extracts
+          retention-days: 30

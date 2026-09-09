@@ -1,0 +1,16 @@
+{
+  "record": "10.5281/zenodo.7870795",
+  "dataset": "TiO2",
+  "data_md5": "d905784f950a6fadfce71e9efc6d2654",
+  "fiaa_md5": "4839b0a7a57a7abe73f6644e38249cc6",
+  "rec_fiaa_md5": "08133e8bc4e62063149474cd402990d2",
+  "source_commit": "7144de657c14b409abd4d8deae98a4ebb9a6ddd7",
+  "run_id": "34302944689",
+  "outcomes": {
+    "install": "success",
+    "download": "failure",
+    "execute": "skipped"
+  },
+  "recorded_at_utc": "2026-09-09T02:36:34.410251+00:00",
+  "boundary": "Phase-corrected Cscan; finite strips test RFIAA traversal dependence."
+}

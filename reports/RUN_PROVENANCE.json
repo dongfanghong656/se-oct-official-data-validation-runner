@@ -1,0 +1,15 @@
+{
+  "record_id": "7870795",
+  "dataset": "input_TiO2gelatin_004_phasecorrected.mat",
+  "expected_md5": "d905784f950a6fadfce71e9efc6d2654",
+  "runner_bundle_sha256": "8bb9faaaaff2947bdc64e60de62047afb3f0e2f6889d26f8b5f2997df445557a",
+  "repository": "dongfanghong656/se-oct-official-data-validation-runner",
+  "source_commit": "0b36a85e628bdf87e0c9c091a362abc1a1be3f08",
+  "run_id": "34237243155",
+  "run_attempt": "1",
+  "reconstruct_step_outcome": "success",
+  "unit_test_step_outcome": "success",
+  "official_step_outcome": "success",
+  "recorded_at_utc": "2026-09-08T14:20:30.054651+00:00",
+  "data_boundary": "The deposited MAT volume is already phase corrected and is not a raw camera interferogram."
+}

@@ -1,0 +1,209 @@
+name: exact-author-committed-subset-audit
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/run_committed_subset_audit.m"
+      - "scripts/recursive_maps_committed.m"
+      - "scripts/maps_to_spectra_committed.m"
+      - "scripts/analyze_committed_subset_audit.py"
+      - ".github/workflows/committed-subset-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install runtime and static-check analysis
+        id: install
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          mkdir -p reports/committed_subset_audit
+          sudo apt-get update -qq 2>&1 | tee reports/committed_subset_audit/install.log
+          sudo apt-get install -y --no-install-recommends octave octave-signal 2>&1 | tee -a reports/committed_subset_audit/install.log
+          python -m pip install numpy scipy pandas 2>&1 | tee -a reports/committed_subset_audit/install.log
+          python -m py_compile scripts/prepare_subset_mat.py scripts/analyze_committed_subset_audit.py scripts/validate_evidence_bundle.py 2>&1 | tee -a reports/committed_subset_audit/install.log
+          python scripts/analyze_committed_subset_audit.py --self-test 2>&1 | tee -a reports/committed_subset_audit/install.log
+
+      - name: Prepare committed subset input
+        id: prepare
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        env:
+          SUBSET_MAT: ${{ github.workspace }}/reports/committed_subset_audit/subset.mat
+        run: |
+          set -o pipefail
+          mkdir -p reports/committed_subset_audit .cache/upstream
+          python scripts/prepare_subset_mat.py 2>&1 | tee reports/committed_subset_audit/prepare.log
+
+      - name: Download and verify small deposited author functions
+        id: download
+        if: steps.prepare.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          mkdir -p .cache/upstream
+          download() {
+            name="$1"; md5="$2"
+            curl -fL --retry 12 --retry-all-errors --connect-timeout 30 --max-time 300 \
+              -o ".cache/upstream/${name}" \
+              "https://zenodo.org/records/7870795/files/${name}?download=1"
+            echo "${md5}  .cache/upstream/${name}" | md5sum -c -
+          }
+          {
+            download fiaa_oct_c1.m 4839b0a7a57a7abe73f6644e38249cc6
+            download rec_fiaa_oct_c1.m 08133e8bc4e62063149474cd402990d2
+            download rfiaa_oct_c1.m d5908350abe158134ebe6f9a4dce9eba
+            download oct_iaa_c1.m d189d45be2e5f5ac3b797fb80e7b84e3
+          } 2>&1 | tee reports/committed_subset_audit/download.log
+
+      - name: Execute exact-author traversal and support audits
+        id: execute
+        if: steps.download.outcome == 'success'
+        continue-on-error: true
+        env:
+          SUBSET_MAT: ${{ github.workspace }}/reports/committed_subset_audit/subset.mat
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
+          OUTPUT_DIR: ${{ github.workspace }}/reports/committed_subset_audit
+        run: |
+          set -euo pipefail
+          octave-cli --quiet scripts/run_committed_subset_audit.m \
+            2>&1 | tee reports/committed_subset_audit/octave.log
+          python scripts/analyze_committed_subset_audit.py \
+            reports/committed_subset_audit/order.mat \
+            reports/committed_subset_audit/superfactor.mat \
+            reports/committed_subset_audit \
+            2>&1 | tee reports/committed_subset_audit/analysis.log
+
+      - name: Validate the compact scientific evidence bundle
+        id: evidence_gate
+        if: steps.execute.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("reports/committed_subset_audit/metrics.json").read_text())
+          check = data["order_audit"]["orientation_conversion_check"]
+          if check.get("pass") is not True:
+              raise SystemExit(f"wrapper/direct MAP orientation contract failed: {check}")
+          PY
+          python scripts/validate_evidence_bundle.py \
+            --metrics reports/committed_subset_audit/metrics.json \
+            --output reports/committed_subset_audit/EVIDENCE_STATUS.json \
+            --required-key schema_version \
+            --required-key order_audit.configuration.mapping \
+            --required-key order_audit.orientation_conversion_check \
+            --required-key order_audit.pair_summary \
+            --required-key superfactor_audit.support_selection_diagnostic.candidates \
+            --required-key superfactor_audit.summary \
+            --required-csv reports/committed_subset_audit/order_holdout_per_line.csv \
+            --required-csv reports/committed_subset_audit/order_pair_per_line.csv \
+            --required-csv reports/committed_subset_audit/superfactor_per_line.csv \
+            --min-csv-rows 4
+
+      - name: Record immutable provenance and step outcomes
+        if: always()
+        env:
+          INSTALL_OUTCOME: ${{ steps.install.outcome }}
+          PREPARE_OUTCOME: ${{ steps.prepare.outcome }}
+          DOWNLOAD_OUTCOME: ${{ steps.download.outcome }}
+          EXECUTE_OUTCOME: ${{ steps.execute.outcome }}
+          EVIDENCE_GATE_OUTCOME: ${{ steps.evidence_gate.outcome }}
+        run: |
+          python - <<'PY'
+          import datetime, hashlib, json, os
+          from pathlib import Path
+          out = Path("reports/committed_subset_audit")
+          out.mkdir(parents=True, exist_ok=True)
+          subset = Path("reports/extracts/official_tio2_selected_subset.npz")
+          sk = Path("reports/extracts/author_sk_tio2.csv")
+          payload = {
+              "record": "10.5281/zenodo.7870795",
+              "subset_sha256": hashlib.sha256(subset.read_bytes()).hexdigest() if subset.exists() else None,
+              "author_sk_text_sha256": hashlib.sha256(sk.read_bytes()).hexdigest() if sk.exists() else None,
+              "fiaa_md5": "4839b0a7a57a7abe73f6644e38249cc6",
+              "rec_fiaa_md5": "08133e8bc4e62063149474cd402990d2",
+              "rfiaa_md5": "d5908350abe158134ebe6f9a4dce9eba",
+              "oct_iaa_md5": "d189d45be2e5f5ac3b797fb80e7b84e3",
+              "source_commit": os.environ.get("GITHUB_SHA"),
+              "run_id": os.environ.get("GITHUB_RUN_ID"),
+              "outcomes": {
+                  "install": os.environ.get("INSTALL_OUTCOME"),
+                  "prepare": os.environ.get("PREPARE_OUTCOME"),
+                  "download": os.environ.get("DOWNLOAD_OUTCOME"),
+                  "execute": os.environ.get("EXECUTE_OUTCOME"),
+                  "evidence_gate": os.environ.get("EVIDENCE_GATE_OUTCOME"),
+              },
+              "recorded_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              "boundary": "Committed phase-corrected TiO2 subset; no raw-camera preprocessing audit and no independent wider-band truth."
+          }
+          out.joinpath("provenance.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+          status_path = out / "EVIDENCE_STATUS.json"
+          if not status_path.exists():
+              status_path.write_text(json.dumps({
+                  "schema": "scientific-evidence-gate-v2",
+                  "status": "FAILED",
+                  "failures": ["evidence_gate_not_completed"],
+                  "source_commit": os.environ.get("GITHUB_SHA"),
+                  "run_id": os.environ.get("GITHUB_RUN_ID"),
+                  "rule": "Producer logs and provenance without validated metrics are diagnostics, not verified evidence."
+              }, indent=2), encoding="utf-8")
+          PY
+
+      - name: Publish compact evidence or failed-run diagnostics
+        if: always()
+        run: |
+          rm -rf .cache
+          rm -f reports/committed_subset_audit/subset.mat \
+                reports/committed_subset_audit/order.mat \
+                reports/committed_subset_audit/superfactor.mat
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/committed_subset_audit
+          status=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("reports/committed_subset_audit/EVIDENCE_STATUS.json")
+          try:
+              print(json.loads(path.read_text(encoding="utf-8")).get("status", "FAILED"))
+          except Exception:
+              print("FAILED")
+          PY
+          )
+          if ! git diff --cached --quiet; then
+            if [ "$status" = "VERIFIED" ]; then
+              git commit -m "test: record verified committed-subset traversal and support evidence [skip ci]"
+            else
+              git commit -m "test: record failed committed-subset audit diagnostics [skip ci]"
+            fi
+          fi
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exact-author-committed-subset-audit
+          path: reports/committed_subset_audit
+          retention-days: 30
+
+      - name: Enforce execution gate
+        if: >-
+          steps.install.outcome != 'success' ||
+          steps.prepare.outcome != 'success' ||
+          steps.download.outcome != 'success' ||
+          steps.execute.outcome != 'success' ||
+          steps.evidence_gate.outcome != 'success'
+        run: exit 1

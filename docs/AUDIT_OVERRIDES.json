@@ -1,0 +1,38 @@
+{
+  "schema": "se-oct-audit-overrides-v1",
+  "rule": "Overrides may downgrade or clarify evidence; they may not upgrade a run without a verified EVIDENCE_STATUS.json.",
+  "overrides": {
+    "exact_strip": {
+      "status": "INVALIDATED",
+      "reason": "Legacy 2-D ISAM target was evaluated at the wrong axial coordinate; retained only for provenance."
+    },
+    "order_audit/tio2": {
+      "status": "FAILED_RUN",
+      "reason": "Large-download workflow preserved diagnostics but did not produce verified metrics."
+    },
+    "order_audit/leaf": {
+      "status": "FAILED_RUN",
+      "reason": "Large-download workflow preserved diagnostics but did not produce verified metrics."
+    },
+    "superfactor_holdout": {
+      "status": "FAILED_RUN",
+      "reason": "Legacy workflow preserved provenance only; use committed_subset_audit support results instead."
+    },
+    "published_fig4_point": {
+      "status": "SUPPORTIVE_ONLY",
+      "reason": "Registered same-point processed-output comparison; method volumes are separately normalized and not raw physical energy."
+    },
+    "published_fig5_aline": {
+      "status": "BOUNDARY_ONLY",
+      "reason": "Deposited leaf-output format/reproduction boundary; not an independent raw-data validation."
+    },
+    "exact_leaf": {
+      "status": "SUPPORTIVE_ONLY",
+      "reason": "Exploratory selected A-lines, not a paired full-volume population analysis."
+    },
+    "exact_crop": {
+      "status": "SUPPORTIVE_ONLY",
+      "reason": "Limited 2-D surrogate; not a complete 512x512 3-D ISAM validation."
+    }
+  }
+}

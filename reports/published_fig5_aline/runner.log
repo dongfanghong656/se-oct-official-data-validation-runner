@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/extract_published_fig5_miaa_aline.py", line 53, in read_aline
+    with h5py.File(p,'r') as f:
+         ^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/h5py/_hl/files.py", line 555, in __init__
+    fid = make_fid(name, mode, userblock_size, fapl, fcpl, swmr=swmr)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/h5py/_hl/files.py", line 232, in make_fid
+    fid = h5f.open(name, flags, fapl=fapl)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 106, in h5py.h5f.open
+OSError: Unable to synchronously open file (file signature not found)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/extract_published_fig5_miaa_aline.py", line 87, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/extract_published_fig5_miaa_aline.py", line 72, in main
+    root=Path(__file__).resolve().parents[1];cache=root/'.cache'/NAME;out=root/'reports'/'published_fig5_aline';out.mkdir(parents=True,exist_ok=True);download(cache);amp,meta=read_aline(cache)
+                                                                                                                                                                               ^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/scripts/extract_published_fig5_miaa_aline.py", line 64, in read_aline
+    if image.shape!=(801,512,512):raise RuntimeError(f'unexpected MATLAB image shape {image.shape}')
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: unexpected MATLAB image shape (401, 512, 512)

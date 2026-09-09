@@ -1,0 +1,50 @@
+name: extract-exact-oct-iaa-wrapper
+
+on:
+  push:
+    branches:
+      - "run/zenodo-7870795"
+    paths:
+      - ".github/workflows/source-range.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download and verify the exact wrapper only
+        run: |
+          set -euo pipefail
+          mkdir -p reports/source_ranges /tmp/upstream
+          curl -fL --retry 12 --retry-all-errors --connect-timeout 30 --max-time 300 \
+            -o /tmp/upstream/oct_iaa_c1.m \
+            "https://zenodo.org/records/7870795/files/oct_iaa_c1.m?download=1"
+          echo "d189d45be2e5f5ac3b797fb80e7b84e3  /tmp/upstream/oct_iaa_c1.m" | md5sum -c -
+          {
+            echo '# oct_iaa_c1.m — checksum-traced exact wrapper source'
+            echo
+            echo '- Source: Zenodo record 7870795'
+            echo '- MD5: `d189d45be2e5f5ac3b797fb80e7b84e3`'
+            echo '- Purpose: audit chunk partitioning, traversal direction, and output assembly.'
+            echo
+            echo '```matlab'
+            nl -ba /tmp/upstream/oct_iaa_c1.m
+            echo '```'
+          } > reports/source_ranges/oct_iaa_c1.md
+      - name: Commit wrapper audit source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/source_ranges/oct_iaa_c1.md
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: record exact OCT IAA wrapper source [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

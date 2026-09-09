@@ -1,0 +1,55 @@
+{
+  "experiment": "exact_recursive_MIAA_to_2D_ISAM_official_strip",
+  "input_boundary": "authors phase-corrected Cscan",
+  "strip": {
+    "y_zero_based": 232,
+    "x_zero_based": [
+      146,
+      274
+    ],
+    "Nx": 129,
+    "dx_um": 0.439453125,
+    "focus_index": 360
+  },
+  "target_miaa_isam_zx": [
+    498,
+    64
+  ],
+  "methods": {
+    "dft_isam": {
+      "peak_coordinate_zx": [
+        494,
+        62
+      ],
+      "lateral_fwhm_um": 0.7296464001135088,
+      "peak_amplitude_relative_to_miaa": 79.48202535734384,
+      "local_energy_relative_to_miaa": 19372.28255838542
+    },
+    "miaa_isam": {
+      "peak_coordinate_zx": [
+        498,
+        64
+      ],
+      "lateral_fwhm_um": 9.933908119957776,
+      "peak_amplitude_relative_to_miaa": 1.0,
+      "local_energy_relative_to_miaa": 1.0
+    },
+    "phase_scrambled_miaa_isam": {
+      "peak_coordinate_zx": [
+        498,
+        60
+      ],
+      "lateral_fwhm_um": 8.28314664227577,
+      "peak_amplitude_relative_to_miaa": 0.5490484770855342,
+      "local_energy_relative_to_miaa": 0.31920782522941493
+    },
+    "dft_no_isam": {
+      "peak_coordinate_zx": [
+        363,
+        63
+      ],
+      "lateral_fwhm_um": 0.9560690504294391
+    }
+  },
+  "interpretation": "Random per-A-line phase leaves each A-line magnitude unchanged but should reduce coherent ISAM concentration."
+}

@@ -1,0 +1,333 @@
+{
+  "schema": "se-oct-audit-registry-v1",
+  "generated_at_utc": "2026-09-09T08:07:44.615841+00:00",
+  "rule": "A commit or workflow trigger is not evidence. VERIFIED requires a verified evidence file and at least one metrics file; overrides can only downgrade.",
+  "entries": [
+    {
+      "audit": "committed_subset_audit",
+      "status": "VERIFIED",
+      "evidence_status": "VERIFIED",
+      "evidence_sha256": "043a357a9f7b98235ccd39f26997b0808f09002cafc7ac1669f4ef45baa50977",
+      "metric_files": [
+        {
+          "path": "reports/committed_subset_audit/metrics.json",
+          "size": 373836,
+          "sha256": "4a5f31b2c59774f4c31863ff88e8ceae873f30e512312ffa15a6014055dd1c1b"
+        },
+        {
+          "path": "reports/committed_subset_audit/order_metrics.json",
+          "size": 161448,
+          "sha256": "61d8dd12327d541618e61eb447c42d458561a0543f5e302edccfc8f8d44f2428"
+        },
+        {
+          "path": "reports/committed_subset_audit/superfactor_metrics.json",
+          "size": 188975,
+          "sha256": "6379a639b4825037bf16858c4ba204ea9a152920321d53d00d0809414d286222"
+        }
+      ],
+      "provenance": "reports/committed_subset_audit/provenance.json",
+      "logs": [
+        "reports/committed_subset_audit/analysis.log",
+        "reports/committed_subset_audit/download.log",
+        "reports/committed_subset_audit/install.log",
+        "reports/committed_subset_audit/octave.log",
+        "reports/committed_subset_audit/prepare.log"
+      ],
+      "failures": [],
+      "override_reason": null
+    },
+    {
+      "audit": "exact",
+      "status": "SUPPORTIVE_ONLY",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [
+        {
+          "path": "reports/exact/metrics.json",
+          "size": 6425,
+          "sha256": "ea2848b55d410f4e8adb6b5cae6afc3cc5c995325ba2595db0718d05f94695a6"
+        }
+      ],
+      "provenance": "reports/exact/provenance.json",
+      "logs": [
+        "reports/exact/analysis.log",
+        "reports/exact/octave.log"
+      ],
+      "failures": [],
+      "override_reason": null
+    },
+    {
+      "audit": "exact_crop",
+      "status": "SUPPORTIVE_ONLY",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [
+        {
+          "path": "reports/exact_crop/metrics.json",
+          "size": 3649,
+          "sha256": "c57393abbadb81b0caf5912219cad18b86e154ac1c9ecd448f64ae12b137ad4a"
+        }
+      ],
+      "provenance": "reports/exact_crop/provenance.json",
+      "logs": [
+        "reports/exact_crop/analysis.log",
+        "reports/exact_crop/octave.log"
+      ],
+      "failures": [],
+      "override_reason": "Limited 2-D surrogate; not a complete 512x512 3-D ISAM validation."
+    },
+    {
+      "audit": "exact_fig4_crop",
+      "status": "PENDING",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [
+        {
+          "path": "reports/exact_fig4_crop/metrics.json",
+          "size": 4649,
+          "sha256": "7bf0106c4e4414a35d96ee25cf083d05dae6fe82d20c4ec8a02c508e28bb9315"
+        }
+      ],
+      "provenance": null,
+      "logs": [
+        "reports/exact_fig4_crop/analysis.log",
+        "reports/exact_fig4_crop/octave.log"
+      ],
+      "failures": [],
+      "override_reason": null
+    },
+    {
+      "audit": "exact_leaf",
+      "status": "SUPPORTIVE_ONLY",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [
+        {
+          "path": "reports/exact_leaf/metrics.json",
+          "size": 16936,
+          "sha256": "02938a772770a6ac2fed2cb2dcbfb755f134884749bd7316f232cf87dacb66f0"
+        }
+      ],
+      "provenance": null,
+      "logs": [
+        "reports/exact_leaf/analysis.log",
+        "reports/exact_leaf/octave.log"
+      ],
+      "failures": [],
+      "override_reason": "Exploratory selected A-lines, not a paired full-volume population analysis."
+    },
+    {
+      "audit": "exact_strip",
+      "status": "INVALIDATED",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [
+        {
+          "path": "reports/exact_strip/metrics.json",
+          "size": 1353,
+          "sha256": "4a2d47632e24aca669ef340e57f731b7a23b85e57f762ded3470f833ea12559b"
+        }
+      ],
+      "provenance": null,
+      "logs": [
+        "reports/exact_strip/analysis.log",
+        "reports/exact_strip/octave.log"
+      ],
+      "failures": [],
+      "override_reason": "Legacy 2-D ISAM target was evaluated at the wrong axial coordinate; retained only for provenance."
+    },
+    {
+      "audit": "exact_superfactor",
+      "status": "PENDING",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [
+        {
+          "path": "reports/exact_superfactor/metrics.json",
+          "size": 4667,
+          "sha256": "5b814e2fd8614ef4dd1a0de07cfdc5878a5bf26d1b34f1daf0250fea31829149"
+        }
+      ],
+      "provenance": null,
+      "logs": [
+        "reports/exact_superfactor/analysis.log",
+        "reports/exact_superfactor/octave.log"
+      ],
+      "failures": [],
+      "override_reason": null
+    },
+    {
+      "audit": "extracts",
+      "status": "PENDING",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [],
+      "provenance": null,
+      "logs": [
+        "reports/extracts/extract_crop.log"
+      ],
+      "failures": [],
+      "override_reason": null
+    },
+    {
+      "audit": "order_audit",
+      "status": "PENDING",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [],
+      "provenance": "reports/order_audit/provenance.json",
+      "logs": [],
+      "failures": [],
+      "override_reason": null
+    },
+    {
+      "audit": "order_audit/leaf",
+      "status": "FAILED_RUN",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [],
+      "provenance": "reports/order_audit/leaf/provenance.json",
+      "logs": [
+        "reports/order_audit/leaf/download.log",
+        "reports/order_audit/leaf/install.log"
+      ],
+      "failures": [],
+      "override_reason": "Large-download workflow preserved diagnostics but did not produce verified metrics."
+    },
+    {
+      "audit": "order_audit/tio2",
+      "status": "FAILED_RUN",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [],
+      "provenance": "reports/order_audit/tio2/provenance.json",
+      "logs": [
+        "reports/order_audit/tio2/download.log",
+        "reports/order_audit/tio2/install.log"
+      ],
+      "failures": [],
+      "override_reason": "Large-download workflow preserved diagnostics but did not produce verified metrics."
+    },
+    {
+      "audit": "published_fig4_point",
+      "status": "SUPPORTIVE_ONLY",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [
+        {
+          "path": "reports/published_fig4_point/metrics.json",
+          "size": 2631,
+          "sha256": "890fdfa66a378e28505b40ee081636676a5c1fb0bb5e87adbd2fc529b56ea864"
+        },
+        {
+          "path": "reports/published_fig4_point/registered_same_point_metrics.json",
+          "size": 3000,
+          "sha256": "25b777b9c0b56d39c1319a682eb9008973d8e5fd96097229639174301b6c760c"
+        }
+      ],
+      "provenance": null,
+      "logs": [
+        "reports/published_fig4_point/registration.log",
+        "reports/published_fig4_point/runner.log"
+      ],
+      "failures": [],
+      "override_reason": "Registered same-point processed-output comparison; method volumes are separately normalized and not raw physical energy."
+    },
+    {
+      "audit": "published_fig5_aline",
+      "status": "BOUNDARY_ONLY",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [],
+      "provenance": null,
+      "logs": [
+        "reports/published_fig5_aline/runner.log"
+      ],
+      "failures": [],
+      "override_reason": "Deposited leaf-output format/reproduction boundary; not an independent raw-data validation."
+    },
+    {
+      "audit": "source_ranges",
+      "status": "PENDING",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [],
+      "provenance": null,
+      "logs": [],
+      "failures": [],
+      "override_reason": null
+    },
+    {
+      "audit": "superfactor_holdout",
+      "status": "FAILED_RUN",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [],
+      "provenance": "reports/superfactor_holdout/provenance.json",
+      "logs": [],
+      "failures": [],
+      "override_reason": "Legacy workflow preserved provenance only; use committed_subset_audit support results instead."
+    },
+    {
+      "audit": "synthetic",
+      "status": "PENDING",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [
+        {
+          "path": "reports/synthetic/metrics.json",
+          "size": 5518,
+          "sha256": "c251cf361c6c92fd94e4a84a3d372f00198044be88c55cbeef9eadb1451a27de"
+        },
+        {
+          "path": "reports/synthetic/miaa_isam_metrics.json",
+          "size": 1560,
+          "sha256": "c45b73f9e097c0763c4147d4c57ff98cd7e7104548987438c5b8b2857117b875"
+        }
+      ],
+      "provenance": null,
+      "logs": [],
+      "failures": [],
+      "override_reason": null
+    },
+    {
+      "audit": "uncertainty_audit",
+      "status": "VERIFIED",
+      "evidence_status": "VERIFIED",
+      "evidence_sha256": "2346d6188dc7bc85c52322929ba309bafcf9ad616ab9b27e158d397360ae7a9d",
+      "metric_files": [
+        {
+          "path": "reports/uncertainty_audit/uncertainty_audit_metrics.json",
+          "size": 1196,
+          "sha256": "28ae23095718b940e5b428165550eeb6f53574eb18c1714229251d9f3b9a8182"
+        }
+      ],
+      "provenance": "reports/uncertainty_audit/provenance.json",
+      "logs": [
+        "reports/uncertainty_audit/pytest.log",
+        "reports/uncertainty_audit/run.log"
+      ],
+      "failures": [],
+      "override_reason": null
+    },
+    {
+      "audit": "upstream",
+      "status": "PENDING",
+      "evidence_status": null,
+      "evidence_sha256": null,
+      "metric_files": [
+        {
+          "path": "reports/upstream/metrics.json",
+          "size": 14675,
+          "sha256": "542ff5f86db819016250fd52ffe51c3e81495903fb8b8e78be10cbf7f61db0c1"
+        }
+      ],
+      "provenance": null,
+      "logs": [
+        "reports/upstream/runner.log"
+      ],
+      "failures": [],
+      "override_reason": null
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema": "scientific-evidence-gate-v2",
+  "status": "VERIFIED",
+  "metrics_path": "reports/phase_isam_mechanism/metrics.json",
+  "metrics_sha256": "9453e5638f06a199a7d876d2c277c26fe4f593d008da45b6cd41717e3cbd5201",
+  "metrics_size": 9667,
+  "required_keys": [
+    "status",
+    "baseline.narrow_isam",
+    "baseline.miaa_isam",
+    "phase_rms_sweep",
+    "opl_sweep",
+    "full_iaa_miaa_equivariance.full_miaa_relative_error",
+    "exact_author_dispersion",
+    "decisions"
+  ],
+  "required_files": [
+    {
+      "path": "reports/phase_isam_mechanism/runner.log",
+      "exists": true,
+      "size": 2049,
+      "sha256": "179a78c07b9cac3941222b3bd530f1c58a3ba455cbb0889d6507b3affbf59e2f"
+    },
+    {
+      "path": "reports/phase_isam_mechanism/pytest.log",
+      "exists": true,
+      "size": 98,
+      "sha256": "b73855785213f79cdebbb47c6fed6c928d2b187ede1a405c26fa36cf696d01af"
+    },
+    {
+      "path": "reports/phase_isam_mechanism/provenance.json",
+      "exists": true,
+      "size": 727,
+      "sha256": "9c18ded8b58232b7677d5f70826db9c731f94bd30ad29beb04498706b4b3f048"
+    },
+    {
+      "path": "reports/phase_isam_mechanism/phase_collapse.png",
+      "exists": true,
+      "size": 72541,
+      "sha256": "6c3f8252041cf04a7064f0757c8546b349db5d01be8edfca167205ba9257cbad"
+    },
+    {
+      "path": "reports/phase_isam_mechanism/axial_gain_decomposition.png",
+      "exists": true,
+      "size": 237884,
+      "sha256": "85a1d1822a90e0acf6e9ff619b01ddc581cdb81f72f5685775058d391e5b18a3"
+    }
+  ],
+  "failures": [],
+  "checked_at_utc": "2026-09-09T15:17:49.207177+00:00",
+  "rule": "A commit name, workflow trigger, provenance-only file, or successful producer command without parseable metrics is not execution evidence."
+}

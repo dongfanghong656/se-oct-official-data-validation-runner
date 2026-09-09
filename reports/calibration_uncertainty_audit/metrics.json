@@ -1,0 +1,67 @@
+{
+  "schema": "phase-calibration-uncertainty-audit-v1",
+  "status": "VERIFIED_SYNTHETIC",
+  "calibrated_interval": [
+    -1,
+    1
+  ],
+  "reference_linear_fit": {
+    "degree": 1,
+    "phase_noise_std_rad": 0.02,
+    "coefficient_condition_number": 2.950819672131147
+  },
+  "dispersion_fit": {
+    "degree": 8,
+    "phase_noise_std_rad": 0.01,
+    "coefficient_condition_number": 284976.2750979283
+  },
+  "phase_uncertainty_by_distance": [
+    {
+      "normalized_distance": 0,
+      "linear_reference_phase_std_rad": 0.0018181818181818182,
+      "degree8_dispersion_phase_std_rad": 0.0022383391989613467
+    },
+    {
+      "normalized_distance": 0.5,
+      "linear_reference_phase_std_rad": 0.0023967642912637406,
+      "degree8_dispersion_phase_std_rad": 0.0022630690011101575
+    },
+    {
+      "normalized_distance": 1,
+      "linear_reference_phase_std_rad": 0.003613939802986084,
+      "degree8_dispersion_phase_std_rad": 0.006998094407122215
+    },
+    {
+      "normalized_distance": 1.5,
+      "linear_reference_phase_std_rad": 0.0050253388561526165,
+      "degree8_dispersion_phase_std_rad": 1.7720203672289778
+    },
+    {
+      "normalized_distance": 2,
+      "linear_reference_phase_std_rad": 0.006505758082385753,
+      "degree8_dispersion_phase_std_rad": 27.96999759944528
+    },
+    {
+      "normalized_distance": 3,
+      "linear_reference_phase_std_rad": 0.009544567413179515,
+      "degree8_dispersion_phase_std_rad": 949.6424654198485
+    },
+    {
+      "normalized_distance": 4,
+      "linear_reference_phase_std_rad": 0.012624666234566734,
+      "degree8_dispersion_phase_std_rad": 10394.07499727988
+    }
+  ],
+  "miaa_confidence_effect": {
+    "without_calibration_uncertainty_median_predictability": 0.9997926748303805,
+    "with_reference_fit_uncertainty_median_predictability": 0.9997893431156583,
+    "without_calibration_uncertainty_fraction_q_ge_0_5": 1.0,
+    "with_reference_fit_uncertainty_fraction_q_ge_0_5": 1.0
+  },
+  "decisions": {
+    "phase_calibration_uncertainty_should_be_propagated": true,
+    "high_order_polynomial_should_be_extrapolated_beyond_calibration_support": false,
+    "phase_correction_point_estimate_is_exact": false
+  },
+  "boundary": "Synthetic statistical fit uncertainty only. Authors did not publish raw mirror/coverslip phase residuals; actual error is not estimated."
+}

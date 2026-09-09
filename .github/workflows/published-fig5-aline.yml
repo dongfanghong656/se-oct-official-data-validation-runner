@@ -1,0 +1,29 @@
+name: extract-published-figure5-miaa-aline
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths: ["scripts/extract_published_fig5_miaa_aline.py", ".github/workflows/published-fig5-aline.yml"]
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install numpy scipy h5py matplotlib requests
+      - run: |
+          set -o pipefail;mkdir -p reports/published_fig5_aline
+          python scripts/extract_published_fig5_miaa_aline.py 2>&1|tee reports/published_fig5_aline/runner.log
+      - name: Publish compact evidence
+        if: always()
+        run: |
+          rm -rf .cache;git config user.name "github-actions[bot]";git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/published_fig5_aline
+          if ! git diff --cached --quiet;then git commit -m "test: record published Figure-5 MIAA A-line evidence [skip ci]";git pull --rebase origin "${GITHUB_REF_NAME}";git push origin "HEAD:${GITHUB_REF_NAME}";fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: published-figure5-miaa-aline, path: reports/published_fig5_aline, retention-days: 30}

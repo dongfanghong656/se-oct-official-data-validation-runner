@@ -1,0 +1,86 @@
+name: exact-author-3d-crop-isam
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "scripts/run_exact_crop.m"
+      - "scripts/analyze_exact_crop.py"
+      - ".github/workflows/exact-crop.yml"
+      - "reports/extracts/official_tio2_crop_97.mat"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Install Octave and Python dependencies
+        id: install
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends octave octave-signal
+          python -m pip install numpy scipy matplotlib
+      - name: Verify committed crop and download exact author functions
+        id: inputs
+        run: |
+          set -euo pipefail; mkdir -p .cache/upstream reports/exact_crop
+          echo "b2813d858253530ebaa269880a9fde0622fe4ca05d9d8ffa79814c77319d4b2f  reports/extracts/official_tio2_crop_97.mat" | sha256sum -c -
+          for spec in "fiaa_oct_c1.m 4839b0a7a57a7abe73f6644e38249cc6" "rec_fiaa_oct_c1.m 08133e8bc4e62063149474cd402990d2"; do
+            set -- $spec; curl -fL --retry 6 --retry-all-errors -o ".cache/upstream/$1" "https://zenodo.org/records/7870795/files/$1?download=1"; echo "$2  .cache/upstream/$1" | md5sum -c -
+          done
+      - name: Run exact FIAA/RFIAA/MIAA crop
+        id: octave
+        continue-on-error: true
+        env:
+          DATA_FILE: ${{ github.workspace }}/reports/extracts/official_tio2_crop_97.mat
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
+          OUTPUT_MAT: ${{ github.workspace }}/reports/exact_crop/crop.mat
+        run: |
+          set -o pipefail
+          octave-cli --quiet scripts/run_exact_crop.m 2>&1 | tee reports/exact_crop/octave.log
+      - name: Run 3-D ISAM and phase causal controls
+        id: analysis
+        if: steps.octave.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/analyze_exact_crop.py reports/exact_crop/crop.mat reports/exact_crop 2>&1 | tee reports/exact_crop/analysis.log
+      - name: Record provenance, status, and compact evidence
+        if: always()
+        env:
+          INSTALL_OUTCOME: ${{ steps.install.outcome }}
+          INPUT_OUTCOME: ${{ steps.inputs.outcome }}
+          OCTAVE_OUTCOME: ${{ steps.octave.outcome }}
+          ANALYSIS_OUTCOME: ${{ steps.analysis.outcome }}
+        run: |
+          set -euo pipefail
+          mkdir -p reports/exact_crop
+          python - <<'PY'
+          import json,os,pathlib,datetime
+          root=pathlib.Path('reports/exact_crop')
+          status={k:os.environ.get(k) for k in ['INSTALL_OUTCOME','INPUT_OUTCOME','OCTAVE_OUTCOME','ANALYSIS_OUTCOME']}
+          root.joinpath('provenance.json').write_text(json.dumps({'record':'10.5281/zenodo.7870795','source_data_md5':'d905784f950a6fadfce71e9efc6d2654','crop_sha256':'b2813d858253530ebaa269880a9fde0622fe4ca05d9d8ffa79814c77319d4b2f','source_commit':os.environ.get('GITHUB_SHA'),'run_id':os.environ.get('GITHUB_RUN_ID'),'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'boundary':'phase-corrected public volume; finite 97x97 crop','step_outcomes':status},indent=2))
+          root.joinpath('RUN_STATUS.md').write_text('# Exact 3-D crop run status\n\n'+''.join(f'- {k.lower()}: `{v}`\n' for k,v in status.items())+f"- run_id: `{os.environ.get('GITHUB_RUN_ID')}`\n\nEvidence is accepted only when Octave and analysis are `success` and `metrics.json` exists.\n")
+          PY
+          rm -rf .cache
+          rm -f reports/exact_crop/crop.mat
+          find reports/exact_crop -type f -size +20M -delete
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/exact_crop
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record exact 3-D crop evidence or diagnostics [skip ci]"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: exact-3d-crop-isam, path: reports/exact_crop, retention-days: 30}
+      - name: Enforce scientific gate
+        if: steps.octave.outcome != 'success' || steps.analysis.outcome != 'success'
+        run: exit 1

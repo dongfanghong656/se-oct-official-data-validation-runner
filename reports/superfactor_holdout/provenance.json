@@ -1,0 +1,9 @@
+{
+  "record": "10.5281/zenodo.7870795",
+  "data_md5": "d905784f950a6fadfce71e9efc6d2654",
+  "fiaa_md5": "4839b0a7a57a7abe73f6644e38249cc6",
+  "source_commit": "4df51be7acb5a3bd27a347611d70fb2a828fced5",
+  "run_id": "34303086218",
+  "recorded_at_utc": "2026-09-09T02:39:00.301861+00:00",
+  "boundary": "Phase-corrected 200-bin ROI representation; target-support audit, not raw-camera wideband validation."
+}

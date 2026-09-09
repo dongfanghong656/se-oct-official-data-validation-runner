@@ -1,0 +1,20 @@
+{
+  "record": "10.5281/zenodo.7870795",
+  "subset_sha256": "40c0c91fa3104ec3fd2d1e33fe16db54c3261bb0e46e83821bcd9a3ad3d34c83",
+  "author_sk_text_sha256": "e7effa4525cc3c30f2d2496bd7d249c8911c474b4c8133512ef3cd9b3db0bcdb",
+  "fiaa_md5": "4839b0a7a57a7abe73f6644e38249cc6",
+  "rec_fiaa_md5": "08133e8bc4e62063149474cd402990d2",
+  "rfiaa_md5": "d5908350abe158134ebe6f9a4dce9eba",
+  "oct_iaa_md5": "d189d45be2e5f5ac3b797fb80e7b84e3",
+  "source_commit": "24256f4a991aa66d0499b1ddc0c202c69aab44fc",
+  "run_id": "34324698086",
+  "outcomes": {
+    "install": "success",
+    "prepare": "success",
+    "download": "success",
+    "execute": "success",
+    "evidence_gate": "success"
+  },
+  "recorded_at_utc": "2026-09-09T07:59:45.021087+00:00",
+  "boundary": "Committed phase-corrected TiO2 subset; no raw-camera preprocessing audit and no independent wider-band truth."
+}

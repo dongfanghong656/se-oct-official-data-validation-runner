@@ -1,0 +1,526 @@
+{
+  "experiment": "exact_author_FIAA_MIAA_on_deterministic_leaf_A_lines",
+  "boundary": "phase-corrected leaf Cscan; score-stratified A-lines, not the exact Figure-5 fit line",
+  "groups": {
+    "1": "low score",
+    "2": "middle score",
+    "3": "high score"
+  },
+  "group_medians": [
+    {
+      "group": 1,
+      "line": 3.5,
+      "score": 4423.415283203125,
+      "mapping_start": 449.0,
+      "holdout_corr": 0.16777557590875952,
+      "holdout_nmse": 0.9718486209056054,
+      "holdout_phase_rmse": 1.6425892345877,
+      "fwhm_dft_profile_um": 8.115771834598881,
+      "fwhm_normalized_dft_profile_um": 3.6125108789906815,
+      "fwhm_rfiaa_profile_um": 2.078666501687465,
+      "fwhm_rfiaa_map_profile_um": 1.323242274860224,
+      "fwhm_miaa_profile_um": 1.7024305480012774
+    },
+    {
+      "group": 2,
+      "line": 11.5,
+      "score": 15672.97216796875,
+      "mapping_start": 449.0,
+      "holdout_corr": 0.6239880570505288,
+      "holdout_nmse": 0.6106388865910483,
+      "holdout_phase_rmse": 1.0886418486801501,
+      "fwhm_dft_profile_um": 7.881650824935494,
+      "fwhm_normalized_dft_profile_um": 3.884167179872371,
+      "fwhm_rfiaa_profile_um": 1.9519276343084981,
+      "fwhm_rfiaa_map_profile_um": 1.2563857176136102,
+      "fwhm_miaa_profile_um": 1.6949839687907562
+    },
+    {
+      "group": 3,
+      "line": 19.5,
+      "score": 58401.748046875,
+      "mapping_start": 449.0,
+      "holdout_corr": 0.9115123520630837,
+      "holdout_nmse": 0.16897841245543838,
+      "holdout_phase_rmse": 0.36940716602643653,
+      "fwhm_dft_profile_um": 7.478948650699509,
+      "fwhm_normalized_dft_profile_um": 3.9099704385564786,
+      "fwhm_rfiaa_profile_um": 1.201956303147626,
+      "fwhm_rfiaa_map_profile_um": 1.0838520835715535,
+      "fwhm_miaa_profile_um": 1.4216244569724878
+    }
+  ],
+  "all_median": {
+    "line": 11.5,
+    "group": 2.0,
+    "score": 15672.97216796875,
+    "mapping_start": 449.0,
+    "holdout_corr": 0.6239880570505288,
+    "holdout_nmse": 0.6106388865910483,
+    "holdout_phase_rmse": 1.0886418486801501,
+    "fwhm_dft_profile_um": 7.531489260032869,
+    "fwhm_normalized_dft_profile_um": 3.8741085502960297,
+    "fwhm_rfiaa_profile_um": 1.9728758009713685,
+    "fwhm_rfiaa_map_profile_um": 1.245560866396462,
+    "fwhm_miaa_profile_um": 1.62450275957195
+  },
+  "per_line": [
+    {
+      "line": 0,
+      "group": 1,
+      "score": 3205.832275390625,
+      "coordinate_yx0": [
+        296,
+        392
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.15985245518976904,
+      "holdout_nmse": 0.9744471925698027,
+      "holdout_phase_rmse": 1.7212137708394608,
+      "fwhm_dft_profile_um": 7.9880152056381934,
+      "fwhm_normalized_dft_profile_um": 3.5226181772380776,
+      "fwhm_rfiaa_profile_um": 2.0758637776908473,
+      "fwhm_rfiaa_map_profile_um": 1.7628425431537158,
+      "fwhm_miaa_profile_um": 1.9367938710975912
+    },
+    {
+      "line": 1,
+      "group": 1,
+      "score": 3838.592041015625,
+      "coordinate_yx0": [
+        296,
+        104
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.15480764413664208,
+      "holdout_nmse": 0.9760345933168627,
+      "holdout_phase_rmse": 1.7231961722083025,
+      "fwhm_dft_profile_um": 8.243528463559569,
+      "fwhm_normalized_dft_profile_um": 3.320326309211051,
+      "fwhm_rfiaa_profile_um": 2.782274194489315,
+      "fwhm_rfiaa_map_profile_um": 2.139907677243906,
+      "fwhm_miaa_profile_um": 2.1257127243632232
+    },
+    {
+      "line": 2,
+      "group": 1,
+      "score": 4211.25390625,
+      "coordinate_yx0": [
+        200,
+        72
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.1881606704894693,
+      "holdout_nmse": 0.9645955620809534,
+      "holdout_phase_rmse": 1.6141674458838482,
+      "fwhm_dft_profile_um": 6.285578639310202,
+      "fwhm_normalized_dft_profile_um": 3.759949145643878,
+      "fwhm_rfiaa_profile_um": 2.0557051566470306,
+      "fwhm_rfiaa_map_profile_um": 1.1781210871764698,
+      "fwhm_miaa_profile_um": 1.3728564435243398
+    },
+    {
+      "line": 3,
+      "group": 1,
+      "score": 4381.0771484375,
+      "coordinate_yx0": [
+        264,
+        8
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.3002443289477542,
+      "holdout_nmse": 0.9098533429347123,
+      "holdout_phase_rmse": 1.5637415844299396,
+      "fwhm_dft_profile_um": 6.781384316245056,
+      "fwhm_normalized_dft_profile_um": 4.44556928078946,
+      "fwhm_rfiaa_profile_um": 1.7366085050094617,
+      "fwhm_rfiaa_map_profile_um": 1.2774904611256375,
+      "fwhm_miaa_profile_um": 1.7093974916153363
+    },
+    {
+      "line": 4,
+      "group": 1,
+      "score": 4465.75341796875,
+      "coordinate_yx0": [
+        392,
+        296
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.08964849299067858,
+      "holdout_nmse": 0.9919631477045003,
+      "holdout_phase_rmse": 1.703942332821333,
+      "fwhm_dft_profile_um": 8.584116241977105,
+      "fwhm_normalized_dft_profile_um": 3.702403580743285,
+      "fwhm_rfiaa_profile_um": 2.0814692256840828,
+      "fwhm_rfiaa_map_profile_um": 1.4534652074062548,
+      "fwhm_miaa_profile_um": 1.2954600832612562
+    },
+    {
+      "line": 5,
+      "group": 1,
+      "score": 4598.63134765625,
+      "coordinate_yx0": [
+        72,
+        8
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.32731529793150455,
+      "holdout_nmse": 0.89286469574001,
+      "holdout_phase_rmse": 1.4831363289332649,
+      "fwhm_dft_profile_um": 16.98935105585082,
+      "fwhm_normalized_dft_profile_um": 3.3216463827180873,
+      "fwhm_rfiaa_profile_um": 3.044218869471317,
+      "fwhm_rfiaa_map_profile_um": 1.3479316032381645,
+      "fwhm_miaa_profile_um": 1.8003362820695443
+    },
+    {
+      "line": 6,
+      "group": 1,
+      "score": 5029.193359375,
+      "coordinate_yx0": [
+        360,
+        168
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.1661217249848219,
+      "holdout_nmse": 0.9724035724880672,
+      "holdout_phase_rmse": 1.592917421329209,
+      "fwhm_dft_profile_um": 7.372205875301157,
+      "fwhm_normalized_dft_profile_um": 3.0782753059516628,
+      "fwhm_rfiaa_profile_um": 2.2382216221073006,
+      "fwhm_rfiaa_map_profile_um": 1.2985529464822831,
+      "fwhm_miaa_profile_um": 1.6954636043872184
+    },
+    {
+      "line": 7,
+      "group": 1,
+      "score": 5037.29443359375,
+      "coordinate_yx0": [
+        424,
+        104
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.16942942683269718,
+      "holdout_nmse": 0.9712936693231438,
+      "holdout_phase_rmse": 1.6710110232915516,
+      "fwhm_dft_profile_um": 11.438792722353242,
+      "fwhm_normalized_dft_profile_um": 6.328611873866816,
+      "fwhm_rfiaa_profile_um": 2.007584264592167,
+      "fwhm_rfiaa_map_profile_um": 1.179587472587238,
+      "fwhm_miaa_profile_um": 1.5016339354639257
+    },
+    {
+      "line": 8,
+      "group": 2,
+      "score": 12371.634765625,
+      "coordinate_yx0": [
+        136,
+        136
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.6241224715509636,
+      "holdout_nmse": 0.610471140505117,
+      "holdout_phase_rmse": 1.0766607710876823,
+      "fwhm_dft_profile_um": 8.017728479733371,
+      "fwhm_normalized_dft_profile_um": 3.761003713475507,
+      "fwhm_rfiaa_profile_um": 1.380582009799585,
+      "fwhm_rfiaa_map_profile_um": 1.0873785851349922,
+      "fwhm_miaa_profile_um": 1.2888642729125237
+    },
+    {
+      "line": 9,
+      "group": 2,
+      "score": 13901.3056640625,
+      "coordinate_yx0": [
+        360,
+        424
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.5635078934120593,
+      "holdout_nmse": 0.6824588540623034,
+      "holdout_phase_rmse": 1.316297617405527,
+      "fwhm_dft_profile_um": 7.478672232670308,
+      "fwhm_normalized_dft_profile_um": 4.35451899679843,
+      "fwhm_rfiaa_profile_um": 2.4174593449643154,
+      "fwhm_rfiaa_map_profile_um": 1.0474301368836285,
+      "fwhm_miaa_profile_um": 1.5147001137172273
+    },
+    {
+      "line": 10,
+      "group": 2,
+      "score": 14722.099609375,
+      "coordinate_yx0": [
+        328,
+        232
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.622994999310657,
+      "holdout_nmse": 0.6118772308339147,
+      "holdout_phase_rmse": 1.1437042775748185,
+      "fwhm_dft_profile_um": 8.160720233721683,
+      "fwhm_normalized_dft_profile_um": 3.7122909759175156,
+      "fwhm_rfiaa_profile_um": 2.73644726062247,
+      "fwhm_rfiaa_map_profile_um": 1.6757726095687984,
+      "fwhm_miaa_profile_um": 2.0891970456611544
+    },
+    {
+      "line": 11,
+      "group": 2,
+      "score": 15439.0234375,
+      "coordinate_yx0": [
+        360,
+        392
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.6844305468602682,
+      "holdout_nmse": 0.5315548265245545,
+      "holdout_phase_rmse": 1.0412996754096306,
+      "fwhm_dft_profile_um": 7.268153850986099,
+      "fwhm_normalized_dft_profile_um": 3.788640683088531,
+      "fwhm_rfiaa_profile_um": 2.2817096074615413,
+      "fwhm_rfiaa_map_profile_um": 1.7147819966389817,
+      "fwhm_miaa_profile_um": 2.490700443764512
+    },
+    {
+      "line": 12,
+      "group": 2,
+      "score": 15906.9208984375,
+      "coordinate_yx0": [
+        136,
+        488
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.6885312152329178,
+      "holdout_nmse": 0.5259247656498816,
+      "holdout_phase_rmse": 1.0428937461285142,
+      "fwhm_dft_profile_um": 9.399564714549019,
+      "fwhm_normalized_dft_profile_um": 4.723471122664195,
+      "fwhm_rfiaa_profile_um": 1.5650784725958822,
+      "fwhm_rfiaa_map_profile_um": 1.2136312716672861,
+      "fwhm_miaa_profile_um": 1.4815582577201518
+    },
+    {
+      "line": 13,
+      "group": 2,
+      "score": 16576.75390625,
+      "coordinate_yx0": [
+        168,
+        72
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.5860629218472254,
+      "holdout_nmse": 0.656530251635893,
+      "holdout_phase_rmse": 1.1746036789591243,
+      "fwhm_dft_profile_um": 8.200267282290165,
+      "fwhm_normalized_dft_profile_um": 4.235110808420826,
+      "fwhm_rfiaa_profile_um": 1.9579867077016841,
+      "fwhm_rfiaa_map_profile_um": 1.2991401635599344,
+      "fwhm_miaa_profile_um": 1.875267823864285
+    },
+    {
+      "line": 14,
+      "group": 2,
+      "score": 17439.48828125,
+      "coordinate_yx0": [
+        296,
+        360
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.7206312147393279,
+      "holdout_nmse": 0.480690652343321,
+      "holdout_phase_rmse": 0.9337371357976209,
+      "fwhm_dft_profile_um": 6.644870162144243,
+      "fwhm_normalized_dft_profile_um": 3.7995717983731194,
+      "fwhm_rfiaa_profile_um": 1.9458685609153121,
+      "fwhm_rfiaa_map_profile_um": 1.4016357236547279,
+      "fwhm_miaa_profile_um": 1.9149480747996448
+    },
+    {
+      "line": 15,
+      "group": 2,
+      "score": 19092.521484375,
+      "coordinate_yx0": [
+        264,
+        72
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.6238536425500941,
+      "holdout_nmse": 0.6108066326769795,
+      "holdout_phase_rmse": 1.100622926272618,
+      "fwhm_dft_profile_um": 7.745573170137616,
+      "fwhm_normalized_dft_profile_um": 3.968762561371622,
+      "fwhm_rfiaa_profile_um": 1.2228829285575487,
+      "fwhm_rfiaa_map_profile_um": 1.072308939598858,
+      "fwhm_miaa_profile_um": 1.3736747684005663
+    },
+    {
+      "line": 16,
+      "group": 3,
+      "score": 46542.88671875,
+      "coordinate_yx0": [
+        40,
+        424
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.8642921408637383,
+      "holdout_nmse": 0.2529990952411762,
+      "holdout_phase_rmse": 0.6338390318218124,
+      "fwhm_dft_profile_um": 7.50365037877275,
+      "fwhm_normalized_dft_profile_um": 3.8694306291631637,
+      "fwhm_rfiaa_profile_um": 1.090866681330246,
+      "fwhm_rfiaa_map_profile_um": 1.0219998236563497,
+      "fwhm_miaa_profile_um": 1.1539090337532996
+    },
+    {
+      "line": 17,
+      "group": 3,
+      "score": 50355.75,
+      "coordinate_yx0": [
+        232,
+        296
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.8985964865873832,
+      "holdout_nmse": 0.1925243542928105,
+      "holdout_phase_rmse": 0.5055076347209112,
+      "fwhm_dft_profile_um": 7.603136463084783,
+      "fwhm_normalized_dft_profile_um": 4.000523737332187,
+      "fwhm_rfiaa_profile_um": 1.987764894241053,
+      "fwhm_rfiaa_map_profile_um": 1.7870073248459533,
+      "fwhm_miaa_profile_um": 1.9778064090191563
+    },
+    {
+      "line": 18,
+      "group": 3,
+      "score": 52797.2265625,
+      "coordinate_yx0": [
+        136,
+        456
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.8920973007031178,
+      "holdout_nmse": 0.20416240607821132,
+      "holdout_phase_rmse": 0.3968262032865254,
+      "fwhm_dft_profile_um": 7.458218954239406,
+      "fwhm_normalized_dft_profile_um": 3.89227629325984,
+      "fwhm_rfiaa_profile_um": 1.0162394345441073,
+      "fwhm_rfiaa_map_profile_um": 1.0125152764317675,
+      "fwhm_miaa_profile_um": 1.0747743854440586
+    },
+    {
+      "line": 19,
+      "group": 3,
+      "score": 55258.6015625,
+      "coordinate_yx0": [
+        296,
+        168
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.8787139136608779,
+      "holdout_nmse": 0.22786185793878275,
+      "holdout_phase_rmse": 0.5184019721049165,
+      "fwhm_dft_profile_um": 7.559328141292987,
+      "fwhm_normalized_dft_profile_um": 4.005677054122977,
+      "fwhm_rfiaa_profile_um": 1.1936517562641882,
+      "fwhm_rfiaa_map_profile_um": 1.1159538010241505,
+      "fwhm_miaa_profile_um": 1.6654014716927874
+    },
+    {
+      "line": 20,
+      "group": 3,
+      "score": 61544.89453125,
+      "coordinate_yx0": [
+        360,
+        360
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.9400928921169504,
+      "holdout_nmse": 0.11622535419118794,
+      "holdout_phase_rmse": 0.32576121453239204,
+      "fwhm_dft_profile_um": 7.441474508413562,
+      "fwhm_normalized_dft_profile_um": 4.035604686380523,
+      "fwhm_rfiaa_profile_um": 2.165577138370742,
+      "fwhm_rfiaa_map_profile_um": 1.6620019571540139,
+      "fwhm_miaa_profile_um": 1.9239318316258418
+    },
+    {
+      "line": 21,
+      "group": 3,
+      "score": 62045.07421875,
+      "coordinate_yx0": [
+        72,
+        456
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.9244282175387842,
+      "holdout_nmse": 0.14543247061806627,
+      "holdout_phase_rmse": 0.30229681308403505,
+      "fwhm_dft_profile_um": 7.499678347159613,
+      "fwhm_normalized_dft_profile_um": 3.927664583853117,
+      "fwhm_rfiaa_profile_um": 1.2665437069000716,
+      "fwhm_rfiaa_map_profile_um": 1.0724102688534003,
+      "fwhm_miaa_profile_um": 1.2596448664938633
+    },
+    {
+      "line": 22,
+      "group": 3,
+      "score": 69439.328125,
+      "coordinate_yx0": [
+        8,
+        296
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.926131406265748,
+      "holdout_nmse": 0.14228061832822808,
+      "holdout_phase_rmse": 0.3419881287663476,
+      "fwhm_dft_profile_um": 7.3906047448254135,
+      "fwhm_normalized_dft_profile_um": 3.8613538114575325,
+      "fwhm_rfiaa_profile_um": 1.0412446950742889,
+      "fwhm_rfiaa_map_profile_um": 1.0140497573407743,
+      "fwhm_miaa_profile_um": 1.1260999881302396
+    },
+    {
+      "line": 23,
+      "group": 3,
+      "score": 76934.9296875,
+      "coordinate_yx0": [
+        168,
+        232
+      ],
+      "mapping_orientation": "reverse",
+      "mapping_start": 449,
+      "holdout_corr": 0.935283301447881,
+      "holdout_nmse": 0.12524514603275216,
+      "holdout_phase_rmse": 0.2802977204283302,
+      "fwhm_dft_profile_um": 7.3073154825621165,
+      "fwhm_normalized_dft_profile_um": 3.8787864714288958,
+      "fwhm_rfiaa_profile_um": 1.2102608500310637,
+      "fwhm_rfiaa_map_profile_um": 1.0952938982897067,
+      "fwhm_miaa_profile_um": 1.5836040474511122
+    }
+  ],
+  "interpretation": "Generalization is supported only where holdout complex prediction and profile behavior remain stable across score groups; narrow FWHM alone is not accepted."
+}

@@ -1,0 +1,57 @@
+{
+  "status": "VERIFIED_CONTROLLED_EXECUTION",
+  "baseline": {
+    "narrow_conventional": {
+      "target_amplitude_ratio": 0.27179677131246094,
+      "local_peak_ratio": 0.27179677131246094,
+      "local_energy_ratio": 0.47389416633017795,
+      "axial_fwhm_um": 5.9997516775040225,
+      "lateral_fwhm_um": 10.449672814772063,
+      "peak_x_error_um": 0.0,
+      "complex_corr": 0.18473424845781242,
+      "artifact_energy_fraction": 0.7549394273105396
+    },
+    "narrow_isam": {
+      "target_amplitude_ratio": 1.0000000000000002,
+      "local_peak_ratio": 1.0000000000000002,
+      "local_energy_ratio": 1.6963015308244382,
+      "axial_fwhm_um": 5.759143342870772,
+      "lateral_fwhm_um": 0.7301646928859905,
+      "peak_x_error_um": 0.0,
+      "complex_corr": 0.5105320097094533,
+      "artifact_energy_fraction": 0.4255940177785005
+    },
+    "miaa_isam": {
+      "target_amplitude_ratio": 0.9912200872683208,
+      "local_peak_ratio": 0.9912200872683208,
+      "local_energy_ratio": 0.9884663169362528,
+      "axial_fwhm_um": 1.5374442309490775,
+      "lateral_fwhm_um": 0.7314610461788282,
+      "peak_x_error_um": 0.0,
+      "complex_corr": 0.9999249788162762,
+      "artifact_energy_fraction": 0.08477813538008927
+    },
+    "expanded_oracle": {
+      "target_amplitude_ratio": 1.0,
+      "local_peak_ratio": 1.0,
+      "local_energy_ratio": 1.0,
+      "axial_fwhm_um": 1.5285566110128457,
+      "lateral_fwhm_um": 0.7301646928859904,
+      "peak_x_error_um": 0.0,
+      "complex_corr": 1.0000000000000004,
+      "artifact_energy_fraction": 0.0885905138040457
+    }
+  },
+  "equivariance": {
+    "full_miaa_relative_error": 8.232640463647345e-15,
+    "iaa_power_relative_error": 1.0753525393309039e-13,
+    "eta_absolute_error": 0.0
+  },
+  "dispersion": {
+    "baseline_fwhm_um_median": 1.3347282507808984,
+    "uncorrected_fwhm_um_median": 3.4071938124992016,
+    "corrected_fwhm_um_median": 1.3343194079232887,
+    "baseline_uncorrected_corr_median": 0.18099924812848872,
+    "baseline_corrected_corr_median": 0.9998041754585316
+  }
+}

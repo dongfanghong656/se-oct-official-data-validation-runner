@@ -1,0 +1,66 @@
+{
+  "order_mapping": {
+    "orientation": "direct",
+    "offset_zero_based": 300,
+    "train_nmse_median": 5.459726626996862e-05,
+    "train_nmse_p90": 9.119006816964135e-05,
+    "valid_reference_bins": 200,
+    "input_bins_all_valid": true,
+    "runner_up_median": 0.407352140864011,
+    "selection_basis": "input bins only, jointly across lines"
+  },
+  "orientation_conversion_check": {
+    "n_lines": 48,
+    "corr_min": 0.9999999999999998,
+    "nmse_max": 2.7976854114757725e-32,
+    "phase_rmse_max_rad": 2.411865086433138e-17,
+    "pass": true
+  },
+  "support_selection": {
+    "evaluation_region": "common_heldout_source_ge_5pct",
+    "candidates": [
+      {
+        "super": 2,
+        "n_common_bins": 23,
+        "source_restored_nmse_median": 0.00897297628154908,
+        "signal_source_weighted_nmse_median": 0.008215729888494616,
+        "fixed_taper_fwhm_median_um": 3.886610344540677
+      },
+      {
+        "super": 3,
+        "n_common_bins": 23,
+        "source_restored_nmse_median": 0.008645021695984911,
+        "signal_source_weighted_nmse_median": 0.007927048118474209,
+        "fixed_taper_fwhm_median_um": 2.1555765521292276
+      },
+      {
+        "super": 4,
+        "n_common_bins": 23,
+        "source_restored_nmse_median": 0.008682623699282226,
+        "signal_source_weighted_nmse_median": 0.007955120594779083,
+        "fixed_taper_fwhm_median_um": 1.2863758586039262
+      },
+      {
+        "super": 6,
+        "n_common_bins": 23,
+        "source_restored_nmse_median": 0.008706692907024131,
+        "signal_source_weighted_nmse_median": 0.007974609583892456,
+        "fixed_taper_fwhm_median_um": 1.1431118395224589
+      },
+      {
+        "super": 8,
+        "n_common_bins": 23,
+        "source_restored_nmse_median": 0.008718449362321492,
+        "signal_source_weighted_nmse_median": 0.00798424939293639,
+        "fixed_taper_fwhm_median_um": 1.011334138570673
+      }
+    ],
+    "best_super_source_restored": 3,
+    "best_super_signal_source_weighted": 3,
+    "relative_margin_source_restored": 0.004349555688770431,
+    "relative_margin_signal_weighted": 0.003541353084441462,
+    "super4_selected_by_both": false,
+    "super4_uniquely_selected_by_5pct_rule": false,
+    "scientific_status": "INTERNAL_SUPPORT_DIAGNOSTIC_ONLY"
+  }
+}

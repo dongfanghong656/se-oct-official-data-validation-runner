@@ -1,0 +1,16 @@
+{
+  "median_fwhm_um": {
+    "dft_profile": 7.691719854154665,
+    "rfiaa_profile": 1.278645319038601,
+    "rfiaa_map_profile": 1.08887764936386,
+    "miaa_profile": 1.3347282507809086,
+    "dispersed_miaa_profile": 3.4071938124992194,
+    "corrected_miaa_profile": 1.3343194079232823
+  },
+  "median_mapping_train_nmse": 1.2500352362740923e-07,
+  "median_heldout_complex_correlation": 0.9679386044536061,
+  "median_heldout_aligned_nmse": 0.06308991080868123,
+  "median_heldout_phase_rmse_rad": 0.10936517944299834,
+  "median_baseline_to_dispersed_complex_correlation": 0.18099924812848872,
+  "median_baseline_to_explicitly_corrected_complex_correlation": 0.9998041754585316
+}

@@ -1,0 +1,84 @@
+name: exact-upstream-fiaa-miaa-alines
+
+on:
+  push:
+    branches:
+      - "run/zenodo-7870795"
+    paths:
+      - "scripts/run_exact_upstream.m"
+      - "scripts/analyze_exact_upstream.py"
+      - ".github/workflows/exact-octave-aline.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  exact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Octave and analysis dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends octave octave-signal
+          python -m pip install numpy scipy matplotlib requests
+      - name: Download and verify official data and exact deposited algorithms
+        run: |
+          set -euo pipefail
+          mkdir -p .cache/upstream reports/exact
+          curl -fL --retry 6 --retry-all-errors -o .cache/input.mat "https://zenodo.org/records/7870795/files/input_TiO2gelatin_004_phasecorrected.mat?download=1"
+          echo "d905784f950a6fadfce71e9efc6d2654  .cache/input.mat" | md5sum -c -
+          for spec in \
+            "fiaa_oct_c1.m 4839b0a7a57a7abe73f6644e38249cc6"; do
+            set -- $spec
+            curl -fL --retry 6 --retry-all-errors -o ".cache/upstream/$1" "https://zenodo.org/records/7870795/files/$1?download=1"
+            echo "$2  .cache/upstream/$1" | md5sum -c -
+          done
+      - name: Execute exact FIAA/MIAA routines
+        env:
+          DATA_FILE: ${{ github.workspace }}/.cache/input.mat
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
+          OUTPUT_MAT: ${{ github.workspace }}/reports/exact/author_exact_alines.mat
+        run: |
+          set -o pipefail
+          octave-cli --quiet scripts/run_exact_upstream.m 2>&1 | tee reports/exact/octave.log
+          python scripts/analyze_exact_upstream.py reports/exact/author_exact_alines.mat reports/exact 2>&1 | tee reports/exact/analysis.log
+      - name: Record exact-run provenance
+        run: |
+          python - <<'PY'
+          import json,os,pathlib,datetime
+          p=pathlib.Path('reports/exact/provenance.json')
+          p.write_text(json.dumps({
+            'record':'10.5281/zenodo.7870795',
+            'data_file':'input_TiO2gelatin_004_phasecorrected.mat',
+            'data_md5':'d905784f950a6fadfce71e9efc6d2654',
+            'fiaa_md5':'4839b0a7a57a7abe73f6644e38249cc6',
+            'run_id':os.environ.get('GITHUB_RUN_ID'),
+            'source_commit':os.environ.get('GITHUB_SHA'),
+            'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'boundary':'Already phase-corrected Cscan; no raw-camera dispersion audit.'
+          },indent=2),encoding='utf-8')
+          PY
+      - name: Commit compact evidence
+        if: always()
+        run: |
+          rm -rf .cache
+          find reports/exact -type f -size +20M -delete
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/exact
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record exact upstream FIAA/MIAA A-line evidence [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exact-upstream-fiaa-miaa-alines
+          path: reports/exact
+          retention-days: 30

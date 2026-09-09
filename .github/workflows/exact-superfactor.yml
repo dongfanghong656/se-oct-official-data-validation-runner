@@ -1,0 +1,42 @@
+name: exact-author-superfactor-sensitivity
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths: ["scripts/run_exact_superfactor_sensitivity.m","scripts/analyze_exact_superfactor.py",".github/workflows/exact-superfactor.yml"]
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - run: |
+          sudo apt-get update -qq;sudo apt-get install -y --no-install-recommends octave octave-signal
+          python -m pip install numpy scipy pandas matplotlib
+      - name: Download verified public input and exact author function
+        run: |
+          mkdir -p .cache/upstream reports/exact_superfactor
+          curl -fL --retry 7 --retry-all-errors -o .cache/input.mat "https://zenodo.org/records/7870795/files/input_TiO2gelatin_004_phasecorrected.mat?download=1"
+          echo "d905784f950a6fadfce71e9efc6d2654  .cache/input.mat"|md5sum -c -
+          curl -fL --retry 7 --retry-all-errors -o .cache/upstream/fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/fiaa_oct_c1.m?download=1"
+          echo "4839b0a7a57a7abe73f6644e38249cc6  .cache/upstream/fiaa_oct_c1.m"|md5sum -c -
+      - name: Run and analyze
+        env:
+          DATA_FILE: ${{ github.workspace }}/.cache/input.mat
+          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
+          OUTPUT_MAT: ${{ github.workspace }}/reports/exact_superfactor/results.mat
+        run: |
+          set -o pipefail;octave-cli --quiet scripts/run_exact_superfactor_sensitivity.m 2>&1|tee reports/exact_superfactor/octave.log
+          python scripts/analyze_exact_superfactor.py reports/exact_superfactor/results.mat reports/exact_superfactor 2>&1|tee reports/exact_superfactor/analysis.log
+      - name: Publish compact evidence
+        if: always()
+        run: |
+          rm -rf .cache;rm -f reports/exact_superfactor/results.mat
+          git config user.name "github-actions[bot]";git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/exact_superfactor
+          if ! git diff --cached --quiet;then git commit -m "test: record exact super-factor sensitivity [skip ci]";git pull --rebase origin "${GITHUB_REF_NAME}";git push origin "HEAD:${GITHUB_REF_NAME}";fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: exact-superfactor-sensitivity, path: reports/exact_superfactor, retention-days: 30}

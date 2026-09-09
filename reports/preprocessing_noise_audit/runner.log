@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED_GITHUB_HOSTED_CONTROLLED_EXECUTION",
+  "max_miaa_input_difference": 5.032701277615072e-16,
+  "scalar_covariance_mismatch": 0.8242205953537256,
+  "variance_ratio": 145.10301803279592,
+  "conditional_medians": {
+    "prediction_corr": 0.996287323296086,
+    "prediction_nmse": 0.007411469644133745,
+    "median_predictability_scalar": 0.7988262136554931,
+    "median_predictability_exact_shape": 0.7982931216919722,
+    "median_abs_predictability_change": 0.0005016011349574245
+  }
+}

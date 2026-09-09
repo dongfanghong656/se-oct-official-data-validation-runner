@@ -1,0 +1,49 @@
+{
+  "schema": "scientific-evidence-gate-v2",
+  "status": "VERIFIED",
+  "metrics_path": "reports/preprocessing_noise_audit/metrics.json",
+  "metrics_sha256": "19edf6d2b85b8dfbac57a78f62af428ede00d4ff080a63601e905ac5019a44b2",
+  "metrics_size": 13585,
+  "required_keys": [
+    "status",
+    "background_subtraction.decision",
+    "noise_covariance.scalar_relative_frobenius_mismatch",
+    "conditional_sensitivity.medians",
+    "oracle_snr_sweep.aggregate"
+  ],
+  "required_files": [
+    {
+      "path": "reports/preprocessing_noise_audit/runner.log",
+      "exists": true,
+      "size": 506,
+      "sha256": "f5d9ecb46ecee21e6b7586228b2e75229091fe2b59d239ff4bc061ec7a1af794"
+    },
+    {
+      "path": "reports/preprocessing_noise_audit/pytest.log",
+      "exists": true,
+      "size": 99,
+      "sha256": "fe00eef7fabb4da766ac3296c32f90b4b2bb521dabebfba920204a4ed35c0aba"
+    },
+    {
+      "path": "reports/preprocessing_noise_audit/provenance.json",
+      "exists": true,
+      "size": 740,
+      "sha256": "f91db807271bfa9e97bfe3c83e2285c7eb036682bb806d2a2bf31ab47842f21f"
+    },
+    {
+      "path": "reports/preprocessing_noise_audit/variance_profile.png",
+      "exists": true,
+      "size": 68541,
+      "sha256": "b6a6da7ffa2200a2ee3b3eb15dcca5c87344b28c3d1cb85d60ea0a5e44bf189d"
+    },
+    {
+      "path": "reports/preprocessing_noise_audit/noise_model_snr_sweep.png",
+      "exists": true,
+      "size": 88540,
+      "sha256": "4d56baa3fe86fa6bc600e9d4a4d571fc5e3d17faac9304db808d353c461ef892"
+    }
+  ],
+  "failures": [],
+  "checked_at_utc": "2026-09-09T13:55:30.802323+00:00",
+  "rule": "A commit name, workflow trigger, provenance-only file, or successful producer command without parseable metrics is not execution evidence."
+}

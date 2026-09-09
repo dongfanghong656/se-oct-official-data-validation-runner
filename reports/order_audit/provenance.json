@@ -1,0 +1,11 @@
+{
+  "record": "10.5281/zenodo.7870795",
+  "tio2_md5": "d905784f950a6fadfce71e9efc6d2654",
+  "leaf_md5": "d59b7479304f37f315be63cf45902e48",
+  "fiaa_md5": "4839b0a7a57a7abe73f6644e38249cc6",
+  "rec_fiaa_md5": "08133e8bc4e62063149474cd402990d2",
+  "source_commit": "5ccffee2d31b80ee0eb648175139731127852f01",
+  "run_id": "34302209195",
+  "recorded_at_utc": "2026-09-09T02:18:32.261820+00:00",
+  "boundary": "Both public inputs are already phase corrected; finite strips test RFIAA warm-start traversal sensitivity."
+}
