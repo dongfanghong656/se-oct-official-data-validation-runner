@@ -27,12 +27,13 @@ jobs:
         id: install
         continue-on-error: true
         run: |
-          set -o pipefail
+          set -euo pipefail
           mkdir -p reports/committed_subset_audit
           sudo apt-get update -qq 2>&1 | tee reports/committed_subset_audit/install.log
           sudo apt-get install -y --no-install-recommends octave octave-signal 2>&1 | tee -a reports/committed_subset_audit/install.log
           python -m pip install numpy scipy pandas 2>&1 | tee -a reports/committed_subset_audit/install.log
-          python -m py_compile scripts/prepare_subset_mat.py scripts/analyze_committed_subset_audit.py 2>&1 | tee -a reports/committed_subset_audit/install.log
+          python -m py_compile scripts/prepare_subset_mat.py scripts/analyze_committed_subset_audit.py scripts/validate_evidence_bundle.py 2>&1 | tee -a reports/committed_subset_audit/install.log
+          python scripts/analyze_committed_subset_audit.py --self-test 2>&1 | tee -a reports/committed_subset_audit/install.log
 
       - name: Prepare committed subset input
         id: prepare
@@ -75,7 +76,7 @@ jobs:
           UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
           OUTPUT_DIR: ${{ github.workspace }}/reports/committed_subset_audit
         run: |
-          set -o pipefail
+          set -euo pipefail
           octave-cli --quiet scripts/run_committed_subset_audit.m \
             2>&1 | tee reports/committed_subset_audit/octave.log
           python scripts/analyze_committed_subset_audit.py \
@@ -84,6 +85,25 @@ jobs:
             reports/committed_subset_audit \
             2>&1 | tee reports/committed_subset_audit/analysis.log
 
+      - name: Validate the compact scientific evidence bundle
+        id: evidence_gate
+        if: steps.execute.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python scripts/validate_evidence_bundle.py \
+            --metrics reports/committed_subset_audit/metrics.json \
+            --output reports/committed_subset_audit/EVIDENCE_STATUS.json \
+            --required-key schema_version \
+            --required-key order_audit.configuration.mapping \
+            --required-key order_audit.pair_summary \
+            --required-key superfactor_audit.support_selection_diagnostic.candidates \
+            --required-key superfactor_audit.summary \
+            --required-csv reports/committed_subset_audit/order_holdout_per_line.csv \
+            --required-csv reports/committed_subset_audit/order_pair_per_line.csv \
+            --required-csv reports/committed_subset_audit/superfactor_per_line.csv \
+            --min-csv-rows 4
+
       - name: Record immutable provenance and step outcomes
         if: always()
         env:
@@ -91,6 +111,7 @@ jobs:
           PREPARE_OUTCOME: ${{ steps.prepare.outcome }}
           DOWNLOAD_OUTCOME: ${{ steps.download.outcome }}
           EXECUTE_OUTCOME: ${{ steps.execute.outcome }}
+          EVIDENCE_GATE_OUTCOME: ${{ steps.evidence_gate.outcome }}
         run: |
           python - <<'PY'
           import datetime, hashlib, json, os
@@ -114,14 +135,25 @@ jobs:
                   "prepare": os.environ.get("PREPARE_OUTCOME"),
                   "download": os.environ.get("DOWNLOAD_OUTCOME"),
                   "execute": os.environ.get("EXECUTE_OUTCOME"),
+                  "evidence_gate": os.environ.get("EVIDENCE_GATE_OUTCOME"),
               },
               "recorded_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
               "boundary": "Committed phase-corrected TiO2 subset; no raw-camera preprocessing audit and no independent wider-band truth."
           }
           out.joinpath("provenance.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+          status_path = out / "EVIDENCE_STATUS.json"
+          if not status_path.exists():
+              status_path.write_text(json.dumps({
+                  "schema": "scientific-evidence-gate-v2",
+                  "status": "FAILED",
+                  "failures": ["evidence_gate_not_completed"],
+                  "source_commit": os.environ.get("GITHUB_SHA"),
+                  "run_id": os.environ.get("GITHUB_RUN_ID"),
+                  "rule": "Producer logs and provenance without validated metrics are diagnostics, not verified evidence."
+              }, indent=2), encoding="utf-8")
           PY
 
-      - name: Publish compact evidence
+      - name: Publish compact evidence or failed-run diagnostics
         if: always()
         run: |
           rm -rf .cache
@@ -131,8 +163,22 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/committed_subset_audit
+          status=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("reports/committed_subset_audit/EVIDENCE_STATUS.json")
+          try:
+              print(json.loads(path.read_text(encoding="utf-8")).get("status", "FAILED"))
+          except Exception:
+              print("FAILED")
+          PY
+          )
           if ! git diff --cached --quiet; then
-            git commit -m "test: record exact committed-subset traversal and support audit [skip ci]"
+            if [ "$status" = "VERIFIED" ]; then
+              git commit -m "test: record verified committed-subset traversal and support evidence [skip ci]"
+            else
+              git commit -m "test: record failed committed-subset audit diagnostics [skip ci]"
+            fi
           fi
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
@@ -149,5 +195,6 @@ jobs:
           steps.install.outcome != 'success' ||
           steps.prepare.outcome != 'success' ||
           steps.download.outcome != 'success' ||
-          steps.execute.outcome != 'success'
+          steps.execute.outcome != 'success' ||
+          steps.evidence_gate.outcome != 'success'
         run: exit 1
