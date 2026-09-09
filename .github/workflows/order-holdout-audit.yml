@@ -1,85 +1,14 @@
-name: exact-author-order-and-holdout-audit
+name: exact-author-order-and-holdout-audit-combined-retired
 
 on:
-  push:
-    branches: ["run/zenodo-7870795"]
-    paths:
-      - "scripts/run_exact_order_audit.m"
-      - "scripts/analyze_order_audit.py"
-      - ".github/workflows/order-holdout-audit.yml"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  audit:
+  retired:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
     steps:
-      - uses: actions/checkout@v4
-        with: {fetch-depth: 0}
-      - name: Install exact-code runtime
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends octave octave-signal
-          python -m pip install numpy scipy pandas
-      - name: Download and verify public inputs and author functions
-        run: |
-          set -euo pipefail
-          mkdir -p .cache/upstream reports/order_audit
-          curl -fL --retry 7 --retry-all-errors -o .cache/tio2.mat "https://zenodo.org/records/7870795/files/input_TiO2gelatin_004_phasecorrected.mat?download=1"
-          echo "d905784f950a6fadfce71e9efc6d2654  .cache/tio2.mat" | md5sum -c -
-          curl -fL --retry 7 --retry-all-errors -o .cache/leaf.mat "https://zenodo.org/records/7870795/files/input_leafdisc_phasecorrected.mat?download=1"
-          echo "d59b7479304f37f315be63cf45902e48  .cache/leaf.mat" | md5sum -c -
-          curl -fL --retry 7 --retry-all-errors -o .cache/upstream/fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/fiaa_oct_c1.m?download=1"
-          echo "4839b0a7a57a7abe73f6644e38249cc6  .cache/upstream/fiaa_oct_c1.m" | md5sum -c -
-          curl -fL --retry 7 --retry-all-errors -o .cache/upstream/rec_fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/rec_fiaa_oct_c1.m?download=1"
-          echo "08133e8bc4e62063149474cd402990d2  .cache/upstream/rec_fiaa_oct_c1.m" | md5sum -c -
-      - name: Run exact author recursion-order audit
-        env:
-          UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache/upstream
-        run: |
-          set -o pipefail
-          DATA_FILE="${GITHUB_WORKSPACE}/.cache/tio2.mat" DATASET_KIND=tio2 OUTPUT_MAT="${GITHUB_WORKSPACE}/reports/order_audit/tio2.mat" \
-            octave-cli --quiet scripts/run_exact_order_audit.m 2>&1 | tee reports/order_audit/tio2_octave.log
-          DATA_FILE="${GITHUB_WORKSPACE}/.cache/leaf.mat" DATASET_KIND=leaf OUTPUT_MAT="${GITHUB_WORKSPACE}/reports/order_audit/leaf.mat" \
-            octave-cli --quiet scripts/run_exact_order_audit.m 2>&1 | tee reports/order_audit/leaf_octave.log
-          python scripts/analyze_order_audit.py reports/order_audit/tio2.mat reports/order_audit/leaf.mat reports/order_audit \
-            2>&1 | tee reports/order_audit/analysis.log
-      - name: Record provenance
-        if: always()
-        run: |
-          python - <<'PY'
-          import json,os,datetime,pathlib
-          pathlib.Path('reports/order_audit/provenance.json').write_text(json.dumps({
-            'record':'10.5281/zenodo.7870795',
-            'tio2_md5':'d905784f950a6fadfce71e9efc6d2654',
-            'leaf_md5':'d59b7479304f37f315be63cf45902e48',
-            'fiaa_md5':'4839b0a7a57a7abe73f6644e38249cc6',
-            'rec_fiaa_md5':'08133e8bc4e62063149474cd402990d2',
-            'source_commit':os.environ.get('GITHUB_SHA'),
-            'run_id':os.environ.get('GITHUB_RUN_ID'),
-            'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            'boundary':'Both public inputs are already phase corrected; finite strips test RFIAA warm-start traversal sensitivity.'
-          },indent=2),encoding='utf-8')
-          PY
-      - name: Publish compact evidence
-        if: always()
-        run: |
-          rm -rf .cache
-          rm -f reports/order_audit/tio2.mat reports/order_audit/leaf.mat
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git add reports/order_audit
-          if ! git diff --cached --quiet; then
-            git commit -m "test: record RFIAA order and robust holdout audit [skip ci]"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: exact-author-order-and-holdout-audit
-          path: reports/order_audit
-          retention-days: 30
+      - run: |
+          echo "Retired: use order-holdout-tio2.yml and order-holdout-leaf.yml."
