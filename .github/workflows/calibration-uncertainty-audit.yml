@@ -1,0 +1,54 @@
+name: phase-calibration-uncertainty-audit
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "src/seoct_uncertainty/calibration.py"
+      - "tests/test_calibration_uncertainty.py"
+      - "scripts/run_calibration_uncertainty_audit.py"
+      - ".github/workflows/calibration-uncertainty-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Install dependencies
+        run: python -m pip install numpy scipy matplotlib pytest
+      - name: Test calibration uncertainty
+        env: {PYTHONPATH: src}
+        run: pytest tests/test_calibration_uncertainty.py -q | tee calibration_pytest.log
+      - name: Run calibration uncertainty audit
+        env: {PYTHONPATH: src}
+        run: python scripts/run_calibration_uncertainty_audit.py | tee calibration_run.log
+      - name: Validate evidence fail-closed
+        run: |
+          python scripts/validate_evidence_bundle.py --metrics reports/calibration_uncertainty_audit/metrics.json --output reports/calibration_uncertainty_audit/EVIDENCE_STATUS.json --required-key status --required-key phase_uncertainty_by_distance --required-key miaa_confidence_effect --required-key decisions
+      - name: Record provenance
+        run: |
+          python - <<'PY'
+          import datetime,json,os,pathlib
+          p=pathlib.Path('reports/calibration_uncertainty_audit/provenance.json')
+          p.write_text(json.dumps({'source_commit':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'status':'VERIFIED_SYNTHETIC','boundary':'Synthetic phase-fit uncertainty; not authors actual calibration residuals.'},indent=2),encoding='utf-8')
+          PY
+          mv calibration_pytest.log reports/calibration_uncertainty_audit/pytest.log
+          mv calibration_run.log reports/calibration_uncertainty_audit/run.log
+      - name: Commit verified evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/calibration_uncertainty_audit
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record verified phase-calibration uncertainty evidence [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
