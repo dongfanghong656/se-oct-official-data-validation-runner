@@ -61,7 +61,11 @@ for i = 1:Nline
   end
 end
 
-% Author's public wrapper path, including L=4 chunks, when Octave accepts it.
+% Exact non-recursive wrapper output. oct_iaa_c1 reverses the frequency rows
+% before returning; the publication MIAA path reverses them again before IFFT.
+[~, maps_wrapper_individual] = oct_iaa_c1(demod, q_i, K2, eta_weight, 1, q_rec, 1);
+
+% Author's public recursive wrapper path, including L=4 chunks, when Octave accepts it.
 chunk_exact_ok = 0;
 chunk_exact_error = '';
 maps_chunk_forward = complex(nan(K2, Nline));
@@ -76,12 +80,13 @@ catch err
   fprintf('oct_iaa_c1 chunk path unavailable: %s\n', chunk_exact_error);
 end
 
-spectra_forward = maps_to_spectra_committed(maps_forward, K, Nz, ii(1), super);
-spectra_reverse = maps_to_spectra_committed(maps_reverse, K, Nz, ii(1), super);
-spectra_independent = maps_to_spectra_committed(maps_independent, K, Nz, ii(1), super);
+spectra_forward = maps_to_spectra_committed(maps_forward, K, Nz, ii(1), super, false);
+spectra_reverse = maps_to_spectra_committed(maps_reverse, K, Nz, ii(1), super, false);
+spectra_independent = maps_to_spectra_committed(maps_independent, K, Nz, ii(1), super, false);
+spectra_wrapper_individual = maps_to_spectra_committed(maps_wrapper_individual, K, Nz, ii(1), super, true);
 if chunk_exact_ok
-  spectra_chunk_forward = maps_to_spectra_committed(maps_chunk_forward, K, Nz, ii(1), super);
-  spectra_chunk_reverse = maps_to_spectra_committed(maps_chunk_reverse, K, Nz, ii(1), super);
+  spectra_chunk_forward = maps_to_spectra_committed(maps_chunk_forward, K, Nz, ii(1), super, true);
+  spectra_chunk_reverse = maps_to_spectra_committed(maps_chunk_reverse, K, Nz, ii(1), super, true);
 else
   spectra_chunk_forward = complex(nan(K, Nline));
   spectra_chunk_reverse = complex(nan(K, Nline));
@@ -91,7 +96,7 @@ save('-mat7-binary', [out_dir '/order.mat'], 'Nz', 'K', 'super', 'q_i', 'q_rec',
   'eta_weight', 'sk', 'ii', 'sel', 'x_indices_zero_based', 'x_strip_y_zero_based', ...
   'line_scores', 'strong_idx', 'C', 'anC', 'demod', 'chunk_exact_ok', ...
   'chunk_exact_error', 'spectra_forward', 'spectra_reverse', 'spectra_independent', ...
-  'spectra_chunk_forward', 'spectra_chunk_reverse');
+  'spectra_wrapper_individual', 'spectra_chunk_forward', 'spectra_chunk_reverse');
 
 % Target-support audit on four checksum-traced selected A-lines.
 iRaw4 = flip(fft(z_lines, [], 1), 1);
@@ -115,7 +120,7 @@ for si = 1:length(supers)
     [~, ~, amap] = fiaa_oct_c1(demod4(:, i), K2s, q_i, eta_weight);
     maps(:, i) = amap;
   end
-  spectra_super(1:Ks, :, si) = maps_to_spectra_committed(maps, Ks, Nz, ii(1), su);
+  spectra_super(1:Ks, :, si) = maps_to_spectra_committed(maps, Ks, Nz, ii(1), su, false);
   fprintf('super=%d complete\n', su);
 end
 save('-mat7-binary', [out_dir '/superfactor.mat'], 'Nz', 'supers', 'q_i', ...

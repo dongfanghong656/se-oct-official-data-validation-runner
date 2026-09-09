@@ -91,11 +91,20 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("reports/committed_subset_audit/metrics.json").read_text())
+          check = data["order_audit"]["orientation_conversion_check"]
+          if check.get("pass") is not True:
+              raise SystemExit(f"wrapper/direct MAP orientation contract failed: {check}")
+          PY
           python scripts/validate_evidence_bundle.py \
             --metrics reports/committed_subset_audit/metrics.json \
             --output reports/committed_subset_audit/EVIDENCE_STATUS.json \
             --required-key schema_version \
             --required-key order_audit.configuration.mapping \
+            --required-key order_audit.orientation_conversion_check \
             --required-key order_audit.pair_summary \
             --required-key superfactor_audit.support_selection_diagnostic.candidates \
             --required-key superfactor_audit.summary \

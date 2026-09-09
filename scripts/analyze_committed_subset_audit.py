@@ -87,16 +87,12 @@ def width(v,dx,db):
  def c(a,b):return a+(h-y[a])/(y[b]-y[a]) if y[b]!=y[a] else float(a)
  return float((c(r-1,r)-c(l,l+1))*dx)
 
-def expected(K,Nz,su,ii):
- first=int(ii[0])+1;shift=round(Nz*((su-1)/2))+first-1
- return {'orientation':'reverse','start_zero_based':int(K-shift-first),'shift_amount_matlab':int(shift)}
-
 def analyze_order(path):
  d=loadmat(path,squeeze_me=True);Nz=int(d['Nz']);K=int(d['K']);su=int(d['super']);ii=np.asarray(d['ii'],int).ravel()-1;sk=np.asarray(d['sk'],float).ravel();target=np.asarray(d['anC'],complex);target-=target[ii].mean(axis=0,keepdims=True)
- spectra={'forward_whole_strip':np.asarray(d['spectra_forward'],complex),'reverse_whole_strip':np.asarray(d['spectra_reverse'],complex),'independent_q10':np.asarray(d['spectra_independent'],complex)}
+ spectra={'forward_whole_strip':np.asarray(d['spectra_forward'],complex),'reverse_whole_strip':np.asarray(d['spectra_reverse'],complex),'independent_q10':np.asarray(d['spectra_independent'],complex),'wrapper_individual_q10':np.asarray(d['spectra_wrapper_individual'],complex)}
  chunk=bool(int(d['chunk_exact_ok']))
  if chunk:spectra|={'forward_author_L4':np.asarray(d['spectra_chunk_forward'],complex),'reverse_author_L4':np.asarray(d['spectra_chunk_reverse'],complex)}
- mp,_,_,valid,k=register(spectra['independent_q10'],target,ii);ex=expected(K,Nz,su,ii);mp|={'author_formula_expectation':ex,'matches_author_formula':mp['orientation']==ex['orientation'] and mp['offset_zero_based']==ex['start_zero_based']}
+ mp,_,_,valid,k=register(spectra['independent_q10'],target,ii)
  oriented={n:orient(a,mp['orientation']) for n,a in spectra.items()};blocks={n:refview(a,Nz,mp['offset_zero_based'])[0] for n,a in oriented.items()};base={n:m&valid for n,m in masks(sk,ii).items()}
  scores=np.asarray(d['line_scores'],float).ravel();x=np.asarray(d['x_indices_zero_based'],int).ravel();strong=int(d['strong_idx'])-1;hold=[]
  for line in range(target.shape[1]):
@@ -106,7 +102,7 @@ def analyze_order(path):
     if not m.any():continue
     r={'line':line,'x_zero_based':int(x[line]),'mode':mode,'region':region,'n_bins':int(m.sum()),'signal_score':float(scores[line]),'position_class':'edge' if min(line,target.shape[1]-1-line)<6 else 'interior','side_of_strong_line':'before' if line<strong else ('after' if line>strong else 'strong')};addmetrics(r,target[:,line],est,sk,m);hold.append(r)
  embedded=np.zeros(K,bool);embedded[k[valid]]=1;inp=np.zeros(K,bool);inp[ii+mp['offset_zero_based']]=1;regions={'input_128':inp,'embedded_200':embedded,'heldout_72':embedded&~inp,'extrapolated_outside_200':~embedded,'full_K':np.ones(K,bool)}
- comps=[('whole_forward_vs_reverse','forward_whole_strip','reverse_whole_strip'),('whole_forward_vs_independent','forward_whole_strip','independent_q10'),('whole_reverse_vs_independent','reverse_whole_strip','independent_q10')]
+ comps=[('wrapper_individual_vs_direct_independent','wrapper_individual_q10','independent_q10'),('whole_forward_vs_reverse','forward_whole_strip','reverse_whole_strip'),('whole_forward_vs_independent','forward_whole_strip','independent_q10'),('whole_reverse_vs_independent','reverse_whole_strip','independent_q10')]
  if chunk:comps += [('author_L4_forward_vs_reverse','forward_author_L4','reverse_author_L4'),('author_L4_forward_vs_independent','forward_author_L4','independent_q10'),('author_L4_reverse_vs_independent','reverse_author_L4','independent_q10')]
  pairs=[]
  for line in range(target.shape[1]):
@@ -114,13 +110,16 @@ def analyze_order(path):
    ref=oriented[rn][:,line];pred=oriented[pn][:,line];pred=cscale(ref[inp],pred[inp])*pred
    for region,m in regions.items():pairs.append({'line':line,'comparison':label,'region':region,'position_class':'edge' if min(line,target.shape[1]-1-line)<6 else 'interior','side_of_strong_line':'before' if line<strong else ('after' if line>strong else 'strong'),**cm(ref[m],pred[m],align=False)})
  h=pd.DataFrame(hold);p=pd.DataFrame(pairs);hm=['normalized_corr','normalized_nmse','source_restored_corr','source_restored_nmse','source_weighted_corr','source_weighted_nmse','signal_source_weighted_corr','signal_source_weighted_nmse'];pm=['corr','nmse','phase_rmse_rad','amplitude_nrmse']
- result={'experiment':'exact_author_RFIAA_traversal_order_on_committed_TiO2_strip','boundary':{'input':'checksum-traced phase-corrected public TiO2 subset','holdout':'same-pipeline finite-ROI bins, not independent physical wideband truth'},'configuration':{'Nz':Nz,'K':K,'super':su,'strip_lines':target.shape[1],'strong_line_zero_based':strong,'mapping':mp,'chunk_exact_ok':chunk,'chunk_error':str(d.get('chunk_exact_error',''))},'holdout_summary':summary(h,['mode','region'],hm),'pair_summary':summary(p,['comparison','region','position_class'],pm),'decision_rules':['Input fit is necessary but does not validate extrapolation.','Forward/reverse disagreement after input alignment is traversal-history dependence.','FWHM is not an order-invariance criterion.']}
+ ps=summary(p,['comparison','region','position_class'],pm)
+ w=p[(p.comparison=='wrapper_individual_vs_direct_independent')&(p.region=='full_K')]
+ wrapper_check={'n_lines':int(len(w)),'corr_min':float(w['corr'].min()),'nmse_max':float(w['nmse'].max()),'phase_rmse_max_rad':float(w['phase_rmse_rad'].max()),'pass':bool(float(w['nmse'].max())<1e-12 and float(w['corr'].min())>1-1e-12)}
+ result={'experiment':'exact_author_RFIAA_traversal_order_on_committed_TiO2_strip','boundary':{'input':'checksum-traced phase-corrected public TiO2 subset','holdout':'same-pipeline finite-ROI bins, not independent physical wideband truth'},'configuration':{'Nz':Nz,'K':K,'super':su,'strip_lines':target.shape[1],'strong_line_zero_based':strong,'mapping':mp,'chunk_exact_ok':chunk,'chunk_error':str(d.get('chunk_exact_error','')),'orientation_contract':'direct FIAA/recursive MAP is IFFTed directly; oct_iaa_c1 output is row-reversed once to undo the wrapper before IFFT'},'orientation_conversion_check':wrapper_check,'holdout_summary':summary(h,['mode','region'],hm),'pair_summary':ps,'decision_rules':['The wrapper_individual_vs_direct_independent comparison must be numerically equivalent before L4 results are interpreted.','Input fit is necessary but does not validate extrapolation.','Forward/reverse disagreement after input alignment is traversal-history dependence.','FWHM is not an order-invariance criterion.']}
  return result,h,p
 
 def analyze_super(path):
  d=loadmat(path,squeeze_me=True);Nz=int(d['Nz']);supers=np.asarray(d['supers'],int).ravel();ii=np.asarray(d['ii'],int).ravel()-1;sk=np.asarray(d['sk'],float).ravel();target=np.asarray(d['anC4'],complex);target-=target[ii].mean(axis=0,keepdims=True);cube=np.asarray(d['spectra_super'],complex);base=masks(sk,ii);items={}
  for si,su0 in enumerate(supers):
-  su=int(su0);K=Nz*su;sp=cube[:K,:,si];mp,b,_,valid,_=register(sp,target,ii);ex=expected(K,Nz,su,ii);mp|={'super':su,'K':K,'author_formula_expectation':ex,'matches_author_formula':mp['orientation']==ex['orientation'] and mp['offset_zero_based']==ex['start_zero_based']};items[su]=(sp,b,valid,mp)
+  su=int(su0);K=Nz*su;sp=cube[:K,:,si];mp,b,_,valid,_=register(sp,target,ii);mp|={'super':su,'K':K};items[su]=(sp,b,valid,mp)
  common=np.logical_and.reduce([v[2] for v in items.values()]);rows=[]
  for su,(sp,b,valid,mp) in items.items():
   K=Nz*su;wins={'none':np.ones(K),'fixed100':taper(K,100),'proportional12p5':taper(K,round(K/8))};evalm={**{n:m&valid for n,m in base.items()},**{'common_'+n:m&common for n,m in base.items()}}
@@ -159,5 +158,5 @@ def selftest():
 def main():
  if len(sys.argv)==2 and sys.argv[1]=='--self-test':selftest();return
  if len(sys.argv)!=4:raise SystemExit('usage: analyze_committed_subset_audit.py ORDER_MAT SUPER_MAT OUT | --self-test')
- out=Path(sys.argv[3]);out.mkdir(parents=True,exist_ok=True);o,h,p=analyze_order(Path(sys.argv[1]));s,f=analyze_super(Path(sys.argv[2]));h.to_csv(out/'order_holdout_per_line.csv',index=False);p.to_csv(out/'order_pair_per_line.csv',index=False);f.to_csv(out/'superfactor_per_line.csv',index=False);write(out/'order_metrics.json',o);write(out/'superfactor_metrics.json',s);write(out/'metrics.json',{'schema_version':'2.0','order_audit':o,'superfactor_audit':s});print(json.dumps(clean({'order_mapping':o['configuration']['mapping'],'support_selection':s['support_selection_diagnostic']}),indent=2))
+ out=Path(sys.argv[3]);out.mkdir(parents=True,exist_ok=True);o,h,p=analyze_order(Path(sys.argv[1]));s,f=analyze_super(Path(sys.argv[2]));h.to_csv(out/'order_holdout_per_line.csv',index=False);p.to_csv(out/'order_pair_per_line.csv',index=False);f.to_csv(out/'superfactor_per_line.csv',index=False);write(out/'order_metrics.json',o);write(out/'superfactor_metrics.json',s);write(out/'metrics.json',{'schema_version':'2.1','order_audit':o,'superfactor_audit':s});print(json.dumps(clean({'order_mapping':o['configuration']['mapping'],'orientation_conversion_check':o['orientation_conversion_check'],'support_selection':s['support_selection_diagnostic']}),indent=2))
 if __name__=='__main__':main()
