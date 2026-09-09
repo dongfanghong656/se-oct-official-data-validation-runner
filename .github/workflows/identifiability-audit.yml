@@ -1,0 +1,54 @@
+name: localization-vs-resolution-identifiability-audit
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "src/seoct_uncertainty/identifiability.py"
+      - "tests/test_identifiability.py"
+      - "scripts/run_identifiability_audit.py"
+      - ".github/workflows/identifiability-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Install dependencies
+        run: python -m pip install numpy scipy matplotlib pytest
+      - name: Unit tests
+        env: {PYTHONPATH: src}
+        run: pytest tests/test_identifiability.py -q | tee identifiability_pytest.log
+      - name: Run identifiability audit
+        env: {PYTHONPATH: src}
+        run: python scripts/run_identifiability_audit.py | tee identifiability_run.log
+      - name: Validate evidence fail-closed
+        run: |
+          python scripts/validate_evidence_bundle.py --metrics reports/identifiability_audit/metrics.json --output reports/identifiability_audit/EVIDENCE_STATUS.json --required-key status --required-key single_reflector --required-key two_reflector --required-key decisions
+      - name: Record provenance
+        run: |
+          python - <<'PY'
+          import datetime,json,os,pathlib
+          p=pathlib.Path('reports/identifiability_audit/provenance.json')
+          p.write_text(json.dumps({'source_commit':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'status':'VERIFIED_SYNTHETIC','boundary':'Optimistic Gaussian CRLB; not physical wideband validation.'},indent=2),encoding='utf-8')
+          PY
+          mv identifiability_pytest.log reports/identifiability_audit/pytest.log
+          mv identifiability_run.log reports/identifiability_audit/run.log
+      - name: Commit verified evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/identifiability_audit
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record verified localization-vs-resolution evidence [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
