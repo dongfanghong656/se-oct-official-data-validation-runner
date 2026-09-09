@@ -1,0 +1,114 @@
+{
+  "schema": "official-phase-corrected-miaa-uncertainty-audit-v1",
+  "status": "VERIFIED_CONDITIONAL_MODEL_AUDIT",
+  "source": {
+    "path": "/home/runner/work/se-oct-official-data-validation-runner/se-oct-official-data-validation-runner/reports/exact/author_exact_alines.mat",
+    "n_lines": 4,
+    "given_bins": 128,
+    "object_grid": 800,
+    "sampled_missing_bins": 240
+  },
+  "aggregate": {
+    "scalar_noise_median_predictability": 0.49476260149110424,
+    "heteroscedastic_noise_median_predictability": 0.49299898933840114,
+    "median_absolute_predictability_change": 0.0016764037759935402,
+    "scalar_fraction_q_ge_0_5_and_snr_ge_1": 0.465625,
+    "heteroscedastic_fraction_q_ge_0_5_and_snr_ge_1": 0.45729166666666665
+  },
+  "lines": [
+    {
+      "line": 0,
+      "eta_scalar": 0.06991808116436005,
+      "scalar": {
+        "median_predictability": 0.5269874427370609,
+        "minimum_predictability": 0.27394701731517934,
+        "maximum_confident_distance_bins": 176.0,
+        "condition_number": 1381524.7888518262,
+        "jitter_used": 1.0951023120388635e-09
+      },
+      "heteroscedastic": {
+        "median_predictability": 0.5247555915092903,
+        "minimum_predictability": 0.27289666733453666,
+        "maximum_confident_distance_bins": 176.0,
+        "condition_number": 2179864.765752986,
+        "jitter_used": 1.0953466709597278e-09
+      },
+      "model_difference": {
+        "predictability_median_absolute_difference": 0.0019332364299604055,
+        "mean_prediction_complex_correlation": 0.9491065863429076
+      }
+    },
+    {
+      "line": 1,
+      "eta_scalar": 0.10185614973306656,
+      "scalar": {
+        "median_predictability": 0.5027633986204577,
+        "minimum_predictability": 0.27144714278033133,
+        "maximum_confident_distance_bins": 168.0,
+        "condition_number": 1261706.9857825255,
+        "jitter_used": 1.425908797946253e-09
+      },
+      "heteroscedastic": {
+        "median_predictability": 0.5004968170143382,
+        "minimum_predictability": 0.270461083528596,
+        "maximum_confident_distance_bins": 168.0,
+        "condition_number": 1570357.9349346892,
+        "jitter_used": 1.426264778236582e-09
+      },
+      "model_difference": {
+        "predictability_median_absolute_difference": 0.0015684685453559721,
+        "mean_prediction_complex_correlation": 0.9423347339746576
+      }
+    },
+    {
+      "line": 2,
+      "eta_scalar": 0.08387187868356705,
+      "scalar": {
+        "median_predictability": 0.5858783680167933,
+        "minimum_predictability": 0.36214345162322426,
+        "maximum_confident_distance_bins": 201.0,
+        "condition_number": 1518429.0601486615,
+        "jitter_used": 1.587423532779127e-09
+      },
+      "heteroscedastic": {
+        "median_predictability": 0.5838194810080146,
+        "minimum_predictability": 0.3608434467944016,
+        "maximum_confident_distance_bins": 193.0,
+        "condition_number": 1905249.519630856,
+        "jitter_used": 1.5877166592697953e-09
+      },
+      "model_difference": {
+        "predictability_median_absolute_difference": 0.0015324730204772097,
+        "mean_prediction_complex_correlation": 0.9789294393020269
+      }
+    },
+    {
+      "line": 3,
+      "eta_scalar": 0.11337865144014359,
+      "scalar": {
+        "median_predictability": 0.22756080550730218,
+        "minimum_predictability": 0.0034220934812714265,
+        "maximum_confident_distance_bins": 117.0,
+        "condition_number": 513182.05534919247,
+        "jitter_used": 9.112748103333229e-10
+      },
+      "heteroscedastic": {
+        "median_predictability": 0.22348644504830062,
+        "minimum_predictability": 0.0033632611619787145,
+        "maximum_confident_distance_bins": 117.0,
+        "condition_number": 391028.41358535254,
+        "jitter_used": 9.1167106098056e-10
+      },
+      "model_difference": {
+        "predictability_median_absolute_difference": 0.002391978625539748,
+        "mean_prediction_complex_correlation": 0.8294588890955885
+      }
+    }
+  ],
+  "decisions": {
+    "uniform_confidence_across_extrapolated_support": false,
+    "scalar_eta_is_physically_complete_noise_model": false,
+    "posterior_covariance_is_physical_wideband_validation": false
+  },
+  "boundary": "Four selected phase-corrected public A-lines. Covariance is conditional on fitted IAA power and excludes power uncertainty, raw preprocessing, sample dispersion, chromatic transfer and independent physical outer-band truth."
+}
