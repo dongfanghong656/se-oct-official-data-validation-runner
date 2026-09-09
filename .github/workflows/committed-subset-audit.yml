@@ -27,6 +27,51 @@ jobs:
           echo "083db389b272ce59f381bbb87050348f35a5218350c8575be95c5ad5fd0e3b5e  /tmp/committed_subset_audit_bundle.tar.gz" | sha256sum -c -
           tar -xzf /tmp/committed_subset_audit_bundle.tar.gz
 
+      - name: Patch Octave script-local helpers into standalone functions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          run = Path("scripts/run_committed_subset_audit.m")
+          text = run.read_text(encoding="utf-8")
+          text = text.replace("Central 65 adjacent", "Central 49 adjacent")
+          text = text.replace("sel = 33:97;", "sel = 41:89;")
+          text = text.replace("recursive_maps(", "recursive_maps_committed(")
+          text = text.replace("maps_to_spectra(", "maps_to_spectra_committed(")
+          marker = "\nfunction maps = recursive_maps_committed"
+          if marker not in text:
+              raise RuntimeError("expected local helper marker not found")
+          run.write_text(text.split(marker, 1)[0].rstrip() + "\n", encoding="utf-8")
+          Path("scripts/recursive_maps_committed.m").write_text(
+              """function maps = recursive_maps_committed(demod, K2, q_i, q_rec, eta_weight)
+  Nline = size(demod, 2);
+  maps = complex(zeros(K2, Nline));
+  [a, PE, amap] = fiaa_oct_c1(demod(:, 1), K2, q_i, eta_weight);
+  maps(:, 1) = amap;
+  previous_power = abs(a).^2;
+  previous_eta = PE(q_i + 1);
+  for i = 2:Nline
+    [a, previous_eta, amap] = rec_fiaa_oct_c1(demod(:, i), K2, q_rec, eta_weight, previous_power, previous_eta);
+    maps(:, i) = amap;
+    previous_power = abs(a).^2;
+  end
+end
+""", encoding="utf-8")
+          Path("scripts/maps_to_spectra_committed.m").write_text(
+              """function spectra = maps_to_spectra_committed(maps, K, Nz, ii_first, super)
+  K2 = size(maps, 1);
+  Nline = size(maps, 2);
+  spectra = complex(zeros(K, Nline));
+  shift_amount = round(Nz * ((super - 1) / 2)) + ii_first - 1;
+  for i = 1:Nline
+    fa = [maps(1, i); maps(end:-1:2, i)];
+    xr = ifft(fa, [], 1) * K2;
+    xr = circshift(xr, shift_amount, 1);
+    spectra(:, i) = xr(1:K);
+  end
+end
+""", encoding="utf-8")
+          PY
+
       - name: Install runtime and static-check analysis
         run: |
           set -euo pipefail
@@ -105,7 +150,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase origin "${GITHUB_REF_NAME}"
-          git add scripts/prepare_subset_mat.py scripts/run_committed_subset_audit.m scripts/analyze_committed_subset_audit.py reports/extracts/author_sk_tio2.csv reports/extracts/author_sk_tio2_meta.json reports/committed_subset_audit
+          git add scripts/prepare_subset_mat.py scripts/run_committed_subset_audit.m scripts/recursive_maps_committed.m scripts/maps_to_spectra_committed.m scripts/analyze_committed_subset_audit.py reports/extracts/author_sk_tio2.csv reports/extracts/author_sk_tio2_meta.json reports/committed_subset_audit
           if ! git diff --cached --quiet; then
             git commit -m "test: record exact committed-subset traversal and support audit [skip ci]"
             git push origin "HEAD:${GITHUB_REF_NAME}"
