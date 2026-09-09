@@ -41,35 +41,37 @@ jobs:
           if marker not in text:
               raise RuntimeError("expected local helper marker not found")
           run.write_text(text.split(marker, 1)[0].rstrip() + "\n", encoding="utf-8")
-          Path("scripts/recursive_maps_committed.m").write_text(
-              """function maps = recursive_maps_committed(demod, K2, q_i, q_rec, eta_weight)
-  Nline = size(demod, 2);
-  maps = complex(zeros(K2, Nline));
-  [a, PE, amap] = fiaa_oct_c1(demod(:, 1), K2, q_i, eta_weight);
-  maps(:, 1) = amap;
-  previous_power = abs(a).^2;
-  previous_eta = PE(q_i + 1);
-  for i = 2:Nline
-    [a, previous_eta, amap] = rec_fiaa_oct_c1(demod(:, i), K2, q_rec, eta_weight, previous_power, previous_eta);
-    maps(:, i) = amap;
-    previous_power = abs(a).^2;
-  end
-end
-""", encoding="utf-8")
-          Path("scripts/maps_to_spectra_committed.m").write_text(
-              """function spectra = maps_to_spectra_committed(maps, K, Nz, ii_first, super)
-  K2 = size(maps, 1);
-  Nline = size(maps, 2);
-  spectra = complex(zeros(K, Nline));
-  shift_amount = round(Nz * ((super - 1) / 2)) + ii_first - 1;
-  for i = 1:Nline
-    fa = [maps(1, i); maps(end:-1:2, i)];
-    xr = ifft(fa, [], 1) * K2;
-    xr = circshift(xr, shift_amount, 1);
-    spectra(:, i) = xr(1:K);
-  end
-end
-""", encoding="utf-8")
+          recursive = (
+              "function maps = recursive_maps_committed(demod, K2, q_i, q_rec, eta_weight)\n"
+              "  Nline = size(demod, 2);\n"
+              "  maps = complex(zeros(K2, Nline));\n"
+              "  [a, PE, amap] = fiaa_oct_c1(demod(:, 1), K2, q_i, eta_weight);\n"
+              "  maps(:, 1) = amap;\n"
+              "  previous_power = abs(a).^2;\n"
+              "  previous_eta = PE(q_i + 1);\n"
+              "  for i = 2:Nline\n"
+              "    [a, previous_eta, amap] = rec_fiaa_oct_c1(demod(:, i), K2, q_rec, eta_weight, previous_power, previous_eta);\n"
+              "    maps(:, i) = amap;\n"
+              "    previous_power = abs(a).^2;\n"
+              "  end\n"
+              "end\n"
+          )
+          mapping = (
+              "function spectra = maps_to_spectra_committed(maps, K, Nz, ii_first, super)\n"
+              "  K2 = size(maps, 1);\n"
+              "  Nline = size(maps, 2);\n"
+              "  spectra = complex(zeros(K, Nline));\n"
+              "  shift_amount = round(Nz * ((super - 1) / 2)) + ii_first - 1;\n"
+              "  for i = 1:Nline\n"
+              "    fa = [maps(1, i); maps(end:-1:2, i)];\n"
+              "    xr = ifft(fa, [], 1) * K2;\n"
+              "    xr = circshift(xr, shift_amount, 1);\n"
+              "    spectra(:, i) = xr(1:K);\n"
+              "  end\n"
+              "end\n"
+          )
+          Path("scripts/recursive_maps_committed.m").write_text(recursive, encoding="utf-8")
+          Path("scripts/maps_to_spectra_committed.m").write_text(mapping, encoding="utf-8")
           PY
 
       - name: Install runtime and static-check analysis
