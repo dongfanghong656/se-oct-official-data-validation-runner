@@ -1,4 +1,4 @@
-name: extract-upstream-source-ranges
+name: extract-exact-oct-iaa-wrapper
 
 on:
   push:
@@ -19,44 +19,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Download verified source and extract algorithm ranges
+      - name: Download and verify the exact wrapper only
         run: |
           set -euo pipefail
           mkdir -p reports/source_ranges /tmp/upstream
-          fetch() {
-            local name="$1" md5="$2"
-            curl -fL --retry 7 --retry-all-errors -o "/tmp/upstream/${name}" "https://zenodo.org/records/7870795/files/${name}?download=1"
-            echo "${md5}  /tmp/upstream/${name}" | md5sum -c -
-          }
-          fetch MIAA_ISAM_processing.m 8b32839402ec0b45df0a8c7cd2ea170d
-          fetch fiaa_oct_c1.m 4839b0a7a57a7abe73f6644e38249cc6
-          fetch oct_iaa_c1.m d189d45be2e5f5ac3b797fb80e7b84e3
-          fetch rfiaa_oct_c1.m d5908350abe158134ebe6f9a4dce9eba
-          fetch rec_fiaa_oct_c1.m 08133e8bc4e62063149474cd402990d2
-          {
-            echo '# Verified upstream source ranges for independent implementation audit'
-            echo
-            echo 'Source: Zenodo record 7870795. Excerpts are preserved only for parameter/formula auditing.'
-            for range in '1,39' '40,130' '127,260' '261,420'; do
-              echo
-              echo "## MIAA_ISAM_processing.m lines ${range/,/-}"
-              echo '```matlab'
-              nl -ba /tmp/upstream/MIAA_ISAM_processing.m | sed -n "${range}p"
-              echo '```'
-            done
-            for name in fiaa_oct_c1.m oct_iaa_c1.m rfiaa_oct_c1.m; do
-              echo
-              echo "## ${name}"
-              echo '```matlab'
-              nl -ba "/tmp/upstream/${name}"
-              echo '```'
-            done
-            echo
-            echo '## rec_fiaa_oct_c1.m'
-            echo '```matlab'
-            nl -ba /tmp/upstream/rec_fiaa_oct_c1.m
-            echo '```'
-          } > reports/source_ranges/algorithm_ranges.md
+          curl -fL --retry 12 --retry-all-errors --connect-timeout 30 --max-time 300 \
+            -o /tmp/upstream/oct_iaa_c1.m \
+            "https://zenodo.org/records/7870795/files/oct_iaa_c1.m?download=1"
+          echo "d189d45be2e5f5ac3b797fb80e7b84e3  /tmp/upstream/oct_iaa_c1.m" | md5sum -c -
           {
             echo '# oct_iaa_c1.m — checksum-traced exact wrapper source'
             echo
@@ -68,12 +38,12 @@ jobs:
             nl -ba /tmp/upstream/oct_iaa_c1.m
             echo '```'
           } > reports/source_ranges/oct_iaa_c1.md
-      - name: Commit audit excerpt
+      - name: Commit wrapper audit source
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase origin "${GITHUB_REF_NAME}"
-          git add reports/source_ranges
+          git add reports/source_ranges/oct_iaa_c1.md
           if ! git diff --cached --quiet; then
             git commit -m "docs: record exact OCT IAA wrapper source [skip ci]"
             git push origin "HEAD:${GITHUB_REF_NAME}"
