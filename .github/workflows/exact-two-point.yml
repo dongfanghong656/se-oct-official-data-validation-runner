@@ -5,6 +5,7 @@ on:
     branches: ["run/zenodo-7870795"]
     paths:
       - "scripts/run_exact_two_point.m"
+      - "scripts/solve_miaa_exact.m"
       - "scripts/analyze_exact_two_point.py"
       - ".github/workflows/exact-two-point.yml"
   workflow_dispatch:
@@ -12,24 +13,30 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: exact-author-two-target-audit
+  cancel-in-progress: false
+
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-        with: {fetch-depth: 0}
+        with:
+          fetch-depth: 0
       - name: Install runtime
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends octave octave-signal
-          python -m pip install numpy scipy pandas matplotlib
-      - name: Download and verify deposited FIAA
+          python -m pip install numpy scipy pandas
+      - name: Download and verify exact author FIAA
         run: |
           mkdir -p .cache reports/exact_two_point
-          curl -fL --retry 9 --retry-all-errors -o .cache/fiaa_oct_c1.m "https://zenodo.org/records/7870795/files/fiaa_oct_c1.m?download=1"
+          curl -fL --retry 9 --retry-all-errors -o .cache/fiaa_oct_c1.m \
+            "https://zenodo.org/records/7870795/files/fiaa_oct_c1.m?download=1"
           echo "4839b0a7a57a7abe73f6644e38249cc6  .cache/fiaa_oct_c1.m" | md5sum -c -
-      - name: Execute exact-author causal audit
+      - name: Execute exact-author two-target audit
         env:
           UPSTREAM_CODE_DIR: ${{ github.workspace }}/.cache
           OUTPUT_MAT: ${{ github.workspace }}/reports/exact_two_point/source.mat
@@ -37,9 +44,15 @@ jobs:
           set -o pipefail
           octave-cli --quiet scripts/run_exact_two_point.m 2>&1 | tee reports/exact_two_point/octave.log
           python scripts/analyze_exact_two_point.py reports/exact_two_point/source.mat reports/exact_two_point 2>&1 | tee reports/exact_two_point/analysis.log
-      - name: Validate evidence fail-closed
+      - name: Fail-closed evidence validation
         run: |
-          python scripts/validate_evidence_bundle.py --metrics reports/exact_two_point/metrics.json --output reports/exact_two_point/EVIDENCE_STATUS.json --required-key status --required-key summary --required-key additivity --required-key decisions
+          python scripts/validate_evidence_bundle.py \
+            --metrics reports/exact_two_point/metrics.json \
+            --output reports/exact_two_point/EVIDENCE_STATUS.json \
+            --required-key status \
+            --required-key summary \
+            --required-key additivity \
+            --required-key adjudication.universal_linear_psf_supported
       - name: Commit verified compact evidence
         run: |
           rm -rf .cache
