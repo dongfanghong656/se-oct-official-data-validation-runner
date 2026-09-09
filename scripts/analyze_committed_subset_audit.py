@@ -138,7 +138,12 @@ def add_domain_metrics(
     ref = reference[mask]
     pred = estimate[mask]
     source_norm = np.abs(sk[mask]) / max(float(np.max(np.abs(sk))), EPS)
-    symmetric_signal = np.sqrt(np.abs(ref) * np.abs(pred) + EPS)
+    # Use reference-only reliability weights. Prediction-dependent weights can
+    # reward a model for suppressing bins where it is wrong.
+    reference_signal_weight = source_norm**2 * np.abs(ref)**2
+    reference_signal_weight = reference_signal_weight / max(
+        float(np.max(reference_signal_weight)), EPS
+    )
     domains = {
         "normalized": complex_metrics(ref, pred),
         "source_restored": complex_metrics(ref * sk[mask], pred * sk[mask]),
@@ -146,7 +151,7 @@ def add_domain_metrics(
         "signal_source_weighted": complex_metrics(
             ref,
             pred,
-            source_norm**2 * symmetric_signal / max(float(np.max(symmetric_signal)), EPS),
+            reference_signal_weight,
         ),
     }
     for prefix, metrics in domains.items():

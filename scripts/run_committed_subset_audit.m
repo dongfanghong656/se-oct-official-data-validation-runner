@@ -27,8 +27,8 @@ if length(ii) ~= 128
   error('expected a contiguous 128-bin author source window');
 end
 
-% Central 65 adjacent A-lines include the strong point and both traversal directions.
-sel = 33:97;
+% Central 48 adjacent A-lines include the strong point and both traversal directions.
+sel = 41:88;
 z_strip = x_strip(:, sel);
 iRaw = flip(fft(z_strip, [], 1), 1);
 C = complex(zeros(size(iRaw)));
@@ -48,8 +48,8 @@ K = Nz * super;
 K2 = 2 * K;
 Nline = size(demod, 2);
 
-maps_forward = recursive_maps(demod, K2, q_i, q_rec, eta_weight);
-maps_reverse = recursive_maps(demod(:, end:-1:1), K2, q_i, q_rec, eta_weight);
+maps_forward = recursive_maps_committed(demod, K2, q_i, q_rec, eta_weight);
+maps_reverse = recursive_maps_committed(demod(:, end:-1:1), K2, q_i, q_rec, eta_weight);
 maps_reverse = maps_reverse(:, end:-1:1);
 maps_independent = complex(zeros(K2, Nline));
 for i = 1:Nline
@@ -75,12 +75,12 @@ catch err
   fprintf('oct_iaa_c1 chunk path unavailable: %s\n', chunk_exact_error);
 end
 
-spectra_forward = maps_to_spectra(maps_forward, K, Nz, ii(1), super);
-spectra_reverse = maps_to_spectra(maps_reverse, K, Nz, ii(1), super);
-spectra_independent = maps_to_spectra(maps_independent, K, Nz, ii(1), super);
+spectra_forward = maps_to_spectra_committed(maps_forward, K, Nz, ii(1), super);
+spectra_reverse = maps_to_spectra_committed(maps_reverse, K, Nz, ii(1), super);
+spectra_independent = maps_to_spectra_committed(maps_independent, K, Nz, ii(1), super);
 if chunk_exact_ok
-  spectra_chunk_forward = maps_to_spectra(maps_chunk_forward, K, Nz, ii(1), super);
-  spectra_chunk_reverse = maps_to_spectra(maps_chunk_reverse, K, Nz, ii(1), super);
+  spectra_chunk_forward = maps_to_spectra_committed(maps_chunk_forward, K, Nz, ii(1), super);
+  spectra_chunk_reverse = maps_to_spectra_committed(maps_chunk_reverse, K, Nz, ii(1), super);
 else
   spectra_chunk_forward = complex(nan(K, Nline));
   spectra_chunk_reverse = complex(nan(K, Nline));
@@ -114,7 +114,7 @@ for si = 1:length(supers)
     [~, ~, amap] = fiaa_oct_c1(demod4(:, i), K2s, q_i, eta_weight);
     maps(:, i) = amap;
   end
-  spectra_super(1:Ks, :, si) = maps_to_spectra(maps, Ks, Nz, ii(1), su);
+  spectra_super(1:Ks, :, si) = maps_to_spectra_committed(maps, Ks, Nz, ii(1), su);
   fprintf('super=%d complete\n', su);
 end
 save('-mat7-binary', [out_dir '/superfactor.mat'], 'Nz', 'supers', 'q_i', ...
@@ -122,31 +122,3 @@ save('-mat7-binary', [out_dir '/superfactor.mat'], 'Nz', 'supers', 'q_i', ...
   'coordinates_yx_zero_based', 'spectra_super');
 
 fprintf('COMMITTED_SUBSET_AUDIT_OK output=%s\n', out_dir);
-
-function maps = recursive_maps(demod, K2, q_i, q_rec, eta_weight)
-  Nline = size(demod, 2);
-  maps = complex(zeros(K2, Nline));
-  [a, PE, amap] = fiaa_oct_c1(demod(:, 1), K2, q_i, eta_weight);
-  maps(:, 1) = amap;
-  previous_power = abs(a).^2;
-  previous_eta = PE(q_i + 1);
-  for i = 2:Nline
-    [a, previous_eta, amap] = rec_fiaa_oct_c1( ...
-      demod(:, i), K2, q_rec, eta_weight, previous_power, previous_eta);
-    maps(:, i) = amap;
-    previous_power = abs(a).^2;
-  end
-end
-
-function spectra = maps_to_spectra(maps, K, Nz, ii_first, super)
-  K2 = size(maps, 1);
-  Nline = size(maps, 2);
-  spectra = complex(zeros(K, Nline));
-  shift_amount = round(Nz * ((super - 1) / 2)) + ii_first - 1;
-  for i = 1:Nline
-    fa = [maps(1, i); maps(end:-1:2, i)];
-    xr = ifft(fa, [], 1) * K2;
-    xr = circshift(xr, shift_amount, 1);
-    spectra(:, i) = xr(1:K);
-  end
-end

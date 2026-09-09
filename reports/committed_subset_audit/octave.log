@@ -1,3 +1,3 @@
-error: 'recursive_maps' undefined near line 51, column 16
+error: 'recursive_maps_committed' undefined near line 51, column 16
 error: called from
     scripts/run_committed_subset_audit.m at line 51 column 14
