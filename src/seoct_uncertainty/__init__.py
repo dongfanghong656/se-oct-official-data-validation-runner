@@ -32,6 +32,18 @@ from .propagation import (
     propagate_conditional_monte_carlo,
     sample_conditional_spectra,
 )
+
+from .preprocessing import (
+    BackgroundDemodulationResult,
+    background_coefficient,
+    centering_matrix,
+    demodulated_noise_covariance,
+    demodulation_operator,
+    preprocess_for_miaa,
+    safe_source_spectrum,
+    scalar_covariance_approximation,
+)
+
 from .scalable import (
     ConditionalMIAADiagonalResult,
     conditional_miaa_diagonal,
@@ -66,4 +78,12 @@ __all__ = [
     "conditional_miaa_diagonal",
     "conservative_confidence_envelope",
     "contiguous_confident_support",
+    "BackgroundDemodulationResult",
+    "background_coefficient",
+    "centering_matrix",
+    "demodulated_noise_covariance",
+    "demodulation_operator",
+    "preprocess_for_miaa",
+    "safe_source_spectrum",
+    "scalar_covariance_approximation",
 ]
