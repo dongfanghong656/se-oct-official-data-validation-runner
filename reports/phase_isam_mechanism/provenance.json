@@ -2,8 +2,8 @@
   "schema": "seoct-phase-isam-provenance-v2",
   "execution_environment": "GitHub-hosted ubuntu-latest",
   "repository": "dongfanghong656/se-oct-official-data-validation-runner",
-  "source_commit": "a58f7bc05c39a35553a8ac755c2450d40d1a1802",
-  "run_id": "34368170708",
+  "source_commit": "dd57e723e0782f4c879136edfb1f444df55c9aca",
+  "run_id": "34369260595",
   "run_attempt": "1",
   "step_outcomes": {
     "install": "success",
@@ -13,5 +13,5 @@
   "exact_alines_sha256": "eab5befea0dcc8165e66e5e5667db8910c70809015bc33da00b41f16db40887d",
   "upstream_record": "10.5281/zenodo.7870795",
   "boundary": "Author A-lines are already phase corrected; no-phase behavior is controlled causal re-injection and exact-model analysis.",
-  "recorded_at_utc": "2026-09-09T15:07:58.367209+00:00"
+  "recorded_at_utc": "2026-09-09T15:17:49.148093+00:00"
 }

@@ -22,14 +22,14 @@
       "artifact_energy_fraction": 0.4255940177785005
     },
     "miaa_isam": {
-      "target_amplitude_ratio": 0.9912200876052614,
-      "local_peak_ratio": 0.9912200876052614,
-      "local_energy_ratio": 0.9884663175788693,
-      "axial_fwhm_um": 1.5374442307132625,
-      "lateral_fwhm_um": 0.7314610463524178,
+      "target_amplitude_ratio": 0.9912200872683208,
+      "local_peak_ratio": 0.9912200872683208,
+      "local_energy_ratio": 0.9884663169362528,
+      "axial_fwhm_um": 1.5374442309490775,
+      "lateral_fwhm_um": 0.7314610461788282,
       "peak_x_error_um": 0.0,
-      "complex_corr": 0.9999249788266107,
-      "artifact_energy_fraction": 0.08477813557378266
+      "complex_corr": 0.9999249788162762,
+      "artifact_energy_fraction": 0.08477813538008927
     },
     "expanded_oracle": {
       "target_amplitude_ratio": 1.0,
@@ -43,8 +43,8 @@
     }
   },
   "equivariance": {
-    "full_miaa_relative_error": 3.036791174868338e-14,
-    "iaa_power_relative_error": 2.321653266040814e-13,
+    "full_miaa_relative_error": 8.232640463647345e-15,
+    "iaa_power_relative_error": 1.0753525393309039e-13,
     "eta_absolute_error": 0.0
   },
   "dispersion": {
