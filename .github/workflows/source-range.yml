@@ -25,7 +25,7 @@ jobs:
           mkdir -p reports/source_ranges /tmp/upstream
           fetch() {
             local name="$1" md5="$2"
-            curl -fL --retry 5 --retry-all-errors -o "/tmp/upstream/${name}" "https://zenodo.org/records/7870795/files/${name}?download=1"
+            curl -fL --retry 7 --retry-all-errors -o "/tmp/upstream/${name}" "https://zenodo.org/records/7870795/files/${name}?download=1"
             echo "${md5}  /tmp/upstream/${name}" | md5sum -c -
           }
           fetch MIAA_ISAM_processing.m 8b32839402ec0b45df0a8c7cd2ea170d
@@ -57,6 +57,17 @@ jobs:
             nl -ba /tmp/upstream/rec_fiaa_oct_c1.m
             echo '```'
           } > reports/source_ranges/algorithm_ranges.md
+          {
+            echo '# oct_iaa_c1.m — checksum-traced exact wrapper source'
+            echo
+            echo '- Source: Zenodo record 7870795'
+            echo '- MD5: `d189d45be2e5f5ac3b797fb80e7b84e3`'
+            echo '- Purpose: audit chunk partitioning, traversal direction, and output assembly.'
+            echo
+            echo '```matlab'
+            nl -ba /tmp/upstream/oct_iaa_c1.m
+            echo '```'
+          } > reports/source_ranges/oct_iaa_c1.md
       - name: Commit audit excerpt
         run: |
           git config user.name "github-actions[bot]"
@@ -64,6 +75,6 @@ jobs:
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git add reports/source_ranges
           if ! git diff --cached --quiet; then
-            git commit -m "docs: record exact FIAA source ranges [skip ci]"
+            git commit -m "docs: record exact OCT IAA wrapper source [skip ci]"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
