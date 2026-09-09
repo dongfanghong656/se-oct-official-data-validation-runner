@@ -1,0 +1,97 @@
+name: phase-reference-and-isam-mechanism-audit
+
+on:
+  push:
+    branches: ["run/zenodo-7870795"]
+    paths:
+      - "src/seoct_phase_isam/**"
+      - "tests/test_phase_isam.py"
+      - "scripts/phase_isam_mechanism_audit.py"
+      - ".github/workflows/phase-reference-isam-mechanism.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: ${{ github.workspace }}/src
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - name: Install dependencies
+        run: python -m pip install numpy scipy matplotlib pytest
+      - name: Run phase/ISAM unit tests
+        run: |
+          mkdir -p reports/phase_isam_mechanism
+          python -m pytest -q tests/test_phase_isam.py 2>&1 | tee reports/phase_isam_mechanism/pytest.log
+      - name: Run controlled phase-reference and support audit
+        run: |
+          set -o pipefail
+          python scripts/phase_isam_mechanism_audit.py \
+            --exact-alines reports/exact/author_exact_alines.mat \
+            --output reports/phase_isam_mechanism \
+            2>&1 | tee reports/phase_isam_mechanism/runner.log
+      - name: Record provenance
+        run: |
+          python - <<'PY'
+          import datetime,hashlib,json,os
+          from pathlib import Path
+          def sha256(path):
+              h=hashlib.sha256()
+              with Path(path).open('rb') as f:
+                  for b in iter(lambda:f.read(1<<20),b''):h.update(b)
+              return h.hexdigest()
+          Path('reports/phase_isam_mechanism/provenance.json').write_text(json.dumps({
+            'schema':'seoct-phase-isam-provenance-v1',
+            'execution_environment':'GitHub-hosted ubuntu-latest',
+            'repository':os.environ.get('GITHUB_REPOSITORY'),
+            'source_commit':os.environ.get('GITHUB_SHA'),
+            'run_id':os.environ.get('GITHUB_RUN_ID'),
+            'run_attempt':os.environ.get('GITHUB_RUN_ATTEMPT'),
+            'exact_alines_sha256':sha256('reports/exact/author_exact_alines.mat'),
+            'upstream_record':'10.5281/zenodo.7870795',
+            'boundary':'Author A-lines are already phase corrected; no-phase behavior is controlled causal re-injection and exact-model analysis.',
+            'recorded_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()
+          },indent=2),encoding='utf-8')
+          PY
+      - name: Enforce fail-closed evidence gate
+        run: |
+          python scripts/validate_evidence_bundle.py \
+            --metrics reports/phase_isam_mechanism/metrics.json \
+            --output reports/phase_isam_mechanism/EVIDENCE_STATUS.json \
+            --required-key status \
+            --required-key baseline.narrow_isam \
+            --required-key baseline.miaa_isam \
+            --required-key phase_rms_sweep \
+            --required-key opl_sweep \
+            --required-key full_iaa_miaa_equivariance.full_miaa_relative_error \
+            --required-key exact_author_dispersion \
+            --required-key decisions \
+            --required-file reports/phase_isam_mechanism/runner.log \
+            --required-file reports/phase_isam_mechanism/pytest.log \
+            --required-file reports/phase_isam_mechanism/provenance.json \
+            --required-file reports/phase_isam_mechanism/phase_collapse.png \
+            --required-file reports/phase_isam_mechanism/axial_gain_decomposition.png
+      - name: Commit verified compact evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git add reports/phase_isam_mechanism
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record verified phase-reference and ISAM mechanism evidence [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase-reference-and-isam-mechanism-audit
+          path: reports/phase_isam_mechanism
+          retention-days: 30
