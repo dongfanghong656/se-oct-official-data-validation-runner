@@ -1,0 +1,17 @@
+{
+  "schema": "scientific-evidence-gate-v2",
+  "status": "VERIFIED",
+  "metrics_path": "reports/calibration_uncertainty_audit/metrics.json",
+  "metrics_sha256": "b0696987044cc69b654b3be01030264bb838e290ed8b82259d960c214e33511f",
+  "metrics_size": 2331,
+  "required_keys": [
+    "status",
+    "phase_uncertainty_by_distance",
+    "miaa_confidence_effect",
+    "decisions"
+  ],
+  "required_files": [],
+  "failures": [],
+  "checked_at_utc": "2026-09-09T08:32:26.744371+00:00",
+  "rule": "A commit name, workflow trigger, provenance-only file, or successful producer command without parseable metrics is not execution evidence."
+}

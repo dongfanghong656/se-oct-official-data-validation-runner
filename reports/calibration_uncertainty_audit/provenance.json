@@ -1,0 +1,7 @@
+{
+  "source_commit": "f7c21855ebc86368725fd35a11619d6763304ee0",
+  "run_id": "34329642946",
+  "recorded_at_utc": "2026-09-09T08:32:26.774554+00:00",
+  "status": "VERIFIED_SYNTHETIC",
+  "boundary": "Synthetic phase-fit uncertainty; not authors actual calibration residuals."
+}
