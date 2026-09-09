@@ -1,0 +1,397 @@
+{
+  "schema": "seoct-preprocessing-noise-audit-v1",
+  "status": "VERIFIED_GITHUB_HOSTED_CONTROLLED_EXECUTION",
+  "source": {
+    "subset_sha256": "40c0c91fa3104ec3fd2d1e33fe16db54c3261bb0e46e83821bcd9a3ad3d34c83",
+    "exact_sha256": "eab5befea0dcc8165e66e5e5667db8910c70809015bc33da00b41f16db40887d",
+    "boundary": "Already phase-corrected public C-scan derivatives; no raw-camera calibration audit."
+  },
+  "background_subtraction": {
+    "algebra": "Q[(raw-g*S)/S]=Q[raw/S] for any scalar g and matching nonzero S",
+    "selected": {
+      "n_lines": 4,
+      "coefficient_relative_difference": {
+        "min": 0.1904383346407939,
+        "q10": 0.3607591943139691,
+        "median": 0.9453241217179698,
+        "q90": 1.7364238965843912,
+        "q99": 1.969376111454325,
+        "max": 1.9952596908843179
+      },
+      "author_source_projection": {
+        "min": 0.000633267845251212,
+        "q10": 0.000735866318126108,
+        "median": 0.0014180256186693808,
+        "q90": 0.0030968676766934588,
+        "q99": 0.003573641080166318,
+        "max": 0.003626615902774414
+      },
+      "complex_ls_source_projection": {
+        "min": 6.1258333845227435e-18,
+        "q10": 6.371257259041685e-18,
+        "median": 9.308367962258988e-18,
+        "q90": 1.2297234097928224e-17,
+        "q99": 1.2538078394655302e-17,
+        "max": 1.2564838872069421e-17
+      },
+      "miaa_input_relative_difference": {
+        "min": 2.3279288261497924e-16,
+        "q10": 2.54313595996898e-16,
+        "median": 3.32195075558668e-16,
+        "q90": 3.6369559672578457e-16,
+        "q99": 3.6517444053157364e-16,
+        "max": 3.6533875650999466e-16
+      },
+      "dft_complex_correlation": {
+        "min": 0.9999969868732597,
+        "q10": 0.9999976528387999,
+        "median": 0.9999994944298373,
+        "q90": 0.99999987031954,
+        "q99": 0.9999999043465827,
+        "max": 0.9999999081273653
+      },
+      "dft_relative_difference": {
+        "min": 0.0004286562069183433,
+        "q10": 0.0004981043032013079,
+        "median": 0.0009598544002368426,
+        "q90": 0.00209626593841791,
+        "q99": 0.0024189957809429975,
+        "max": 0.0024548546523346744
+      },
+      "dft_fwhm_author_um": {
+        "min": 7.647338981443237,
+        "q10": 7.651764878198888,
+        "median": 7.691719564854181,
+        "q90": 7.860696225847291,
+        "q99": 7.9144451516005345,
+        "max": 7.920417254462006
+      },
+      "dft_fwhm_complex_ls_um": {
+        "min": 7.6472782110696915,
+        "q10": 7.65168485640703,
+        "median": 7.691684262260583,
+        "q90": 7.860489544636015,
+        "q99": 7.914137792098058,
+        "max": 7.920098708482729
+      },
+      "dft_fwhm_abs_difference_um": {
+        "min": 5.4336580726399575e-05,
+        "q10": 5.626671857221766e-05,
+        "median": 9.285607073339364e-05,
+        "q90": 0.0002604647158701568,
+        "q99": 0.0003127378529362623,
+        "max": 0.00031854597927694073
+      }
+    },
+    "strips": {
+      "x_strip": {
+        "n_lines": 129,
+        "coefficient_relative_difference": {
+          "min": 0.06914679826811795,
+          "q10": 0.32477541750277944,
+          "median": 1.3537795110752748,
+          "q90": 1.933420978023003,
+          "q99": 1.9993261796872337,
+          "max": 1.9994923404319391
+        },
+        "author_source_projection": {
+          "min": 0.00030368178207329716,
+          "q10": 0.004397581516907644,
+          "median": 0.026250805453739024,
+          "q90": 0.06893125159347886,
+          "q99": 0.1043416146981223,
+          "max": 0.12041037634868983
+        },
+        "complex_ls_source_projection": {
+          "min": 0.0,
+          "q10": 9.428211683558869e-18,
+          "median": 2.351217395214596e-17,
+          "q90": 4.775408958268392e-17,
+          "q99": 6.549871252025036e-17,
+          "max": 7.319207699991759e-17
+        },
+        "miaa_input_relative_difference": {
+          "min": 9.310132391928701e-17,
+          "q10": 1.676010940382701e-16,
+          "median": 2.479039206374807e-16,
+          "q90": 3.879448213788375e-16,
+          "q99": 4.570428054452457e-16,
+          "max": 4.902731927623528e-16
+        },
+        "dft_complex_correlation": {
+          "min": 0.9966568408999155,
+          "q10": 0.998908102552732,
+          "median": 0.9998420402621491,
+          "q90": 0.9999955691139641,
+          "q99": 0.9999999073049277,
+          "max": 0.9999999788726235
+        },
+        "dft_relative_difference": {
+          "min": 0.000205585409487672,
+          "q10": 0.002976948260405536,
+          "median": 0.01777593340546972,
+          "q90": 0.04677259025506434,
+          "q99": 0.07103455673167751,
+          "max": 0.08212105869320896
+        },
+        "dft_fwhm_author_um": {
+          "min": 7.166773364154272,
+          "q10": 7.564209767144687,
+          "median": 7.801378083892086,
+          "q90": 8.060055227691327,
+          "q99": 8.229876960659082,
+          "max": 8.423099347835976
+        },
+        "dft_fwhm_complex_ls_um": {
+          "min": 7.163182297526326,
+          "q10": 7.571388820403802,
+          "median": 7.799955235448834,
+          "q90": 8.064676489490418,
+          "q99": 8.232513005087629,
+          "max": 8.421641436712989
+        },
+        "dft_fwhm_abs_difference_um": {
+          "min": 5.4336580726399575e-05,
+          "q10": 0.001030025408758206,
+          "median": 0.006863083945926718,
+          "q90": 0.017994468338272895,
+          "q99": 0.02538011291177014,
+          "max": 0.027234636519648525
+        }
+      },
+      "y_strip": {
+        "n_lines": 129,
+        "coefficient_relative_difference": {
+          "min": 0.0029712853299167278,
+          "q10": 0.34491655997359355,
+          "median": 1.4772286467986842,
+          "q90": 1.9715551027614975,
+          "q99": 1.9990853878486505,
+          "max": 1.9999961137356186
+        },
+        "author_source_projection": {
+          "min": 0.0001448630103234227,
+          "q10": 0.003852452917588962,
+          "median": 0.02323448537946274,
+          "q90": 0.06227590901134085,
+          "q99": 0.09905206818610578,
+          "max": 0.11810568667295904
+        },
+        "complex_ls_source_projection": {
+          "min": 2.77478989323683e-18,
+          "q10": 9.354005015062506e-18,
+          "median": 2.2491411414085985e-17,
+          "q90": 4.55037111742549e-17,
+          "q99": 7.934322283403185e-17,
+          "max": 1.142948294730247e-16
+        },
+        "miaa_input_relative_difference": {
+          "min": 1.2067025916027758e-16,
+          "q10": 1.907832577238319e-16,
+          "median": 2.601764381416672e-16,
+          "q90": 3.7558669177308667e-16,
+          "q99": 4.831609957809306e-16,
+          "max": 5.032701277615072e-16
+        },
+        "dft_complex_correlation": {
+          "min": 0.9967792439002335,
+          "q10": 0.9991085497708052,
+          "median": 0.9998762207768503,
+          "q90": 0.9999965978567145,
+          "q99": 0.9999999609066536,
+          "max": 0.9999999951900533
+        },
+        "dft_relative_difference": {
+          "min": 9.808507957513478e-05,
+          "q10": 0.0026077459989783647,
+          "median": 0.015735802111333665,
+          "q90": 0.04224326071679128,
+          "q99": 0.06740820390617205,
+          "max": 0.08052015903142552
+        },
+        "dft_fwhm_author_um": {
+          "min": 7.40577975035415,
+          "q10": 7.569010945487285,
+          "median": 7.809022982759793,
+          "q90": 8.160267959589182,
+          "q99": 10.13027485225861,
+          "max": 10.300732817803047
+        },
+        "dft_fwhm_complex_ls_um": {
+          "min": 7.414429700729016,
+          "q10": 7.569500860086279,
+          "median": 7.82154083123115,
+          "q90": 8.178677659096545,
+          "q99": 10.133170758020892,
+          "max": 10.302654111907511
+        },
+        "dft_fwhm_abs_difference_um": {
+          "min": 7.1463832682638895e-06,
+          "q10": 0.0003559565164270141,
+          "median": 0.005528016000872604,
+          "q90": 0.014669916976119529,
+          "q99": 0.021477883672366926,
+          "max": 0.025211235214389838
+        }
+      }
+    },
+    "decision": {
+      "coefficient_order_explains_miaa_sharpening": false,
+      "author_and_complex_ls_miaa_inputs_equivalent": true,
+      "dft_strictly_invariant": false
+    }
+  },
+  "mean_subtraction_signal_response": {
+    "fraction_grid_below_0_95": 0.01125,
+    "fraction_grid_below_0_99": 0.02125,
+    "dft_peak_indices": [
+      357,
+      363,
+      360,
+      353
+    ],
+    "dft_peak_retention": [
+      0.9999957441796142,
+      0.9999980721738222,
+      0.9999717037420092,
+      0.999968542768964
+    ],
+    "miaa_peak_indices": [
+      443,
+      437,
+      440,
+      447
+    ],
+    "miaa_peak_retention": [
+      0.9999957441796143,
+      0.9999980721738222,
+      0.9999717037420096,
+      0.9999685427689643
+    ]
+  },
+  "noise_covariance": {
+    "selected_source_ratio": 13.411155232073469,
+    "uncentered_variance_ratio": 179.85908465877156,
+    "centered_diagonal_variance_ratio": 145.10301803279592,
+    "rank": 127,
+    "expected_rank": 127,
+    "nonzero_condition_number": 178.740349914345,
+    "trace_matched_eta": 6.576373167411069e-09,
+    "scalar_relative_frobenius_mismatch": 0.8242205953537256,
+    "off_diagonal_real_correlation": {
+      "min": -0.07987320496782056,
+      "q10": -0.037739775749913856,
+      "median": -0.004449914708498225,
+      "q90": 0.0995457556056154,
+      "q99": 0.16518482860811345,
+      "max": 0.18121176620980578
+    },
+    "max_abs_off_diagonal_correlation": 0.18121176620980578,
+    "monte_carlo_trials": 40000,
+    "monte_carlo_relative_frobenius_error": 0.03131856544784273
+  },
+  "conditional_sensitivity": {
+    "lines": [
+      {
+        "line": 0,
+        "prediction_corr": 0.9959714192183372,
+        "prediction_nmse": 0.008040932100211251,
+        "median_predictability_scalar": 0.8064858502915151,
+        "median_predictability_exact_shape": 0.8058234074839693,
+        "median_abs_predictability_change": 0.0005304363417747426
+      },
+      {
+        "line": 1,
+        "prediction_corr": 0.996603227373835,
+        "prediction_nmse": 0.0067820071880562395,
+        "median_predictability_scalar": 0.7911665770194711,
+        "median_predictability_exact_shape": 0.7907628358999752,
+        "median_abs_predictability_change": 0.00047276592814010643
+      },
+      {
+        "line": 2,
+        "prediction_corr": 0.9977237076890337,
+        "prediction_nmse": 0.004547403115248024,
+        "median_predictability_scalar": 0.8283781123890035,
+        "median_predictability_exact_shape": 0.8281019559700391,
+        "median_abs_predictability_change": 0.00037070278761197617
+      },
+      {
+        "line": 3,
+        "prediction_corr": 0.9880868783514524,
+        "prediction_nmse": 0.023684320829681717,
+        "median_predictability_scalar": 0.7439114351855078,
+        "median_predictability_exact_shape": 0.7423818789928992,
+        "median_abs_predictability_change": 0.0011687153682098383
+      }
+    ],
+    "medians": {
+      "prediction_corr": 0.996287323296086,
+      "prediction_nmse": 0.007411469644133745,
+      "median_predictability_scalar": 0.7988262136554931,
+      "median_predictability_exact_shape": 0.7982931216919722,
+      "median_abs_predictability_change": 0.0005016011349574245
+    },
+    "boundary": "Author power and eta were fitted under scalar noise; trace-matched covariance substitution is sensitivity analysis, not a corrected reconstruction."
+  },
+  "oracle_snr_sweep": {
+    "aggregate": [
+      {
+        "snr_db": 40.0,
+        "trials": 8,
+        "scalar_truth_corr": 0.9999990040742992,
+        "exact_truth_corr": 0.9999999679598176,
+        "scalar_truth_nmse": 1.9918504071726365e-06,
+        "exact_truth_nmse": 6.408036352973527e-08,
+        "scalar_vs_exact_corr": 0.9999991488892956
+      },
+      {
+        "snr_db": 20.0,
+        "trials": 8,
+        "scalar_truth_corr": 0.999951707986611,
+        "exact_truth_corr": 0.9999946176116343,
+        "scalar_truth_nmse": 9.658167656791404e-05,
+        "exact_truth_nmse": 1.0764745354617406e-05,
+        "scalar_vs_exact_corr": 0.9999561958775433
+      },
+      {
+        "snr_db": 10.0,
+        "trials": 8,
+        "scalar_truth_corr": 0.9992898061218622,
+        "exact_truth_corr": 0.9999478526133702,
+        "scalar_truth_nmse": 0.0014198810271303579,
+        "exact_truth_nmse": 0.00010429205185766143,
+        "scalar_vs_exact_corr": 0.9992295290982723
+      },
+      {
+        "snr_db": 0.0,
+        "trials": 8,
+        "scalar_truth_corr": 0.995902055066357,
+        "exact_truth_corr": 0.9996203242027752,
+        "scalar_truth_nmse": 0.008179071757516643,
+        "exact_truth_nmse": 0.0007592074371429087,
+        "scalar_vs_exact_corr": 0.9953021435999274
+      },
+      {
+        "snr_db": -10.0,
+        "trials": 8,
+        "scalar_truth_corr": 0.9703827995941459,
+        "exact_truth_corr": 0.9961555318895867,
+        "scalar_truth_nmse": 0.05835701165315528,
+        "exact_truth_nmse": 0.007672840992364026,
+        "scalar_vs_exact_corr": 0.9721383373993896
+      }
+    ],
+    "boundary": "Oracle reflectivity power and true covariance isolate noise-shape sensitivity; practical IAA must refit power and validate on independent data."
+  },
+  "decisions": {
+    "scalar_eta_identity_is_exact": false,
+    "noise_shape_is_main_headline_sharpening_cause_on_four_selected_lines": false,
+    "low_snr_covariance_shape_can_matter": true,
+    "physical_wideband_validation_provided": false
+  },
+  "environment": {
+    "python": "3.11.16",
+    "numpy": "2.4.6"
+  }
+}
